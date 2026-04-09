@@ -1,0 +1,148 @@
+:root {
+  --bg-main:#0d0d0d;
+  --bg-card:#1a1a1a;
+  --border:#333;
+  --text:#eee;
+  --text-soft:#aaa;
+  --accent:#CC4400;
+}
+
+body {
+  margin:0;
+  background:var(--bg-main);
+  color:var(--text);
+  font-family:system-ui;
+}
+
+/* NAV */
+.nav {
+  padding:12px 20px;
+  border-bottom:1px solid var(--border);
+}
+
+.logo span { color:var(--accent); }
+
+.logo-badge {
+  display:inline-block;
+  background:#B84B00;
+  color:#FAEEDA;
+  font-size:10px;
+  padding:2px 6px;
+  border-radius:4px;
+  margin-left:6px;
+}
+
+/* HERO */
+.hero {
+  padding:20px;
+  display:flex;
+  gap:15px;
+  background:linear-gradient(135deg,#1a0a00,#3d1500);
+}
+
+.avatar {
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  background:var(--accent);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+
+/* TABS */
+.tabs {
+  display:flex;
+  border-bottom:1px solid var(--border);
+}
+
+.tab {
+  padding:12px;
+  cursor:pointer;
+  color:var(--text-soft);
+}
+
+.tab.active {
+  color:var(--accent);
+  border-bottom:2px solid var(--accent);
+}
+
+/* CONTENT */
+.content { padding:20px; }
+
+.section { display:none; }
+.section.active { display:block; }
+
+.card {
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px;
+}
+
+/* INPUTS */
+.input, .select {
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:6px;
+  border:1px solid var(--border);
+  background:#111;
+  color:white;
+}
+
+/* AUTOCOMPLETE */
+#autocomplete {
+  border:1px solid var(--border);
+  border-radius:6px;
+  display:none;
+}
+
+.auto-item {
+  padding:8px;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.auto-item:hover { background:#222; }
+
+/* DROP */
+.drop-item {
+  padding:12px;
+  border-bottom:1px solid var(--border);
+}
+
+.drop-header {
+  display:flex;
+  justify-content:space-between;
+}
+
+.drop-list {
+  margin-top:8px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.drop-badge {
+  display:flex;
+  gap:5px;
+  background:#222;
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:4px 6px;
+  font-size:11px;
+}
+
+.drop-icon {
+  width:14px;
+  height:14px;
+  background:var(--accent);
+  border-radius:3px;
+}
+
+.drop-chance {
+  color:#EF9F27;
+  font-size:10px;
+}
