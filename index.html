@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CheffGG - Metin2</title>
+
+<link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="nav">
+  <div class="logo">
+    Cheff<span>GG</span>
+    <div class="logo-badge">Metin2 ES</div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="avatar">CH</div>
+  <div class="hero-info">
+    <h1>Cheff</h1>
+    <p>El rey del Metin2 español · PvP & PvM</p>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="setSection(event,'inicio')">Inicio</div>
+  <div class="tab" onclick="setSection(event,'droplist')">Drop List</div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- INICIO -->
+<div class="section active" id="inicio">
+  <div class="card">
+    <h2>Bienvenido 🐉</h2>
+    <p>Web oficial de Cheff. Herramientas, wiki y contenido de Metin2.</p>
+  </div>
+</div>
+
+<!-- DROP LIST -->
+<div class="section" id="droplist">
+
+  <div class="card">
+
+    <input id="searchInput" placeholder="Buscar mob o item..." class="input">
+
+    <div id="autocomplete"></div>
+
+    <select id="levelFilter" class="select">
+      <option value="">Todos los niveles</option>
+      <option value="1-40">Lv 1-40</option>
+      <option value="41-70">Lv 41-70</option>
+      <option value="71-120">Lv 71+</option>
+    </select>
+
+    <div id="dropResults"></div>
+
+  </div>
+
+</div>
+
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/droplist.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
