@@ -1,16 +1,22 @@
 name: Update Metin2Alerts JSON
 
+# Se ejecuta cada minuto y también manualmente
 on:
   schedule:
-    - cron: '*/1 * * * *' # Cada minuto
+    - cron: '*/1 * * * *' # cada minuto
   workflow_dispatch:
 
 jobs:
   update-json:
     runs-on: ubuntu-latest
+
     steps:
+      # 1️⃣ Clona el repo
       - uses: actions/checkout@v3
-      
+        with:
+          persist-credentials: true  # esto permite usar GITHUB_TOKEN para push
+
+      # 2️⃣ Descarga los JSON
       - name: Fetch JSON files
         run: |
           mkdir -p data
@@ -19,10 +25,13 @@ jobs:
           curl -s https://metin2alerts.com/m2_data/item_icon.json -o data/item_icon.json
           curl -s https://metin2alerts.com/m2_data/es/item_names.json -o data/item_names.json
 
+      # 3️⃣ Commit y push usando GITHUB_TOKEN
       - name: Commit and push
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add data/*.json
           git commit -m "Update JSON files" || echo "No changes to commit"
-          git push
+          git push origin HEAD:main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
