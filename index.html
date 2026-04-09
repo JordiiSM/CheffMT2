@@ -1,106 +1,108 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>CheffGG - Metin2</title>
-
-<link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <title>CheffGG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
-
 <body>
 
+<!-- NAV -->
 <div class="nav">
-  <div style="display:flex;align-items:center;gap:10px">
-    <div style="font-size:16px;font-weight:500">Cheff<span style="color:#CC4400">GG</span></div>
+  <div class="nav-left">
+    <div class="logo">Cheff<span>GG</span></div>
     <div class="logo-badge">Metin2 ES</div>
   </div>
 </div>
 
+<!-- HERO -->
 <div class="hero">
   <div class="avatar">CH</div>
-  <div class="hero-info">
+  <div>
     <h1>Cheff</h1>
-    <p>El rey del Metin2 español · PvP & PvM</p>
-    <div class="live-badge"><div class="live-dot"></div> EN DIRECTO · 1.240 viewers</div>
+    <p>El rey del Metin2 español · Chamán Sura · PvP & PvM</p>
+    <div class="live-badge">● EN DIRECTO · 1.240 viewers</div>
   </div>
 </div>
 
+<!-- TABS -->
 <div class="tabs">
   <div class="tab active" onclick="setSection(event,'inicio')">Inicio</div>
   <div class="tab" onclick="setSection(event,'wiki')">Wiki</div>
   <div class="tab" onclick="setSection(event,'tools')">Herramientas</div>
-  <div class="tab" onclick="setSection(event,'droplist')">Drop List</div>
   <div class="tab" onclick="setSection(event,'canales')">Canales</div>
 </div>
 
 <div class="content">
 
 <!-- INICIO -->
-<div class="section active" id="inicio">
-  <div class="intro-hero">
+<div id="inicio" class="section active">
+  <div class="card">
     <h2>Bienvenido a la web de Cheff 🐉</h2>
-    <p>Streamer top de Metin2 España. PvP, PvM y farmeo avanzado.</p>
+    <p>Todo sobre Metin2, PvP, farmeo y comunidad.</p>
+  </div>
+
+  <div class="grid">
+    <div class="feature">📖 Wiki completa</div>
+    <div class="feature">🔧 Herramientas</div>
+    <div class="feature">📺 Stream</div>
+    <div class="feature">💬 Comunidad</div>
   </div>
 </div>
 
 <!-- WIKI -->
-<div class="section" id="wiki">
-  <div class="wiki-group">
-    <div class="wiki-group-title">Clases</div>
-    <div class="wiki-grid">
-      <a class="wiki-card" href="#"><div class="w-icon">⚔️</div><div class="w-name">Guerrero</div></a>
-      <a class="wiki-card" href="#"><div class="w-icon">🏹</div><div class="w-name">Ninja</div></a>
-      <a class="wiki-card" href="#"><div class="w-icon">🔥</div><div class="w-name">Sura</div></a>
-      <a class="wiki-card" href="#"><div class="w-icon">🌿</div><div class="w-name">Chamán</div></a>
-    </div>
+<div id="wiki" class="section">
+  <div class="section-title">Clases</div>
+  <div class="grid">
+    <div class="card">⚔️ Guerrero</div>
+    <div class="card">🏹 Ninja</div>
+    <div class="card">🔥 Sura</div>
+    <div class="card">🌿 Chamán</div>
   </div>
 </div>
 
-<!-- TOOLS -->
-<div class="section" id="tools">
-  <div class="tool-grid">
-    <a class="tool-card" href="https://metin2alerts.com/droplist" target="_blank">
-      <div class="tool-name">Mob Drop List</div>
-      <div class="tool-desc">Ver drops externos</div>
+<!-- HERRAMIENTAS -->
+<div id="tools" class="section">
+  <div class="section-title">Herramientas de Metin2Alerts</div>
+
+  <div class="tools-grid">
+    
+    <a href="#" class="tool-card">
+      <div class="tool-icon">📦</div>
+      <h3>Lista de drops</h3>
+      <p>Consulta qué dropea cada monstruo</p>
+      <span>Mob Drop List</span>
     </a>
-  </div>
-</div>
 
-<!-- DROP LIST PRO -->
-<div class="section" id="droplist">
+    <a href="#" class="tool-card">
+      <div class="tool-icon">📫</div>
+      <h3>Probabilidad de cofres</h3>
+      <p>Probabilidades de items</p>
+      <span>Chest Chances</span>
+    </a>
 
-  <div class="card">
-
-    <input id="searchInput" placeholder="Buscar mob o item...">
-
-    <div id="autocomplete"></div>
-
-    <select id="levelFilter">
-      <option value="">Todos los niveles</option>
-      <option value="1-40">Lv 1-40</option>
-      <option value="41-70">Lv 41-70</option>
-      <option value="71-120">Lv 71+</option>
-    </select>
-
-    <div id="dropResults"></div>
+    <a href="#" class="tool-card">
+      <div class="tool-icon">👹</div>
+      <h3>Base de datos de mobs</h3>
+      <p>Stats completas</p>
+      <span>Mob Database</span>
+    </a>
 
   </div>
-
 </div>
 
 <!-- CANALES -->
-<div class="section" id="canales">
-  <div class="channel-btn">Twitch</div>
-  <div class="channel-btn">YouTube</div>
+<div id="canales" class="section">
+  <div class="section-title">Canales</div>
+
+  <div class="card">📺 Twitch</div>
+  <div class="card">▶ YouTube</div>
+  <div class="card">💬 Discord</div>
 </div>
 
 </div>
 
-<script src="js/data.js"></script>
-<script src="js/droplist.js"></script>
 <script src="js/app.js"></script>
-
 </body>
 </html>
