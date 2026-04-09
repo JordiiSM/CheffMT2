@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CheffGG - Wiki</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="nav">
+  <div style="display:flex;align-items:center;gap:10px">
+    <a href="index.html" style="font-size:16px;font-weight:500;color:#FAEEDA;text-decoration:none">Cheff<span style="color:#CC4400">GG</span></a>
+    <div class="logo-badge">Metin2 ES</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="avatar">CH</div>
+  <div class="hero-info">
+    <h1>Wiki de Cheff</h1>
+    <p>Consulta todas las clases, sistemas, dungeons y equipamiento del juego.</p>
+  </div>
+</div>
+
+<div class="content">
+  <!-- Ejemplo: Clases -->
+  <div class="wiki-group">
+    <div class="wiki-group-title">Clases</div>
+    <div class="wiki-grid">
+      <a class="wiki-card" href="https://es-wiki.metin2.gameforge.com/index.php/Guerrero" target="_blank">
+        <div class="w-icon">⚔️</div><div class="w-name">Guerrero</div><div class="w-sub">Armas y armaduras</div>
+      </a>
+      <a class="wiki-card" href="https://es-wiki.metin2.gameforge.com/index.php/Ninja" target="_blank">
+        <div class="w-icon">🏹</div><div class="w-name">Ninja</div><div class="w-sub">Arco y daga</div>
+      </a>
+      <a class="wiki-card" href="https://es-wiki.metin2.gameforge.com/index.php/Sura" target="_blank">
+        <div class="w-icon">🔥</div><div class="w-name">Sura</div><div class="w-sub">Magia oscura</div>
+      </a>
+      <a class="wiki-card" href="https://es-wiki.metin2.gameforge.com/index.php/Chaman" target="_blank">
+        <div class="w-icon">🌿</div><div class="w-name">Chamán</div><div class="w-sub">Soporte y abanico</div>
+      </a>
+      <a class="wiki-card" href="https://es-wiki.metin2.gameforge.com/index.php/Lykaner" target="_blank">
+        <div class="w-icon">🐺</div><div class="w-name">Lycan</div><div class="w-sub">Transformación</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
