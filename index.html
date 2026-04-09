@@ -2,107 +2,107 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>CheffGG</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CheffGG - Metin2 ES</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-<!-- NAV -->
-<div class="nav">
-  <div class="nav-left">
-    <div class="logo">Cheff<span>GG</span></div>
-    <div class="logo-badge">Metin2 ES</div>
-  </div>
-</div>
+  <!-- NAVBAR -->
+  <nav class="nav">
+    <div class="nav-left">
+      <div class="logo">Cheff<span class="logo-highlight">GG</span></div>
+      <div class="logo-badge">Metin2 ES</div>
+    </div>
+  </nav>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="avatar">CH</div>
-  <div>
-    <h1>Cheff</h1>
-    <p>El rey del Metin2 español · Chamán Sura · PvP & PvM</p>
-    <div class="live-badge">● EN DIRECTO · 1.240 viewers</div>
-  </div>
-</div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="avatar">CH</div>
+    <div class="hero-info">
+      <h1>Cheff</h1>
+      <p>El rey del Metin2 español · Guerrero Ninja · PvP & PvM</p>
+      <div class="live-badge"><div class="live-dot"></div> EN DIRECTO · 1.240 viewers</div>
+    </div>
+  </section>
 
-<!-- TABS -->
-<div class="tabs">
-  <div class="tab active" onclick="setSection(event,'inicio')">Inicio</div>
-  <div class="tab" onclick="setSection(event,'wiki')">Wiki</div>
-  <div class="tab" onclick="setSection(event,'tools')">Herramientas</div>
-  <div class="tab" onclick="setSection(event,'canales')">Canales</div>
-</div>
-
-<div class="content">
-
-<!-- INICIO -->
-<div id="inicio" class="section active">
-  <div class="card">
-    <h2>Bienvenido a la web de Cheff 🐉</h2>
-    <p>Todo sobre Metin2, PvP, farmeo y comunidad.</p>
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" data-target="inicio">Inicio</div>
+    <div class="tab" data-target="wiki">Wiki</div>
+    <div class="tab" data-target="tools">Herramientas</div>
+    <div class="tab" data-target="canales">Canales</div>
   </div>
 
-  <div class="grid">
-    <div class="feature">📖 Wiki completa</div>
-    <div class="feature">🔧 Herramientas</div>
-    <div class="feature">📺 Stream</div>
-    <div class="feature">💬 Comunidad</div>
-  </div>
-</div>
+  <!-- CONTENT -->
+  <main class="content">
 
-<!-- WIKI -->
-<div id="wiki" class="section">
-  <div class="section-title">Clases</div>
-  <div class="grid">
-    <div class="card">⚔️ Guerrero</div>
-    <div class="card">🏹 Ninja</div>
-    <div class="card">🔥 Sura</div>
-    <div class="card">🌿 Chamán</div>
-  </div>
-</div>
+    <!-- INICIO -->
+    <section class="section active" id="inicio">
+      <div class="intro-hero">
+        <h2>Bienvenido a la web de Cheff 🐉</h2>
+        <p>Esta es la web oficial del streamer de Metin2 más conocido de España. Aquí encontrarás todo lo que necesitas para seguir el stream, aprender sobre el juego y sacar partido a las mejores herramientas de la comunidad.</p>
+      </div>
 
-<!-- HERRAMIENTAS -->
-<div id="tools" class="section">
-  <div class="section-title">Herramientas de Metin2Alerts</div>
+      <div class="section-title">¿Qué puedes hacer aquí?</div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="f-icon">📖</div>
+          <div class="f-title">Wiki completa</div>
+          <div class="f-desc">Clases, mapas, sistemas, equipamiento, dungeons y más, basada en la wiki oficial de Gameforge.</div>
+        </div>
+        <div class="feature-card">
+          <div class="f-icon">🔧</div>
+          <div class="f-title">Herramientas</div>
+          <div class="f-desc">Calculadoras de drops, cofres, mejoras, buscador de mobs y más, integradas desde Metin2Alerts.</div>
+        </div>
+        <div class="feature-card">
+          <div class="f-icon">📺</div>
+          <div class="f-title">Stream en vivo</div>
+          <div class="f-desc">Conéctate al directo de Cheff en Twitch y únete al chat de miles de jugadores.</div>
+        </div>
+        <div class="feature-card">
+          <div class="f-icon">💬</div>
+          <div class="f-title">Comunidad</div>
+          <div class="f-desc">Discord, YouTube, TikTok y foros para estar al día con todo lo del servidor y el streamer.</div>
+        </div>
+      </div>
 
-  <div class="tools-grid">
-    
-    <a href="#" class="tool-card">
-      <div class="tool-icon">📦</div>
-      <h3>Lista de drops</h3>
-      <p>Consulta qué dropea cada monstruo</p>
-      <span>Mob Drop List</span>
-    </a>
+      <div class="card next-stream">
+        <div>📅 Próximo stream</div>
+        <div>Hoy · <strong>21:00h</strong> — Farmeo en Salamandra + PvP Guerra de Imperio · <span class="badge badge-red">PvP</span></div>
+      </div>
+    </section>
 
-    <a href="#" class="tool-card">
-      <div class="tool-icon">📫</div>
-      <h3>Probabilidad de cofres</h3>
-      <p>Probabilidades de items</p>
-      <span>Chest Chances</span>
-    </a>
+    <!-- WIKI -->
+    <section class="section" id="wiki">
+      <div class="wiki-group">
+        <div class="wiki-group-title">Clases</div>
+        <div class="wiki-grid" id="wiki-classes"></div>
+      </div>
+      <div class="wiki-group">
+        <div class="wiki-group-title">Habilidades</div>
+        <div class="wiki-grid" id="wiki-skills"></div>
+      </div>
+      <!-- Agregar más grupos según necesidad -->
+    </section>
 
-    <a href="#" class="tool-card">
-      <div class="tool-icon">👹</div>
-      <h3>Base de datos de mobs</h3>
-      <p>Stats completas</p>
-      <span>Mob Database</span>
-    </a>
+    <!-- HERRAMIENTAS -->
+    <section class="section" id="tools">
+      <div class="section-title">Herramientas de Metin2Alerts</div>
+      <div class="tool-grid" id="tool-list"></div>
+    </section>
 
-  </div>
-</div>
+    <!-- CANALES -->
+    <section class="section" id="canales">
+      <div class="section-title">Sigue a Cheff</div>
+      <div class="channel-list" id="channel-list"></div>
+    </section>
 
-<!-- CANALES -->
-<div id="canales" class="section">
-  <div class="section-title">Canales</div>
+  </main>
 
-  <div class="card">📺 Twitch</div>
-  <div class="card">▶ YouTube</div>
-  <div class="card">💬 Discord</div>
-</div>
-
-</div>
-
-<script src="js/app.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/droplist.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
