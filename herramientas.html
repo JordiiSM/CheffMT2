@@ -1,57 +1,1478 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CheffGG - Herramientas</title>
-<link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Herramientas – CheffM2</title>
+  <meta name="description" content="Herramientas de Metin2: Drops de mobs, cofres, buscador de mobs, probabilidades de mejora, tienda, cristal de comercio, disfraz y más." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ===== TOOL LAYOUT ===== */
+    .tool-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      align-items: start;
+    }
+    .tool-sidebar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      position: sticky;
+      top: 80px;
+    }
+    .tool-sidebar h4 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      padding: 0 8px;
+      margin-bottom: 10px;
+    }
+    .tool-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 2px;
+      user-select: none;
+    }
+    .tool-nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-primary); }
+    .tool-nav-item.active {
+      background: rgba(192, 57, 43, 0.12);
+      color: var(--accent-gold);
+      border-left: 3px solid var(--accent-gold);
+      padding-left: 9px;
+    }
+    .tool-nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+
+    /* ===== TOOL PANEL ===== */
+    .tool-panel { display: none; }
+    .tool-panel.active { display: block; }
+    .panel-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .panel-header-icon { font-size: 40px; }
+    .panel-header h2 { font-size: 26px; margin-bottom: 4px; }
+    .panel-header p { font-size: 14px; color: var(--text-secondary); }
+    .panel-body {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+    }
+
+    /* ===== STATUS BADGE ===== */
+    .server-online { color: #58d68d; }
+    .server-offline { color: var(--accent-red-bright); }
+    .server-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      display: inline-block; margin-right: 6px;
+      animation: pulse 2s infinite;
+    }
+    .dot-green { background: #58d68d; box-shadow: 0 0 8px #58d68d; }
+    .dot-red { background: var(--accent-red-bright); box-shadow: 0 0 8px var(--accent-red-bright); }
+    .dot-yellow { background: var(--accent-gold); box-shadow: 0 0 8px var(--accent-gold); animation: none; }
+
+    /* ===== TABLES ===== */
+    .tool-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .tool-table th {
+      padding: 11px 14px;
+      background: rgba(192,57,43,0.1);
+      color: var(--accent-gold);
+      text-align: left;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+    }
+    .tool-table td { padding: 11px 14px; border-bottom: 1px solid var(--border-color); color: var(--text-secondary); vertical-align: middle; }
+    .tool-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .tool-table td:first-child { color: var(--text-primary); font-weight: 600; }
+    .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border-color); }
+
+    /* ===== SEARCH CONTROLS ===== */
+    .controls-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .controls-row .form-input { flex: 1; min-width: 160px; }
+    .controls-row .form-select { min-width: 150px; }
+
+    /* ===== PROGRESS BAR ===== */
+    .prob-bar { display: flex; align-items: center; gap: 10px; }
+    .prob-track { flex: 1; height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; min-width: 80px; }
+    .prob-fill { height: 100%; border-radius: 4px; background: var(--gradient-red); }
+    .prob-label { font-size: 13px; color: var(--accent-gold); width: 52px; text-align: right; font-weight: 700; flex-shrink: 0; }
+
+    /* ===== CHEST GRID ===== */
+    .chest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .chest-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; }
+    .chest-card-title { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .chest-card-title h4 { font-size: 16px; }
+    .chest-item-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .chest-item-name { flex: 1; font-size: 13px; color: var(--text-secondary); }
+    .chest-item-qty { font-size: 12px; color: var(--text-muted); width: 50px; text-align: right; flex-shrink: 0; }
+
+    /* ===== MOB CARDS ===== */
+    .mob-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .mob-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.25s;
+      text-align: center;
+    }
+    .mob-card:hover { border-color: var(--accent-red); transform: translateY(-3px); box-shadow: var(--shadow-glow-red); }
+    .mob-card .mob-emoji { font-size: 52px; display: block; margin-bottom: 10px; }
+    .mob-card .mob-name { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .mob-card .mob-level { margin-bottom: 8px; }
+    .mob-card .mob-zone { font-size: 12px; color: var(--text-muted); }
+    .mob-detail {
+      display: none;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-top: 20px;
+    }
+    .mob-detail.show { display: block; }
+    .mob-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .mob-stat-pair { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+    .mob-stat-pair:last-child { border-bottom: none; }
+    .mob-stat-pair span:first-child { color: var(--text-muted); }
+    .mob-stat-pair span:last-child { font-weight: 700; }
+
+    /* ===== UPGRADE ===== */
+    .upgrade-selector { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
+    .upgrade-level-btn {
+      width: 56px; height: 56px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      color: var(--text-secondary);
+      font-family: var(--font-title);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .upgrade-level-btn:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+    .upgrade-level-btn.active { background: rgba(192,57,43,0.15); border-color: var(--accent-red); color: #fff; }
+    .upgrade-result-big {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .upgrade-result-big .pct { font-family: var(--font-title); font-size: 72px; font-weight: 900; line-height: 1; }
+    .upgrade-result-big .pct.high { color: #58d68d; }
+    .upgrade-result-big .pct.med { color: var(--accent-gold); }
+    .upgrade-result-big .pct.low { color: var(--accent-red-bright); }
+    .upgrade-result-big .pct.vlow { color: #e74c3c; text-shadow: 0 0 20px rgba(231,76,60,0.5); }
+    .upgrade-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .upgrade-stat { background: var(--bg-secondary); border-radius: var(--radius); padding: 14px; text-align: center; border: 1px solid var(--border-color); }
+    .upgrade-stat .val { font-family: var(--font-title); font-size: 22px; color: var(--accent-gold); }
+    .upgrade-stat .lbl { font-size: 12px; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ===== SHOP TOOL ===== */
+    .shop-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+    .shop-row:last-child { border-bottom: none; }
+    .shop-item-icon { font-size: 28px; flex-shrink: 0; }
+    .shop-item-name { flex: 1; font-size: 14px; font-weight: 600; }
+    .shop-item-input { width: 140px; }
+    .shop-item-price { width: 120px; text-align: right; font-size: 14px; color: var(--accent-gold); font-weight: 700; flex-shrink: 0; }
+
+    /* ===== TRADING GLASS ===== */
+    .tg-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center; margin-bottom: 24px; }
+    .tg-side h4 { font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+    .tg-arrow { font-size: 32px; color: var(--accent-gold); text-align: center; }
+    .tg-item-add {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .tg-item-list { min-height: 80px; background: var(--bg-secondary); border: 1px dashed var(--border-accent); border-radius: var(--radius); padding: 12px; margin-bottom: 12px; }
+    .tg-item-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; font-size: 12px; margin: 3px; }
+    .tg-item-tag button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 12px; padding: 0; line-height: 1; }
+    .tg-item-tag button:hover { color: var(--accent-red-bright); }
+    .tg-total { font-size: 18px; font-weight: 700; color: var(--accent-gold); }
+    .tg-result {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      text-align: center;
+    }
+    .tg-result .verdict { font-family: var(--font-title); font-size: 22px; margin-bottom: 8px; }
+    .tg-result .verdict.fair { color: #58d68d; }
+    .tg-result .verdict.unfair { color: var(--accent-red-bright); }
+
+    /* ===== CATCH THE KING ===== */
+    .ctk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 28px; }
+    .ctk-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .ctk-card.boss { border-color: rgba(231,76,60,0.3); }
+    .ctk-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .ctk-card.boss::before { background: var(--gradient-red); }
+    .ctk-card.event::before { background: linear-gradient(90deg, #f39c12, #f5a623); }
+    .ctk-icon { font-size: 44px; margin-bottom: 12px; display: block; }
+    .ctk-card h4 { font-size: 16px; margin-bottom: 6px; }
+    .ctk-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.6; }
+    .ctk-timer { font-family: var(--font-title); font-size: 28px; color: var(--accent-gold); }
+    .ctk-timer-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* ===== COSTUME ===== */
+    .costume-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .costume-slot-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .costume-slot {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .costume-slot:hover, .costume-slot.selected { border-color: var(--accent-gold); background: rgba(243,156,18,0.05); }
+    .costume-slot .cs-icon { font-size: 32px; display: block; margin-bottom: 6px; }
+    .costume-slot .cs-name { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+    .costume-slot .cs-set { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .set-bonus-display {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+    .set-bonus-display h4 { font-size: 15px; margin-bottom: 16px; color: var(--accent-gold); }
+    .bonus-line { padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 14px; display: flex; align-items: center; gap: 10px; }
+    .bonus-line:last-child { border-bottom: none; }
+    .bonus-line .pieces { font-size: 11px; padding: 2px 8px; background: rgba(192,57,43,0.15); border-radius: 20px; color: var(--accent-red-bright); flex-shrink: 0; }
+    .bonus-line .btext { color: var(--text-secondary); flex: 1; }
+    .bonus-line .bval { color: var(--accent-gold); font-weight: 700; }
+
+    /* SERVER STATUS */
+    .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .server-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; }
+    .server-card-title { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .server-card-title h4 { font-size: 15px; }
+    .server-info-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--border-color); }
+    .server-info-row:last-child { border-bottom: none; }
+    .server-info-row span:first-child { color: var(--text-muted); }
+
+    @media (max-width: 1024px) {
+      .tool-layout { grid-template-columns: 1fr; }
+      .tool-sidebar { position: static; display: flex; gap: 4px; flex-wrap: wrap; padding: 12px; }
+      .tool-sidebar h4 { display: none; }
+      .tool-nav-item { border-left: none !important; padding: 8px 12px !important; border-radius: var(--radius) !important; font-size: 12px; }
+      .costume-layout { grid-template-columns: 1fr; }
+      .mob-detail-grid { grid-template-columns: 1fr; }
+      .tg-grid { grid-template-columns: 1fr; }
+      .tg-arrow { transform: rotate(90deg); }
+    }
+    @media (max-width: 600px) {
+      .upgrade-stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="nav">
-  <div style="display:flex;align-items:center;gap:10px">
-    <div style="font-size:16px;font-weight:500">Cheff<span style="color:#58A6FF">GG</span></div>
-    <div class="logo-badge">Metin2 ES</div>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="navbar-logo">C</div>
+    <div class="navbar-title">Cheff<span>M2</span></div>
+  </div>
+  <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+  <ul class="navbar-nav" id="mainNav">
+    <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+    <li><a href="herramientas.html" class="active"><i class="fas fa-tools"></i> Herramientas</a></li>
+    <li><a href="wiki.html"><i class="fas fa-book"></i> Wiki</a></li>
+    <li><a href="guias.html"><i class="fas fa-scroll"></i> Guías</a></li>
+    <li><a href="foro.html"><i class="fas fa-comments"></i> Foro</a></li>
+    <li><a href="https://www.twitch.tv/" target="_blank" class="navbar-twitch"><i class="fab fa-twitch"></i> Ver en Twitch</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+  <div class="page-header">
+    <div class="section-tag">Portal CheffM2</div>
+    <h1 class="page-header-title">⚙️ <span style="color:var(--accent-gold);">Herramientas</span></h1>
+    <p class="page-header-subtitle">Calculadoras y utilidades para dominar Metin2</p>
+  </div>
+
+  <div class="tool-layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="tool-sidebar">
+      <h4><i class="fas fa-wrench"></i> Herramientas</h4>
+      <div class="tool-nav-item active" onclick="showTool('drops',this)">
+        <span class="nav-icon">💀</span> Drop de Mobs
+      </div>
+      <div class="tool-nav-item" onclick="showTool('chest',this)">
+        <span class="nav-icon">📦</span> Cofres
+      </div>
+      <div class="tool-nav-item" onclick="showTool('mobdb',this)">
+        <span class="nav-icon">🐺</span> Base de Mobs
+      </div>
+      <div class="tool-nav-item" onclick="showTool('mobfinder',this)">
+        <span class="nav-icon">🔍</span> Buscador de Mobs
+      </div>
+      <div class="tool-nav-item" onclick="showTool('upgrade',this)">
+        <span class="nav-icon">🔨</span> Probabilidad Mejora
+      </div>
+      <div class="tool-nav-item" onclick="showTool('shop',this)">
+        <span class="nav-icon">🏪</span> Herramienta Tienda
+      </div>
+      <div class="tool-nav-item" onclick="showTool('trading',this)">
+        <span class="nav-icon">🔮</span> Cristal de Comercio
+      </div>
+      <div class="tool-nav-item" onclick="showTool('ctk',this)">
+        <span class="nav-icon">👑</span> Caza al Rey
+      </div>
+      <div class="tool-nav-item" onclick="showTool('costume',this)">
+        <span class="nav-icon">👘</span> Bonus de Disfraz
+      </div>
+      <div class="tool-nav-item" onclick="showTool('server',this)">
+        <span class="nav-icon">🟢</span> Estado Servidor
+      </div>
+    </aside>
+
+    <!-- ===== MAIN PANELS ===== -->
+    <div>
+
+      <!-- ==================== DROP DE MOBS ==================== -->
+      <div class="tool-panel active" id="tool-drops">
+        <div class="panel-header">
+          <span class="panel-header-icon">💀</span>
+          <div>
+            <h2>Drop de Mobs</h2>
+            <p>Consulta todos los items que dropeará un monstruo específico y sus probabilidades.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="controls-row">
+            <input type="text" class="form-input" id="dropSearch" placeholder="Buscar monstruo..." oninput="filterDropTable()" />
+            <select class="form-select" id="dropZone" onchange="filterDropTable()">
+              <option value="">Todas las zonas</option>
+              <option value="Aldea">Aldea Inicial</option>
+              <option value="Bosque">Bosque Sur</option>
+              <option value="Muertos">Tierra de los Muertos</option>
+              <option value="Desierto">Gran Desierto</option>
+              <option value="Maldito">Bosque Maldito</option>
+              <option value="Volcán">Volcán Infernal</option>
+              <option value="Helada">Montaña Helada</option>
+            </select>
+            <select class="form-select" id="dropType" onchange="filterDropTable()">
+              <option value="">Todos los tipos</option>
+              <option value="Arma">Armas</option>
+              <option value="Armadura">Armaduras</option>
+              <option value="Material">Materiales</option>
+              <option value="Poción">Pociones</option>
+              <option value="Yang">Yang</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table class="tool-table" id="dropTable">
+              <thead>
+                <tr>
+                  <th>Monstruo</th>
+                  <th>Nivel</th>
+                  <th>Zona</th>
+                  <th>Drop Principal</th>
+                  <th>Tipo</th>
+                  <th>Probabilidad</th>
+                </tr>
+              </thead>
+              <tbody id="dropTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== COFRES ==================== -->
+      <div class="tool-panel" id="tool-chest">
+        <div class="panel-header">
+          <span class="panel-header-icon">📦</span>
+          <div>
+            <h2>Probabilidades de Cofres</h2>
+            <p>Consulta qué items puedes obtener de cada cofre y cuál es su probabilidad de drop.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="controls-row">
+            <input type="text" class="form-input" placeholder="Buscar cofre..." id="chestSearch" oninput="filterChests()" />
+            <select class="form-select" id="chestFilter" onchange="filterChests()">
+              <option value="">Todos</option>
+              <option value="evento">Evento</option>
+              <option value="boss">Boss</option>
+              <option value="mision">Misión</option>
+              <option value="premium">Premium</option>
+            </select>
+          </div>
+          <div class="chest-grid" id="chestGrid"></div>
+        </div>
+      </div>
+
+      <!-- ==================== BASE DE MOBS ==================== -->
+      <div class="tool-panel" id="tool-mobdb">
+        <div class="panel-header">
+          <span class="panel-header-icon">🐺</span>
+          <div>
+            <h2>Base de Datos de Mobs</h2>
+            <p>Consulta estadísticas completas de todos los monstruos del juego.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="controls-row">
+            <input type="text" class="form-input" placeholder="Buscar monstruo..." id="mobdbSearch" oninput="filterMobDB()" />
+            <select class="form-select" onchange="filterMobDB()" id="mobTypeFilter">
+              <option value="">Todos los tipos</option>
+              <option value="normal">Normal</option>
+              <option value="metin">Metin</option>
+              <option value="boss">Jefe</option>
+            </select>
+            <select class="form-select" onchange="sortMobDB(this.value)">
+              <option value="level">Ordenar por Nivel</option>
+              <option value="hp">Ordenar por HP</option>
+              <option value="name">Ordenar por Nombre</option>
+            </select>
+          </div>
+          <div class="mob-grid" id="mobGrid"></div>
+          <div class="mob-detail" id="mobDetail"></div>
+        </div>
+      </div>
+
+      <!-- ==================== BUSCADOR DE MOBS ==================== -->
+      <div class="tool-panel" id="tool-mobfinder">
+        <div class="panel-header">
+          <span class="panel-header-icon">🔍</span>
+          <div>
+            <h2>Buscador de Mobs</h2>
+            <p>Encuentra en qué zona o mapa aparece un monstruo específico.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="controls-row">
+            <input type="text" class="form-input" placeholder="¿Dónde aparece el monstruo?" id="finderSearch" oninput="runFinder()" style="font-size: 16px; padding: 14px 20px;" />
+          </div>
+          <div id="finderResults"></div>
+          <div id="finderEmpty" style="text-align: center; padding: 48px; color: var(--text-muted);">
+            <div style="font-size: 64px; margin-bottom: 16px;">🔍</div>
+            <p>Escribe el nombre de un monstruo para buscar su ubicación</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== PROBABILIDAD MEJORA ==================== -->
+      <div class="tool-panel" id="tool-upgrade">
+        <div class="panel-header">
+          <span class="panel-header-icon">🔨</span>
+          <div>
+            <h2>Probabilidades de Mejora</h2>
+            <p>Consulta las probabilidades de éxito al mejorar tu equipo en el herrero.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div style="display: flex; gap: 20px; margin-bottom: 24px; flex-wrap: wrap;">
+            <div class="form-group" style="margin:0;">
+              <label class="form-label">Tipo de item</label>
+              <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <button class="class-tab active" onclick="setUpgradeType('weapon', this)" id="utype-weapon">⚔️ Arma</button>
+                <button class="class-tab" onclick="setUpgradeType('armor', this)" id="utype-armor">🛡️ Armadura</button>
+                <button class="class-tab" onclick="setUpgradeType('accessory', this)" id="utype-accessory">💍 Accesorio</button>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Selecciona el nivel actual del equipo:</p>
+          <div class="upgrade-selector" id="upgradeSelector"></div>
+
+          <div class="upgrade-result-big" id="upgradeResultBig">
+            <div class="pct high" id="upgradePct">100%</div>
+            <div style="font-size: 16px; color: var(--text-secondary); margin-top: 8px;" id="upgradeTransition">+0 → +1</div>
+          </div>
+
+          <div class="upgrade-stats-grid">
+            <div class="upgrade-stat">
+              <div class="val" id="upgradeExpected">1</div>
+              <div class="lbl">Intentos Promedio</div>
+            </div>
+            <div class="upgrade-stat">
+              <div class="val" id="upgradeCost">~50K</div>
+              <div class="lbl">Coste en Materiales</div>
+            </div>
+            <div class="upgrade-stat">
+              <div class="val" id="upgradeFail">0%</div>
+              <div class="lbl">Probabilidad de Fallo</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 28px;">
+            <h4 style="margin-bottom: 16px;">Tabla completa — <span id="upgradeTypeLabel" style="color:var(--accent-gold)">Arma</span></h4>
+            <div class="table-wrap">
+              <table class="tool-table" id="upgradeFullTable">
+                <thead>
+                  <tr>
+                    <th>Nivel</th>
+                    <th>Probabilidad</th>
+                    <th>Visualización</th>
+                    <th>Intentos Prom.</th>
+                    <th>Coste Prom.</th>
+                  </tr>
+                </thead>
+                <tbody id="upgradeTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== HERRAMIENTA TIENDA ==================== -->
+      <div class="tool-panel" id="tool-shop">
+        <div class="panel-header">
+          <span class="panel-header-icon">🏪</span>
+          <div>
+            <h2>Herramienta de Tienda</h2>
+            <p>Consulta precios de NPCs, calcula el margen de beneficio y el precio recomendado para vender.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px;">
+            <div>
+              <h4 style="margin-bottom: 16px; font-size: 15px;">Calculadora de Precio de Venta</h4>
+              <div class="form-group">
+                <label class="form-label">Precio de coste (Yang)</label>
+                <input type="number" class="form-input" id="shopCost" oninput="calcShop()" placeholder="Ej: 1000000" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Margen deseado (%)</label>
+                <input type="number" class="form-input" id="shopMargin" value="20" oninput="calcShop()" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Cantidad</label>
+                <input type="number" class="form-input" id="shopQty" value="1" oninput="calcShop()" />
+              </div>
+              <div class="calc-result" id="shopResult">
+                <span class="calc-result-number">—</span>
+                <span class="calc-result-label">Introduce el precio de coste</span>
+              </div>
+            </div>
+            <div>
+              <h4 style="margin-bottom: 16px; font-size: 15px;">Precios de Items en NPCs</h4>
+              <div id="shopNpcList">
+                <div class="shop-row">
+                  <span class="shop-item-icon">🔴</span>
+                  <span class="shop-item-name">Poción HP Pequeña</span>
+                  <span class="shop-item-price">500 Yang</span>
+                </div>
+                <div class="shop-row">
+                  <span class="shop-item-icon">❤️</span>
+                  <span class="shop-item-name">Poción HP Grande</span>
+                  <span class="shop-item-price">5.000 Yang</span>
+                </div>
+                <div class="shop-row">
+                  <span class="shop-item-icon">💙</span>
+                  <span class="shop-item-name">Poción SP</span>
+                  <span class="shop-item-price">800 Yang</span>
+                </div>
+                <div class="shop-row">
+                  <span class="shop-item-icon">⚡</span>
+                  <span class="shop-item-name">Elixir de Velocidad</span>
+                  <span class="shop-item-price">50.000 Yang</span>
+                </div>
+                <div class="shop-row">
+                  <span class="shop-item-icon">🔧</span>
+                  <span class="shop-item-name">Material de Mejora (bajo)</span>
+                  <span class="shop-item-price">10.000 Yang</span>
+                </div>
+                <div class="shop-row">
+                  <span class="shop-item-icon">🔩</span>
+                  <span class="shop-item-name">Material de Mejora (medio)</span>
+                  <span class="shop-item-price">50.000 Yang</span>
+                </div>
+                <div class="shop-row">
+                  <span class="shop-item-icon">⚙️</span>
+                  <span class="shop-item-name">Material de Mejora (alto)</span>
+                  <span class="shop-item-price">200.000 Yang</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== CRISTAL DE COMERCIO ==================== -->
+      <div class="tool-panel" id="tool-trading">
+        <div class="panel-header">
+          <span class="panel-header-icon">🔮</span>
+          <div>
+            <h2>Cristal de Comercio</h2>
+            <p>Evalúa si un intercambio de items entre jugadores es justo. Añade items a cada lado y compara su valor.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="tg-grid">
+            <div class="tg-side">
+              <h4>🧑 Tú ofreces</h4>
+              <div class="tg-item-add">
+                <input type="text" class="form-input" id="tgItemA" placeholder="Item..." style="flex:1;" />
+                <input type="number" class="form-input" id="tgValueA" placeholder="Yang" style="width:120px;" />
+                <button class="btn btn-primary btn-sm" onclick="addTgItem('A')"><i class="fas fa-plus"></i></button>
+              </div>
+              <div class="tg-item-list" id="tgListA">
+                <span style="color: var(--text-muted); font-size: 13px;">Añade items aquí...</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; color: var(--text-muted);">Total:</span>
+                <span class="tg-total" id="tgTotalA">0 Yang</span>
+              </div>
+            </div>
+
+            <div class="tg-arrow">⇄</div>
+
+            <div class="tg-side">
+              <h4>🤝 Recibes</h4>
+              <div class="tg-item-add">
+                <input type="text" class="form-input" id="tgItemB" placeholder="Item..." style="flex:1;" />
+                <input type="number" class="form-input" id="tgValueB" placeholder="Yang" style="width:120px;" />
+                <button class="btn btn-primary btn-sm" onclick="addTgItem('B')"><i class="fas fa-plus"></i></button>
+              </div>
+              <div class="tg-item-list" id="tgListB">
+                <span style="color: var(--text-muted); font-size: 13px;">Añade items aquí...</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; color: var(--text-muted);">Total:</span>
+                <span class="tg-total" id="tgTotalB">0 Yang</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tg-result" id="tgResult">
+            <div class="verdict" id="tgVerdict" style="color: var(--text-muted);">Añade items para evaluar el intercambio</div>
+            <div id="tgDiff" style="font-size: 14px; color: var(--text-muted); margin-top: 6px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== CAZA AL REY ==================== -->
+      <div class="tool-panel" id="tool-ctk">
+        <div class="panel-header">
+          <span class="panel-header-icon">👑</span>
+          <div>
+            <h2>Caza al Rey (Catch the King)</h2>
+            <p>Información sobre el evento Caza al Rey: horarios, jefes especiales y recompensas.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div style="background: rgba(243,156,18,0.08); border: 1px solid rgba(243,156,18,0.2); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 28px;">⚠️</span>
+            <div>
+              <strong style="color: var(--accent-gold);">¿Qué es la Caza al Rey?</strong>
+              <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">
+                Un evento PvP en el que un jugador aleatorio recibe el título de "Rey". Matarlo otorga grandes recompensas. El Rey recibe bonificaciones especiales pero también es visible en el mapa para todos.
+              </p>
+            </div>
+          </div>
+
+          <div class="ctk-grid">
+            <div class="ctk-card event">
+              <span class="ctk-icon">👑</span>
+              <h4>El Rey Actual</h4>
+              <p>El Rey es elegido aleatoriamente cada hora entre los jugadores activos de nivel 50+.</p>
+              <div class="ctk-timer" id="ctkTimer">—</div>
+              <div class="ctk-timer-label">Tiempo hasta próxima coronación</div>
+            </div>
+            <div class="ctk-card event">
+              <span class="ctk-icon">🎁</span>
+              <h4>Recompensa por Matar al Rey</h4>
+              <p>El jugador que dé el golpe final al Rey recibe:</p>
+              <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+                <span class="badge badge-gold">💰 500.000 – 2.000.000 Yang</span>
+                <span class="badge badge-purple">🎁 Cofre del Rey (aleatorio)</span>
+                <span class="badge badge-blue">⭐ Título especial (24h)</span>
+              </div>
+            </div>
+            <div class="ctk-card boss">
+              <span class="ctk-icon">🛡️</span>
+              <h4>Bonus del Rey</h4>
+              <p>Mientras seas el Rey obtienes:</p>
+              <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+                <span class="badge badge-green">+25% EXP ganada</span>
+                <span class="badge badge-gold">+30% Yang ganado</span>
+                <span class="badge badge-red">⚠️ Eres visible en el mapa</span>
+                <span class="badge badge-blue">Todos pueden atacarte</span>
+              </div>
+            </div>
+            <div class="ctk-card boss">
+              <span class="ctk-icon">⚔️</span>
+              <h4>Estrategia</h4>
+              <p>Consejos para sobrevivir como Rey o para cazar al Rey:</p>
+              <div style="margin-top: 8px; font-size: 13px; color: var(--text-secondary);">
+                <div style="margin-bottom: 6px;">🔹 Como Rey: muévete constantemente y lleva muchas pociones.</div>
+                <div style="margin-bottom: 6px;">🔹 Como cazador: usa pociones de velocidad para alcanzarlo.</div>
+                <div>🔹 El Rey suele ir a zonas de farmeo seguras — anticípate.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 28px;">
+            <h4 style="margin-bottom: 16px;">Contenido del Cofre del Rey</h4>
+            <div class="table-wrap">
+              <table class="tool-table">
+                <thead>
+                  <tr><th>Item</th><th>Probabilidad</th><th>Cantidad</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>💰 Yang Bonus</td><td class="prob-high">30%</td><td>100.000 – 500.000</td></tr>
+                  <tr><td>🔴 Poción HP Grande ×10</td><td class="prob-high">25%</td><td>10 ud.</td></tr>
+                  <tr><td>⭐ Elixir de EXP</td><td class="prob-med">15%</td><td>1 ud.</td></tr>
+                  <tr><td>💎 Piedra de Dragón Rara</td><td class="prob-med">15%</td><td>1 ud.</td></tr>
+                  <tr><td>🎁 Item de Evento Exclusivo</td><td class="prob-low">10%</td><td>1 ud.</td></tr>
+                  <tr><td>🌟 Equipo Épico Aleatorio</td><td class="prob-low">5%</td><td>1 ud.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== BONUS DE DISFRAZ ==================== -->
+      <div class="tool-panel" id="tool-costume">
+        <div class="panel-header">
+          <span class="panel-header-icon">👘</span>
+          <div>
+            <h2>Bonus de Sets de Disfraces</h2>
+            <p>Selecciona piezas de disfraz y descubre los bonus de set que se activan.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="costume-layout">
+            <div>
+              <h4 style="font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;">Selecciona tu disfraz:</h4>
+              <div class="form-group">
+                <label class="form-label">Set de Disfraz</label>
+                <select class="form-select" id="costumeSet" onchange="loadCostumeSet()">
+                  <option value="dragon">🐉 Set del Dragón</option>
+                  <option value="tiger">🐯 Set del Tigre</option>
+                  <option value="phoenix">🦅 Set del Fénix</option>
+                  <option value="dark">🌑 Set Oscuro</option>
+                  <option value="spring">🌸 Set de Primavera</option>
+                </select>
+              </div>
+              <div class="costume-slot-grid" id="costumeSlotGrid"></div>
+              <div style="margin-top: 16px; padding: 12px; background: var(--bg-secondary); border-radius: var(--radius); border: 1px solid var(--border-color);">
+                <span style="font-size: 13px; color: var(--text-muted);">Piezas equipadas:</span>
+                <span style="font-family: var(--font-title); font-size: 22px; color: var(--accent-gold); margin-left: 10px;" id="costumeCount">0 / 5</span>
+              </div>
+            </div>
+            <div>
+              <h4 style="font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;">Bonus de Set Activos:</h4>
+              <div class="set-bonus-display" id="setBonusDisplay">
+                <p style="color: var(--text-muted); font-size: 14px; text-align: center; padding: 20px 0;">
+                  Selecciona piezas del disfraz para ver los bonus de set
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== ESTADO SERVIDOR ==================== -->
+      <div class="tool-panel" id="tool-server">
+        <div class="panel-header">
+          <span class="panel-header-icon">🟢</span>
+          <div>
+            <h2>Estado del Servidor</h2>
+            <p>Monitorización en tiempo real de los servidores de Metin2.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(88,214,141,0.08); border: 1px solid rgba(88,214,141,0.2); border-radius: var(--radius-lg); margin-bottom: 28px;">
+            <span class="server-dot dot-green"></span>
+            <span style="font-size: 16px; font-weight: 700; color: #58d68d;">Todos los servidores operativos</span>
+            <span style="margin-left: auto; font-size: 13px; color: var(--text-muted);">Última actualización: hace 2 min</span>
+          </div>
+
+          <div class="server-grid">
+            <div class="server-card">
+              <div class="server-card-title">
+                <span class="server-dot dot-green"></span>
+                <h4>Servidor 1 — Yamato</h4>
+              </div>
+              <div class="server-info-row"><span>Estado</span><span style="color:#58d68d">Online</span></div>
+              <div class="server-info-row"><span>Jugadores</span><span style="color:var(--accent-gold)">1.247</span></div>
+              <div class="server-info-row"><span>Ping</span><span>24ms</span></div>
+              <div class="server-info-row"><span>Uptime</span><span>99.8%</span></div>
+            </div>
+            <div class="server-card">
+              <div class="server-card-title">
+                <span class="server-dot dot-green"></span>
+                <h4>Servidor 2 — Chunjo</h4>
+              </div>
+              <div class="server-info-row"><span>Estado</span><span style="color:#58d68d">Online</span></div>
+              <div class="server-info-row"><span>Jugadores</span><span style="color:var(--accent-gold)">987</span></div>
+              <div class="server-info-row"><span>Ping</span><span>31ms</span></div>
+              <div class="server-info-row"><span>Uptime</span><span>99.5%</span></div>
+            </div>
+            <div class="server-card">
+              <div class="server-card-title">
+                <span class="server-dot dot-green"></span>
+                <h4>Servidor 3 — Shinsoo</h4>
+              </div>
+              <div class="server-info-row"><span>Estado</span><span style="color:#58d68d">Online</span></div>
+              <div class="server-info-row"><span>Jugadores</span><span style="color:var(--accent-gold)">762</span></div>
+              <div class="server-info-row"><span>Ping</span><span>18ms</span></div>
+              <div class="server-info-row"><span>Uptime</span><span>99.9%</span></div>
+            </div>
+            <div class="server-card">
+              <div class="server-card-title">
+                <span class="server-dot dot-yellow"></span>
+                <h4>Servidor 4 — Jinno</h4>
+              </div>
+              <div class="server-info-row"><span>Estado</span><span style="color:var(--accent-gold)">Mantenimiento</span></div>
+              <div class="server-info-row"><span>Jugadores</span><span>—</span></div>
+              <div class="server-info-row"><span>Ping</span><span>—</span></div>
+              <div class="server-info-row"><span>Estimado</span><span>~2h</span></div>
+            </div>
+          </div>
+
+          <div style="margin-top: 28px;">
+            <h4 style="margin-bottom: 16px;">Historial de Incidencias</h4>
+            <div class="table-wrap">
+              <table class="tool-table">
+                <thead>
+                  <tr><th>Fecha</th><th>Servidor</th><th>Tipo</th><th>Duración</th><th>Estado</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>09/04/2026 14:00</td><td>Servidor 4</td><td>Mantenimiento programado</td><td>~2h</td><td><span class="badge badge-gold">En curso</span></td></tr>
+                  <tr><td>07/04/2026 02:30</td><td>Servidor 2</td><td>Caída temporal</td><td>15 min</td><td><span class="badge badge-green">Resuelto</span></td></tr>
+                  <tr><td>05/04/2026 10:00</td><td>Todos</td><td>Actualización del juego</td><td>3h</td><td><span class="badge badge-green">Resuelto</span></td></tr>
+                  <tr><td>01/04/2026 08:00</td><td>Servidor 1</td><td>Lag alto</td><td>45 min</td><td><span class="badge badge-green">Resuelto</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end main panels -->
   </div>
 </div>
 
-<div class="content" style="margin:20px">
-  <div class="section-title">Herramientas</div>
-  <div class="tool-grid">
-    <a href="#" class="tool-card">
-      <div class="tool-header">
-        <div class="tool-icon">⚔️</div>
-        <div class="tool-name">Calculadora de PvP</div>
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>Cheff<span>M2</span></h3>
+      <p>El portal definitivo de Metin2 creado por el streamer Cheff.</p>
+      <div class="footer-social">
+        <a href="https://www.twitch.tv/" target="_blank"><i class="fab fa-twitch"></i></a>
+        <a href="https://www.youtube.com/" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="https://discord.gg/" target="_blank"><i class="fab fa-discord"></i></a>
       </div>
-      <div class="tool-desc">Calcula daño, defensa y probabilidad de crítico para tus combates.</div>
-      <span class="tool-badge">Nueva</span>
-    </a>
-    <a href="#" class="tool-card">
-      <div class="tool-header">
-        <div class="tool-icon">🎁</div>
-        <div class="tool-name">Drops & Cofres</div>
-      </div>
-      <div class="tool-desc">Simula el contenido de cofres y mobs para planificar farmeos.</div>
-    </a>
-    <a href="#" class="tool-card">
-      <div class="tool-header">
-        <div class="tool-icon">🛠️</div>
-        <div class="tool-name">Mejoras de equipo</div>
-      </div>
-      <div class="tool-desc">Calcula la probabilidad de éxito y el coste de mejorar tu armamento.</div>
-      <span class="tool-badge ext-badge">Externa</span>
-    </a>
-    <a href="#" class="tool-card">
-      <div class="tool-header">
-        <div class="tool-icon">🔎</div>
-        <div class="tool-name">Buscador de mobs</div>
-      </div>
-      <div class="tool-desc">Encuentra mobs por nivel, tipo y localización en el mapa.</div>
-    </a>
+    </div>
+    <div class="footer-col">
+      <h4>Herramientas</h4>
+      <ul>
+        <li><a href="#" onclick="showTool('drops',null)">Drop de Mobs</a></li>
+        <li><a href="#" onclick="showTool('chest',null)">Cofres</a></li>
+        <li><a href="#" onclick="showTool('upgrade',null)">Probabilidad Mejora</a></li>
+        <li><a href="#" onclick="showTool('trading',null)">Cristal de Comercio</a></li>
+        <li><a href="#" onclick="showTool('ctk',null)">Caza al Rey</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Navegación</h4>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="wiki.html">Wiki</a></li>
+        <li><a href="guias.html">Guías</a></li>
+        <li><a href="foro.html">Foro</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Comunidad</h4>
+      <ul>
+        <li><a href="https://discord.gg/" target="_blank">Discord</a></li>
+        <li><a href="https://www.twitch.tv/" target="_blank">Twitch</a></li>
+      </ul>
+    </div>
   </div>
-</div>
+  <div class="footer-bottom">
+    <p>© 2026 CheffM2 · Portal no oficial de Metin2</p>
+  </div>
+</footer>
 
-<script src="js/data.js"></script>
-<script src="js/tools.js"></script>
-<script src="js/app.js"></script></body>
+<script>
+/* ===== DATA ===== */
+const MOB_DATA = [
+  { name:'Lobo Salvaje', emoji:'🐺', level:5, hp:250, atk:12, def:5, exp:120, yang:50, zone:'Aldea', type:'normal', drops:['Piel de Lobo','Yang','Hueso'] },
+  { name:'Jabalí Feroz', emoji:'🐗', level:8, hp:480, atk:22, def:8, exp:280, yang:120, zone:'Bosque', type:'normal', drops:['Colmillo','Piel Gruesa','Yang'] },
+  { name:'Goblin', emoji:'👺', level:14, hp:800, atk:40, def:12, exp:500, yang:250, zone:'Bosque', type:'normal', drops:['Garra de Goblin','Material de Mejora Bajo','Yang'] },
+  { name:'Esqueleto', emoji:'💀', level:18, hp:1200, atk:60, def:18, exp:850, yang:400, zone:'Muertos', type:'normal', drops:['Hueso de Esqueleto','Armadura Baja','Yang'] },
+  { name:'Zombi Antiguo', emoji:'🧟', level:25, hp:2800, atk:95, def:30, exp:1500, yang:700, zone:'Muertos', type:'normal', drops:['Carne Podrida','Espada Vieja','Yang'] },
+  { name:'Lagarto Gigante', emoji:'🦎', level:35, hp:6000, atk:150, def:55, exp:3200, yang:1500, zone:'Desierto', type:'normal', drops:['Escama','Armadura Media','Yang'] },
+  { name:'Ogro Verde', emoji:'👹', level:45, hp:12000, atk:220, def:80, exp:8000, yang:3500, zone:'Muertos', type:'normal', drops:['Maza Ogro','Armadura Pesada','Piedra Verde'] },
+  { name:'Serpiente Venenosa', emoji:'🐍', level:52, hp:18000, atk:280, def:90, exp:14000, yang:5000, zone:'Maldito', type:'normal', drops:['Veneno Concentrado','Anillo de Cobre','Yang'] },
+  { name:'Demonio de Fuego', emoji:'🔥', level:65, hp:35000, atk:380, def:130, exp:28000, yang:9000, zone:'Volcán', type:'normal', drops:['Esencia de Fuego','Espada de Fuego','Piedra Roja'] },
+  { name:'Yeti', emoji:'🦣', level:75, hp:55000, atk:480, def:170, exp:45000, yang:14000, zone:'Helada', type:'normal', drops:['Piel de Yeti','Armadura de Hielo','Piedra Azul'] },
+  { name:'Metin de Fuego', emoji:'🔴', level:40, hp:80000, atk:0, def:200, exp:25000, yang:8000, zone:'Volcán', type:'metin', drops:['Piedra Roja','Yang','Material Mejora Alto'] },
+  { name:'Metin de Oscuridad', emoji:'🟣', level:75, hp:150000, atk:0, def:350, exp:60000, yang:20000, zone:'Maldito', type:'metin', drops:['Piedra Violeta','Yang','Equipo Épico'] },
+  { name:'Rey Demonio', emoji:'👑', level:55, hp:500000, atk:800, def:300, exp:200000, yang:100000, zone:'Muertos', type:'boss', drops:['Espada Oscura','Armadura del Rey','Cofre Boss'] },
+  { name:'Alacrán Gigante', emoji:'🦂', level:40, hp:80000, atk:350, def:150, exp:50000, yang:30000, zone:'Desierto', type:'boss', drops:['Cota Desértica','Anillo de Rubí','Yang'] },
+  { name:'Dragón Supremo', emoji:'🐲', level:99, hp:10000000, atk:2500, def:1200, exp:5000000, yang:500000, zone:'Helada', type:'boss', drops:['Armadura Legendaria','Espada Dragón +9','Cofre Dragón'] },
+];
+
+const CHEST_DATA = [
+  { name:'Cofre de Primavera', icon:'🌸', type:'evento', items:[
+    { name:'Flores de Primavera ×10', pct:40 }, { name:'Poción HP Grande ×5', pct:25 },
+    { name:'Disfraz Primavera', pct:10 }, { name:'Yang ×50.000', pct:15 }, { name:'Material Mejora', pct:10 }
+  ]},
+  { name:'Cofre del Rey', icon:'👑', type:'boss', items:[
+    { name:'Yang ×500.000', pct:30 }, { name:'Poción HP Grande ×10', pct:25 },
+    { name:'Elixir de EXP', pct:15 }, { name:'Piedra Dragón Rara', pct:15 },
+    { name:'Item Evento Exclusivo', pct:10 }, { name:'Equipo Épico', pct:5 }
+  ]},
+  { name:'Cofre del Rey Demonio', icon:'💀', type:'boss', items:[
+    { name:'Espada Oscura', pct:15 }, { name:'Armadura del Rey', pct:15 },
+    { name:'Yang ×200.000', pct:30 }, { name:'Piedra Dragón Rara', pct:20 }, { name:'Material Mejora Alto ×5', pct:20 }
+  ]},
+  { name:'Cofre de Misión Diaria', icon:'📜', type:'mision', items:[
+    { name:'EXP +10% (1h)', pct:30 }, { name:'Yang ×100.000', pct:30 },
+    { name:'Material Mejora Medio', pct:25 }, { name:'Piedra Dragón', pct:15 }
+  ]},
+  { name:'Cofre de Evento de Verano', icon:'☀️', type:'evento', items:[
+    { name:'Disfraz Verano', pct:8 }, { name:'Moneda de Evento ×20', pct:40 },
+    { name:'Yang ×80.000', pct:25 }, { name:'Poción Especial', pct:27 }
+  ]},
+  { name:'Cofre Premium', icon:'💎', type:'premium', items:[
+    { name:'Equipo Raro +4', pct:20 }, { name:'Piedra Dragón Legendaria', pct:10 },
+    { name:'Yang ×1.000.000', pct:15 }, { name:'Disfraz Exclusivo', pct:5 },
+    { name:'Material Mejora Alto ×10', pct:25 }, { name:'Elixir Supremo', pct:25 }
+  ]},
+];
+
+const UPGRADE_PROBS = {
+  weapon:    [100,100,100,80,70,50,40,25,10],
+  armor:     [100,100,100,80,70,50,40,25,10],
+  accessory: [100,100,100,80,60,40,25,15,8]
+};
+
+const COSTUME_SETS = {
+  dragon: {
+    label:'Set del Dragón', icon:'🐉',
+    pieces:[
+      { slot:'Cuerpo', icon:'👘', name:'Túnica Dragón' },
+      { slot:'Sombrero', icon:'🪖', name:'Casco Dragón' },
+      { slot:'Arma', icon:'⚔️', name:'Espada Dragón' },
+      { slot:'Escudo', icon:'🛡️', name:'Escudo Dragón' },
+      { slot:'Alas', icon:'🦋', name:'Alas Dragón' },
+    ],
+    bonuses:[
+      { pieces:2, text:'Resistencia al Fuego', val:'+10%' },
+      { pieces:3, text:'Ataque de Dragón', val:'+15 Atq' },
+      { pieces:4, text:'HP Máximo', val:'+1.500' },
+      { pieces:5, text:'Bonus Supremo Dragón: Todo Stat', val:'+25' },
+    ]
+  },
+  tiger: {
+    label:'Set del Tigre', icon:'🐯',
+    pieces:[
+      { slot:'Cuerpo', icon:'🥻', name:'Armadura Tigre' },
+      { slot:'Sombrero', icon:'🎭', name:'Máscara Tigre' },
+      { slot:'Arma', icon:'🗡️', name:'Garra Tigre' },
+      { slot:'Escudo', icon:'🔰', name:'Escudo Tigre' },
+      { slot:'Alas', icon:'🌊', name:'Capa Tigre' },
+    ],
+    bonuses:[
+      { pieces:2, text:'Velocidad de Ataque', val:'+8%' },
+      { pieces:3, text:'Probabilidad Crítico', val:'+5%' },
+      { pieces:4, text:'Ataque Físico', val:'+30' },
+      { pieces:5, text:'Bonus Supremo Tigre: Velocidad', val:'+20%' },
+    ]
+  },
+  phoenix: {
+    label:'Set del Fénix', icon:'🦅',
+    pieces:[
+      { slot:'Cuerpo', icon:'🔥', name:'Manto Fénix' },
+      { slot:'Sombrero', icon:'✨', name:'Corona Fénix' },
+      { slot:'Arma', icon:'🔮', name:'Bastón Fénix' },
+      { slot:'Escudo', icon:'💛', name:'Aura Fénix' },
+      { slot:'Alas', icon:'🌟', name:'Plumas Fénix' },
+    ],
+    bonuses:[
+      { pieces:2, text:'Magia Ataque', val:'+20' },
+      { pieces:3, text:'Regeneración HP', val:'+50/s' },
+      { pieces:4, text:'Resistencia Magia', val:'+10%' },
+      { pieces:5, text:'Bonus Supremo Fénix: Renacimiento', val:'Resucita 1x/hora' },
+    ]
+  },
+  dark: {
+    label:'Set Oscuro', icon:'🌑',
+    pieces:[
+      { slot:'Cuerpo', icon:'🖤', name:'Armadura Oscura' },
+      { slot:'Sombrero', icon:'🎩', name:'Capucha Oscura' },
+      { slot:'Arma', icon:'💀', name:'Guadaña Oscura' },
+      { slot:'Escudo', icon:'🛡️', name:'Escudo Oscuro' },
+      { slot:'Alas', icon:'🦇', name:'Alas Murciélago' },
+    ],
+    bonuses:[
+      { pieces:2, text:'Probabilidad de Envenenamiento', val:'+8%' },
+      { pieces:3, text:'Absorción HP', val:'+3%' },
+      { pieces:4, text:'Reducción de Daño Recibido', val:'-10%' },
+      { pieces:5, text:'Bonus Supremo Oscuro: Maldición AoE', val:'Activo' },
+    ]
+  },
+  spring: {
+    label:'Set de Primavera', icon:'🌸',
+    pieces:[
+      { slot:'Cuerpo', icon:'🌷', name:'Vestido Primavera' },
+      { slot:'Sombrero', icon:'🌺', name:'Corona de Flores' },
+      { slot:'Arma', icon:'🌿', name:'Varita Floral' },
+      { slot:'Escudo', icon:'🍃', name:'Escudo Natural' },
+      { slot:'Alas', icon:'🦋', name:'Alas Mariposa' },
+    ],
+    bonuses:[
+      { pieces:2, text:'Velocidad de Movimiento', val:'+8%' },
+      { pieces:3, text:'EXP Ganada', val:'+10%' },
+      { pieces:4, text:'Yang Ganado', val:'+10%' },
+      { pieces:5, text:'Bonus Supremo Primavera: Todo Bonus', val:'+5%' },
+    ]
+  }
+};
+
+let currentUpgradeType = 'weapon';
+let currentUpgradeLevel = 0;
+let selectedCostumePieces = new Set();
+let currentCostumeSet = 'dragon';
+let tgItemsA = [], tgItemsB = [];
+
+/* ===== NAVIGATION ===== */
+function showTool(name, el) {
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tool-nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tool-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ===== DROP TABLE ===== */
+function buildDropTable() {
+  const DROPS_EXTENDED = [
+    ...MOB_DATA.flatMap(m => m.drops.map((d,i) => ({
+      mob: m.name, level: m.level, zone: m.zone, drop: d,
+      type: i===0?'Arma': i===1?'Armadura':'Material',
+      prob: i===0?15: i===1?8:35
+    })))
+  ];
+  window._dropData = DROPS_EXTENDED;
+  renderDropTable(DROPS_EXTENDED);
+}
+
+function renderDropTable(data) {
+  const tbody = document.getElementById('dropTableBody');
+  tbody.innerHTML = data.slice(0,80).map(row => `
+    <tr>
+      <td>${row.mob}</td>
+      <td><span class="badge ${row.level<30?'badge-green':row.level<60?'badge-gold':'badge-red'}">${row.level}</span></td>
+      <td>${row.zone}</td>
+      <td>${row.drop}</td>
+      <td><span class="badge badge-blue">${row.type}</span></td>
+      <td>
+        <div class="prob-bar">
+          <div class="prob-track"><div class="prob-fill" style="width:${Math.min(row.prob,100)}%"></div></div>
+          <span class="prob-label">${row.prob}%</span>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function filterDropTable() {
+  const q = document.getElementById('dropSearch').value.toLowerCase();
+  const zone = document.getElementById('dropZone').value;
+  const type = document.getElementById('dropType').value;
+  const data = window._dropData.filter(r =>
+    (!q || r.mob.toLowerCase().includes(q) || r.drop.toLowerCase().includes(q)) &&
+    (!zone || r.zone.includes(zone)) &&
+    (!type || r.type === type)
+  );
+  renderDropTable(data);
+}
+
+/* ===== CHEST ===== */
+function buildChests() {
+  renderChests(CHEST_DATA);
+}
+
+function renderChests(data) {
+  document.getElementById('chestGrid').innerHTML = data.map(c => `
+    <div class="chest-card">
+      <div class="chest-card-title">
+        <span style="font-size:32px;">${c.icon}</span>
+        <div>
+          <h4>${c.name}</h4>
+          <span class="badge ${c.type==='boss'?'badge-red':c.type==='evento'?'badge-gold':c.type==='premium'?'badge-purple':'badge-blue'}">${c.type}</span>
+        </div>
+      </div>
+      ${c.items.map(item => `
+        <div class="chest-item-row">
+          <span class="chest-item-name">${item.name}</span>
+          <div class="prob-bar" style="flex:1;">
+            <div class="prob-track"><div class="prob-fill" style="width:${item.pct}%"></div></div>
+          </div>
+          <span class="chest-item-qty">${item.pct}%</span>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function filterChests() {
+  const q = document.getElementById('chestSearch').value.toLowerCase();
+  const f = document.getElementById('chestFilter').value;
+  renderChests(CHEST_DATA.filter(c =>
+    (!q || c.name.toLowerCase().includes(q)) && (!f || c.type === f)
+  ));
+}
+
+/* ===== MOB DATABASE ===== */
+let currentMobs = [...MOB_DATA];
+
+function buildMobDB() { renderMobGrid(currentMobs); }
+
+function renderMobGrid(mobs) {
+  document.getElementById('mobGrid').innerHTML = mobs.map((m,i) => `
+    <div class="mob-card" onclick="showMobDetail(${MOB_DATA.indexOf(m)})">
+      <span class="mob-emoji">${m.emoji}</span>
+      <div class="mob-name">${m.name}</div>
+      <div class="mob-level">
+        <span class="badge ${m.level<30?'badge-green':m.level<60?'badge-gold':m.level<80?'badge-red':'badge-purple'}">${m.type==='boss'?'JEFE':m.type==='metin'?'METIN':'Nv. '+m.level}</span>
+      </div>
+      <div class="mob-zone">${m.zone}</div>
+    </div>`).join('');
+}
+
+function showMobDetail(idx) {
+  const m = MOB_DATA[idx];
+  const d = document.getElementById('mobDetail');
+  d.classList.add('show');
+  d.innerHTML = `
+    <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+      <span style="font-size:64px;">${m.emoji}</span>
+      <div>
+        <h3 style="font-size:24px;">${m.name}</h3>
+        <span class="badge ${m.type==='boss'?'badge-red':m.type==='metin'?'badge-gold':'badge-blue'}">${m.type.toUpperCase()}</span>
+        &nbsp;<span class="badge badge-gold">Nv. ${m.level}</span>
+      </div>
+      <button class="btn btn-outline btn-sm" style="margin-left:auto;" onclick="document.getElementById('mobDetail').classList.remove('show')">✕ Cerrar</button>
+    </div>
+    <div class="mob-detail-grid">
+      <div>
+        <h4 style="font-size:13px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">Estadísticas</h4>
+        <div class="mob-stat-pair"><span>HP</span><span style="color:var(--accent-red-bright)">${m.hp.toLocaleString()}</span></div>
+        <div class="mob-stat-pair"><span>Ataque</span><span style="color:var(--accent-gold)">${m.atk}</span></div>
+        <div class="mob-stat-pair"><span>Defensa</span><span style="color:#5dade2">${m.def}</span></div>
+        <div class="mob-stat-pair"><span>EXP</span><span style="color:#58d68d">${m.exp.toLocaleString()}</span></div>
+        <div class="mob-stat-pair"><span>Yang</span><span style="color:var(--accent-gold)">${m.yang.toLocaleString()}</span></div>
+        <div class="mob-stat-pair"><span>Zona</span><span>${m.zone}</span></div>
+      </div>
+      <div>
+        <h4 style="font-size:13px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">Drops</h4>
+        ${m.drops.map(d => `
+          <div style="display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--border-color);">
+            <span>🎁</span>
+            <span style="flex:1; font-size:14px;">${d}</span>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  d.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function filterMobDB() {
+  const q = document.getElementById('mobdbSearch').value.toLowerCase();
+  const type = document.getElementById('mobTypeFilter').value;
+  currentMobs = MOB_DATA.filter(m =>
+    (!q || m.name.toLowerCase().includes(q)) && (!type || m.type === type)
+  );
+  renderMobGrid(currentMobs);
+}
+
+function sortMobDB(by) {
+  if (by==='level') currentMobs.sort((a,b) => a.level - b.level);
+  else if (by==='hp') currentMobs.sort((a,b) => b.hp - a.hp);
+  else if (by==='name') currentMobs.sort((a,b) => a.name.localeCompare(b.name));
+  renderMobGrid(currentMobs);
+}
+
+/* ===== MOB FINDER ===== */
+function runFinder() {
+  const q = document.getElementById('finderSearch').value.toLowerCase().trim();
+  const results = document.getElementById('finderResults');
+  const empty = document.getElementById('finderEmpty');
+  if (q.length < 2) {
+    results.innerHTML = ''; empty.style.display = 'block'; return;
+  }
+  const found = MOB_DATA.filter(m => m.name.toLowerCase().includes(q));
+  empty.style.display = 'none';
+  if (found.length === 0) {
+    results.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);">
+      <div style="font-size:48px; margin-bottom:12px;">🤷</div>
+      <p>No se encontraron monstruos con ese nombre.</p></div>`;
+    return;
+  }
+  results.innerHTML = found.map(m => `
+    <div style="display:flex; align-items:center; gap:16px; padding:16px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-lg); margin-bottom:12px;">
+      <span style="font-size:48px;">${m.emoji}</span>
+      <div style="flex:1;">
+        <h4 style="font-size:17px; margin-bottom:6px;">${m.name}</h4>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge ${m.type==='boss'?'badge-red':m.type==='metin'?'badge-gold':'badge-blue'}">${m.type.toUpperCase()}</span>
+          <span class="badge badge-gold">Nv. ${m.level}</span>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:13px; color:var(--text-muted); margin-bottom:4px;">Zona</div>
+        <div style="font-size:16px; font-weight:700; color:var(--accent-gold);">${m.zone}</div>
+        <div style="font-size:12px; color:var(--text-secondary); margin-top:6px;">HP: ${m.hp.toLocaleString()}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ===== UPGRADE ===== */
+function buildUpgradeSelector() {
+  const sel = document.getElementById('upgradeSelector');
+  sel.innerHTML = Array.from({length:9},(_,i) => `
+    <button class="upgrade-level-btn ${i===0?'active':''}" onclick="selectUpgradeLevel(${i}, this)">+${i}</button>`
+  ).join('');
+  renderUpgradeResult();
+  renderUpgradeTable();
+}
+
+function setUpgradeType(type, btn) {
+  currentUpgradeType = type;
+  document.querySelectorAll('[id^="utype-"]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('upgradeTypeLabel').textContent = { weapon:'Arma', armor:'Armadura', accessory:'Accesorio' }[type];
+  renderUpgradeResult();
+  renderUpgradeTable();
+}
+
+function selectUpgradeLevel(lvl, btn) {
+  currentUpgradeLevel = lvl;
+  document.querySelectorAll('.upgrade-level-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderUpgradeResult();
+}
+
+function renderUpgradeResult() {
+  const prob = UPGRADE_PROBS[currentUpgradeType][currentUpgradeLevel];
+  const el = document.getElementById('upgradePct');
+  el.textContent = prob + '%';
+  el.className = 'pct ' + (prob>=80?'high':prob>=50?'med':prob>=25?'low':'vlow');
+  document.getElementById('upgradeTransition').textContent = `+${currentUpgradeLevel} → +${currentUpgradeLevel+1}`;
+  document.getElementById('upgradeExpected').textContent = (100/prob).toFixed(1);
+  const matCost = currentUpgradeLevel < 3 ? 5000 : currentUpgradeLevel < 5 ? 20000 : currentUpgradeLevel < 7 ? 80000 : 300000;
+  const cost = (100/prob * matCost);
+  document.getElementById('upgradeCost').textContent = cost >= 1000000 ? (cost/1000000).toFixed(1)+'M' : Math.round(cost/1000)+'K';
+  document.getElementById('upgradeFail').textContent = (100-prob) + '%';
+}
+
+function renderUpgradeTable() {
+  const probs = UPGRADE_PROBS[currentUpgradeType];
+  document.getElementById('upgradeTableBody').innerHTML = probs.map((p,i) => {
+    const matCost = i < 3 ? 5000 : i < 5 ? 20000 : i < 7 ? 80000 : 300000;
+    const avg = (100/p).toFixed(1);
+    const cost = Math.round(100/p * matCost);
+    const pctClass = p>=80?'prob-high':p>=50?'prob-med':'prob-low';
+    return `<tr>
+      <td>+${i} → +${i+1}</td>
+      <td class="${pctClass}">${p}%</td>
+      <td><div class="prob-bar"><div class="prob-track"><div class="prob-fill" style="width:${p}%"></div></div><span class="prob-label">${p}%</span></div></td>
+      <td>${avg}</td>
+      <td>${cost>=1000000?(cost/1000000).toFixed(1)+'M':Math.round(cost/1000)+'K'} Yang</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ===== SHOP ===== */
+function calcShop() {
+  const cost = parseFloat(document.getElementById('shopCost').value) || 0;
+  const margin = parseFloat(document.getElementById('shopMargin').value) || 0;
+  const qty = parseFloat(document.getElementById('shopQty').value) || 1;
+  if (cost > 0) {
+    const salePrice = cost * (1 + margin/100);
+    const totalProfit = (salePrice - cost) * qty;
+    const r = document.getElementById('shopResult');
+    r.querySelector('.calc-result-number').textContent = salePrice.toLocaleString('es-ES', {maximumFractionDigits:0}) + ' Yang';
+    r.querySelector('.calc-result-label').textContent = `Beneficio por item: ${(salePrice-cost).toLocaleString('es-ES',{maximumFractionDigits:0})} · Total (×${qty}): ${totalProfit.toLocaleString('es-ES',{maximumFractionDigits:0})} Yang`;
+  }
+}
+
+/* ===== TRADING GLASS ===== */
+function addTgItem(side) {
+  const nameEl = document.getElementById('tgItem' + side);
+  const valueEl = document.getElementById('tgValue' + side);
+  const name = nameEl.value.trim();
+  const value = parseInt(valueEl.value) || 0;
+  if (!name) return;
+  const arr = side === 'A' ? tgItemsA : tgItemsB;
+  arr.push({ name, value });
+  nameEl.value = ''; valueEl.value = '';
+  renderTgSide(side);
+  updateTgResult();
+}
+
+function removeTgItem(side, idx) {
+  if (side === 'A') tgItemsA.splice(idx, 1);
+  else tgItemsB.splice(idx, 1);
+  renderTgSide(side);
+  updateTgResult();
+}
+
+function renderTgSide(side) {
+  const arr = side === 'A' ? tgItemsA : tgItemsB;
+  const list = document.getElementById('tgList' + side);
+  const total = arr.reduce((s, i) => s + i.value, 0);
+  list.innerHTML = arr.length ? arr.map((item, idx) =>
+    `<span class="tg-item-tag">🎁 ${item.name} <span style="color:var(--accent-gold); margin:0 4px;">(${item.value.toLocaleString()})</span> <button onclick="removeTgItem('${side}',${idx})">✕</button></span>`
+  ).join('') : '<span style="color:var(--text-muted); font-size:13px;">Añade items aquí...</span>';
+  document.getElementById('tgTotal' + side).textContent = total.toLocaleString() + ' Yang';
+}
+
+function updateTgResult() {
+  const totalA = tgItemsA.reduce((s,i) => s+i.value, 0);
+  const totalB = tgItemsB.reduce((s,i) => s+i.value, 0);
+  const verdict = document.getElementById('tgVerdict');
+  const diff = document.getElementById('tgDiff');
+  if (tgItemsA.length === 0 && tgItemsB.length === 0) {
+    verdict.textContent = 'Añade items para evaluar el intercambio';
+    verdict.className = 'verdict'; diff.textContent = '';
+    return;
+  }
+  const diff_val = totalB - totalA;
+  const pct = totalA > 0 ? Math.abs(diff_val/totalA*100).toFixed(0) : 0;
+  if (Math.abs(diff_val) < totalA * 0.05 || totalA === 0 && totalB === 0) {
+    verdict.textContent = '✅ Intercambio Justo'; verdict.className = 'verdict fair';
+    diff.textContent = 'Los valores son prácticamente iguales.';
+  } else if (diff_val > 0) {
+    verdict.textContent = '📈 A tu favor'; verdict.className = 'verdict fair';
+    diff.innerHTML = `Recibes <strong style="color:var(--accent-gold)">${Math.abs(diff_val).toLocaleString()} Yang</strong> más de lo que das (${pct}% mejor para ti).`;
+  } else {
+    verdict.textContent = '⚠️ Desfavorable para ti'; verdict.className = 'verdict unfair';
+    diff.innerHTML = `Das <strong style="color:var(--accent-red-bright)">${Math.abs(diff_val).toLocaleString()} Yang</strong> más de lo que recibes (${pct}% peor para ti).`;
+  }
+}
+
+/* ===== CATCH THE KING ===== */
+function startCtkTimer() {
+  function update() {
+    const now = new Date();
+    const next = new Date(now);
+    next.setHours(next.getHours() + 1, 0, 0, 0);
+    const diff = Math.floor((next - now) / 1000);
+    const m = Math.floor(diff / 60).toString().padStart(2,'0');
+    const s = (diff % 60).toString().padStart(2,'0');
+    const el = document.getElementById('ctkTimer');
+    if (el) el.textContent = m + ':' + s;
+  }
+  update();
+  setInterval(update, 1000);
+}
+
+/* ===== COSTUME ===== */
+function loadCostumeSet() {
+  currentCostumeSet = document.getElementById('costumeSet').value;
+  selectedCostumePieces.clear();
+  const set = COSTUME_SETS[currentCostumeSet];
+  document.getElementById('costumeSlotGrid').innerHTML = set.pieces.map((p, i) => `
+    <div class="costume-slot" id="cslot-${i}" onclick="toggleCostumePiece(${i})">
+      <span class="cs-icon">${p.icon}</span>
+      <div class="cs-name">${p.name}</div>
+      <div class="cs-set">${p.slot}</div>
+    </div>`).join('');
+  updateCostumeBonuses();
+}
+
+function toggleCostumePiece(idx) {
+  if (selectedCostumePieces.has(idx)) selectedCostumePieces.delete(idx);
+  else selectedCostumePieces.add(idx);
+  document.querySelectorAll('[id^="cslot-"]').forEach((el, i) => {
+    el.classList.toggle('selected', selectedCostumePieces.has(i));
+  });
+  updateCostumeBonuses();
+}
+
+function updateCostumeBonuses() {
+  const count = selectedCostumePieces.size;
+  document.getElementById('costumeCount').textContent = count + ' / 5';
+  const set = COSTUME_SETS[currentCostumeSet];
+  const active = set.bonuses.filter(b => count >= b.pieces);
+  const display = document.getElementById('setBonusDisplay');
+  if (active.length === 0) {
+    display.innerHTML = `<p style="color:var(--text-muted); font-size:14px; text-align:center; padding:20px 0;">
+      ${count === 0 ? 'Selecciona piezas del disfraz para ver los bonus de set' : 'Equipa más piezas para activar bonus'}
+    </p>`;
+    return;
+  }
+  display.innerHTML = `
+    <h4>${set.label} (${count} piezas)</h4>
+    ${set.bonuses.map(b => `
+      <div class="bonus-line" style="${count >= b.pieces ? '' : 'opacity:0.35;'}">
+        <span class="pieces">${b.pieces} pzs</span>
+        <span class="btext">${b.text}</span>
+        <span class="bval">${b.val}</span>
+        ${count >= b.pieces ? '<span style="color:#58d68d; font-size:18px;">✓</span>' : ''}
+      </div>`).join('')}`;
+}
+
+/* ===== INIT ===== */
+buildDropTable();
+buildChests();
+buildMobDB();
+buildUpgradeSelector();
+loadCostumeSet();
+startCtkTimer();
+
+document.getElementById('menuToggle').addEventListener('click', () =>
+  document.getElementById('mainNav').classList.toggle('open'));
+
+// Handle hash on load
+const hash = window.location.hash.replace('#','');
+if (hash) {
+  const nav = document.querySelector(`[onclick*="showTool('${hash}'"]`);
+  if (nav) showTool(hash, nav);
+}
+</script>
+</body>
 </html>
