@@ -1,84 +1,33 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: sans-serif; color: #FAEEDA; background: #1a0a00; line-height: 1.5; }
+body { font-family: 'Segoe UI', sans-serif; color: #C9D1D9; background: #0D1117; line-height: 1.5; }
 
-.nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; border-bottom: 0.5px solid #3d1500; background: #1a0a00; }
-.logo-badge { background: #B84B00; color: #FAEEDA; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px; }
+.nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; border-bottom: 0.5px solid #161B22; background: #0D1117; }
+.logo-badge { background: #58A6FF; color: #0D1117; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px; }
 
-.hero { background: linear-gradient(135deg, #1a0a00 0%, #3d1500 40%, #1a0a00 100%); padding: 36px 24px; display: flex; align-items: center; gap: 24px; border-radius:10px; margin:20px; }
-.avatar { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg, #FF6B1A, #CC4400); display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 500; color: #FAEEDA; border: 3px solid #FF6B1A; flex-shrink: 0; }
-.hero-info h1 { font-size: 24px; font-weight: 500; color: #FAEEDA; }
-.hero-info p { font-size: 13px; color: #EF9F27; margin-top: 3px; }
-.live-badge { display: inline-flex; align-items: center; gap: 6px; background: #cc0000; color: white; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 4px; margin-top: 8px; }
+.hero { background: linear-gradient(135deg, #161B22 0%, #0D1117 100%); padding: 36px 24px; display: flex; align-items: center; gap: 24px; border-radius: 10px; margin: 20px; }
+.avatar { width: 76px; height: 76px; border-radius: 50%; background: #58A6FF; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 500; color: #0D1117; border: 3px solid #58A6FF; flex-shrink: 0; }
+.hero-info h1 { font-size: 24px; font-weight: 500; color: #C9D1D9; }
+.hero-info p { font-size: 13px; color: #8B949E; margin-top: 3px; }
+.live-badge { display: inline-flex; align-items: center; gap: 6px; background: #F85149; color: white; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 4px; margin-top: 8px; }
 .live-dot { width: 6px; height: 6px; border-radius: 50%; background: white; animation: pulse 1.2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-.card { background: #2a0f00; border: 0.5px solid #3d1500; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
-.section-title { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+.card { background: #161B22; border: 0.5px solid #21262D; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+.section-title { font-size: 15px; font-weight: 500; color: #C9D1D9; margin-bottom: 14px; }
+
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 16px; }
+.feature-card { background: #161B22; border: 0.5px solid #21262D; border-radius: 12px; padding: 16px; text-align: center; transition: all 0.2s ease; cursor: pointer; }
+.feature-card:hover { background: #21262D; border-color: #58A6FF; }
+.f-icon { font-size: 24px; margin-bottom: 8px; }
+.f-title { font-size: 14px; font-weight: 500; margin-bottom: 6px; color: #C9D1D9; }
+.f-desc { font-size: 12px; color: #8B949E; line-height: 1.4; }
 
 .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 20px 0; }
-.tool-card { background: #2a0f00; border: 0.5px solid #3d1500; border-radius: 10px; padding: 16px; cursor: pointer; transition: all 0.15s; text-decoration: none; color: #FAEEDA; display: block; }
-.tool-card:hover { border-color: #CC4400; background: #3d1500; }
+.tool-card { background: #161B22; border: 0.5px solid #21262D; border-radius: 10px; padding: 16px; cursor: pointer; transition: all 0.15s; text-decoration: none; color: #C9D1D9; display: block; }
+.tool-card:hover { border-color: #58A6FF; background: #21262D; }
 .tool-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.tool-icon { width: 36px; height: 36px; border-radius: 8px; background: #3d1500; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.tool-icon { width: 36px; height: 36px; border-radius: 8px; background: #21262D; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
 .tool-name { font-size: 13px; font-weight: 500; }
-.tool-desc { font-size: 11px; color: #EF9F27; line-height: 1.4; }
-.tool-badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; background: #FAEEDA; color: #854F0B; margin-top: 8px; font-weight: 500; }
-.ext-badge { background: #E6F1FB; color: #185FA5; }
-
-.content {
-  padding: 20px 24px;
-}
-
-.intro-hero h2 {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-.intro-hero p {
-  font-size: 13px;
-  color: #EF9F27;
-  line-height: 1.6;
-}
-
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.feature-card {
-  background: #2a0f00;
-  border: 0.5px solid #3d1500;
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.feature-card:hover {
-  background: #3d1500;
-  border-color: #CC4400;
-}
-
-.f-icon {
-  font-size: 24px;
-  margin-bottom: 8px;
-}
-
-.f-title {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 6px;
-}
-
-.f-desc {
-  font-size: 12px;
-  color: #EF9F27;
-  line-height: 1.4;
-}
-.badge-red { background:#cc0000; color:white; padding:2px 6px; border-radius:4px; font-size:11px; }
-.badge-green { background:#00cc55; color:white; padding:2px 6px; border-radius:4px; font-size:11px; }
-.badge-amber { background:#EF9F27; color:#1a0a00; padding:2px 6px; border-radius:4px; font-size:11px; }
+.tool-desc { font-size: 11px; color: #8B949E; line-height: 1.4; }
+.tool-badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; background: #58A6FF; color: #0D1117; margin-top: 8px; font-weight: 500; }
+.ext-badge { background: #C9D1D9; color: #0D1117; }
