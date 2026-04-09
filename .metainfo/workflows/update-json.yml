@@ -2,27 +2,45 @@ name: Update Metin2Alerts JSON
 
 on:
   schedule:
-    - cron: '*/1 * * * *' # Cada minuto
+    - cron: '*/1 * * * *'  # cada minuto
   workflow_dispatch:
 
 jobs:
   update-json:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Fetch JSON files
+      # 1️⃣ Checkout del repo con token
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2️⃣ Crear carpeta de datos
+      - name: Crear carpeta data
+        run: mkdir -p data
+
+      # 3️⃣ Descargar JSONs
+      - name: Descargar JSONs
         run: |
-          mkdir -p data
           curl -s https://metin2alerts.com/store/public/data/531.json -o data/531.json
           curl -s https://metin2alerts.com/m2_data/es/stat_map.json -o data/stat_map.json
           curl -s https://metin2alerts.com/m2_data/item_icon.json -o data/item_icon.json
           curl -s https://metin2alerts.com/m2_data/es/item_names.json -o data/item_names.json
 
-      - name: Commit and push
+      # 4️⃣ Configurar git
+      - name: Configurar Git
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+      # 5️⃣ Commit y push a rama data-json
+      - name: Commit y push a data-json
+        run: |
+          git checkout -B data-json
           git add data/*.json
-          git commit -m "Update JSON files" || echo "No changes to commit"
-          git push
+          git diff --cached --quiet || git commit -m "Update JSON files"
+          git push origin data-json --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
