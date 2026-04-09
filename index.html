@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>CheffGG - Metin2</title>
 
 <link rel="stylesheet" href="css/styles.css">
@@ -10,50 +11,73 @@
 
 <body>
 
-<!-- NAV -->
 <div class="nav">
-  <div class="logo">
-    Cheff<span>GG</span>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="font-size:16px;font-weight:500">Cheff<span style="color:#CC4400">GG</span></div>
     <div class="logo-badge">Metin2 ES</div>
   </div>
 </div>
 
-<!-- HERO -->
 <div class="hero">
   <div class="avatar">CH</div>
   <div class="hero-info">
     <h1>Cheff</h1>
     <p>El rey del Metin2 español · PvP & PvM</p>
+    <div class="live-badge"><div class="live-dot"></div> EN DIRECTO · 1.240 viewers</div>
   </div>
 </div>
 
-<!-- TABS -->
 <div class="tabs">
   <div class="tab active" onclick="setSection(event,'inicio')">Inicio</div>
+  <div class="tab" onclick="setSection(event,'wiki')">Wiki</div>
+  <div class="tab" onclick="setSection(event,'tools')">Herramientas</div>
   <div class="tab" onclick="setSection(event,'droplist')">Drop List</div>
+  <div class="tab" onclick="setSection(event,'canales')">Canales</div>
 </div>
 
-<!-- CONTENT -->
 <div class="content">
 
 <!-- INICIO -->
 <div class="section active" id="inicio">
-  <div class="card">
-    <h2>Bienvenido 🐉</h2>
-    <p>Web oficial de Cheff. Herramientas, wiki y contenido de Metin2.</p>
+  <div class="intro-hero">
+    <h2>Bienvenido a la web de Cheff 🐉</h2>
+    <p>Streamer top de Metin2 España. PvP, PvM y farmeo avanzado.</p>
   </div>
 </div>
 
-<!-- DROP LIST -->
+<!-- WIKI -->
+<div class="section" id="wiki">
+  <div class="wiki-group">
+    <div class="wiki-group-title">Clases</div>
+    <div class="wiki-grid">
+      <a class="wiki-card" href="#"><div class="w-icon">⚔️</div><div class="w-name">Guerrero</div></a>
+      <a class="wiki-card" href="#"><div class="w-icon">🏹</div><div class="w-name">Ninja</div></a>
+      <a class="wiki-card" href="#"><div class="w-icon">🔥</div><div class="w-name">Sura</div></a>
+      <a class="wiki-card" href="#"><div class="w-icon">🌿</div><div class="w-name">Chamán</div></a>
+    </div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div class="section" id="tools">
+  <div class="tool-grid">
+    <a class="tool-card" href="https://metin2alerts.com/droplist" target="_blank">
+      <div class="tool-name">Mob Drop List</div>
+      <div class="tool-desc">Ver drops externos</div>
+    </a>
+  </div>
+</div>
+
+<!-- DROP LIST PRO -->
 <div class="section" id="droplist">
 
   <div class="card">
 
-    <input id="searchInput" placeholder="Buscar mob o item..." class="input">
+    <input id="searchInput" placeholder="Buscar mob o item...">
 
     <div id="autocomplete"></div>
 
-    <select id="levelFilter" class="select">
+    <select id="levelFilter">
       <option value="">Todos los niveles</option>
       <option value="1-40">Lv 1-40</option>
       <option value="41-70">Lv 41-70</option>
@@ -64,6 +88,12 @@
 
   </div>
 
+</div>
+
+<!-- CANALES -->
+<div class="section" id="canales">
+  <div class="channel-btn">Twitch</div>
+  <div class="channel-btn">YouTube</div>
 </div>
 
 </div>
