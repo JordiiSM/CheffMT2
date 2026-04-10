@@ -292,6 +292,34 @@
     .server-info-row:last-child { border-bottom: none; }
     .server-info-row span:first-child { color: var(--text-muted); }
 
+    /* ===== RESULT BOX & STAT CARDS (new tools) ===== */
+    .result-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .stat-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent-gold);
+      font-family: 'Cinzel', serif;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
     @media (max-width: 1024px) {
       .tool-layout { grid-template-columns: 1fr; }
       .tool-sidebar { position: static; display: flex; gap: 4px; flex-wrap: wrap; padding: 12px; }
@@ -322,6 +350,7 @@
     <li><a href="wiki.html"><i class="fas fa-book"></i> Wiki</a></li>
     <li><a href="guias.html"><i class="fas fa-scroll"></i> Guías</a></li>
     <li><a href="foro.html"><i class="fas fa-comments"></i> Foro</a></li>
+    <li><a href="comercio.html"><i class="fas fa-store"></i> Comercio</a></li>
     <li><a href="https://www.twitch.tv/" target="_blank" class="navbar-twitch"><i class="fab fa-twitch"></i> Ver en Twitch</a></li>
   </ul>
 </nav>
@@ -367,6 +396,21 @@
       </div>
       <div class="tool-nav-item" onclick="showTool('server',this)">
         <span class="nav-icon">🟢</span> Estado Servidor
+      </div>
+      <div class="tool-nav-item" onclick="showTool('dragon',this)">
+        <span class="nav-icon">🐉</span> Alquimia Dragón
+      </div>
+      <div class="tool-nav-item" onclick="showTool('bioquest',this)">
+        <span class="nav-icon">🧬</span> Bio-Quest
+      </div>
+      <div class="tool-nav-item" onclick="showTool('horse',this)">
+        <span class="nav-icon">🐴</span> Calculadora Caballo
+      </div>
+      <div class="tool-nav-item" onclick="showTool('gaya',this)">
+        <span class="nav-icon">🌀</span> Calculadora Gaya
+      </div>
+      <div class="tool-nav-item" onclick="showTool('aurawand',this)">
+        <span class="nav-icon">✨</span> Varita de Aura
       </div>
     </aside>
 
@@ -888,6 +932,207 @@
         </div>
       </div>
 
+      <!-- ==================== ALQUIMIA PIEDRA DRAGÓN ==================== -->
+      <div class="tool-panel" id="tool-dragon">
+        <div class="panel-header">
+          <span class="panel-header-icon">🐉</span>
+          <div>
+            <h2>Alquimia Piedra del Dragón</h2>
+            <p>Calcula las probabilidades y materiales necesarios para combinar piedras del dragón.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="controls-row" style="flex-wrap:wrap;gap:12px;align-items:flex-end">
+            <div style="flex:1;min-width:160px">
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Tipo de Piedra</label>
+              <select class="form-select" id="dragonType" onchange="calcDragon()">
+                <option value="1">Piedra del Dragón (Roja)</option>
+                <option value="2">Piedra del Dragón (Azul)</option>
+                <option value="3">Piedra del Dragón (Amarilla)</option>
+                <option value="4">Piedra del Dragón (Verde)</option>
+                <option value="5">Piedra del Dragón (Blanca)</option>
+              </select>
+            </div>
+            <div style="flex:1;min-width:130px">
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Nivel Actual</label>
+              <select class="form-select" id="dragonLvl" onchange="calcDragon()">
+                <option value="1">Nivel 1</option>
+                <option value="2">Nivel 2</option>
+                <option value="3">Nivel 3</option>
+                <option value="4">Nivel 4</option>
+                <option value="5">Nivel 5</option>
+              </select>
+            </div>
+            <div style="flex:1;min-width:130px">
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Nivel Objetivo</label>
+              <select class="form-select" id="dragonTarget" onchange="calcDragon()">
+                <option value="2">Nivel 2</option>
+                <option value="3">Nivel 3</option>
+                <option value="4">Nivel 4</option>
+                <option value="5">Nivel 5</option>
+                <option value="6">Nivel 6</option>
+              </select>
+            </div>
+          </div>
+          <div id="dragonResult" style="margin-top:24px"></div>
+        </div>
+      </div>
+
+      <!-- ==================== BIO-QUEST ==================== -->
+      <div class="tool-panel" id="tool-bioquest">
+        <div class="panel-header">
+          <span class="panel-header-icon">🧬</span>
+          <div>
+            <h2>Calculadora Bio-Quest</h2>
+            <p>Calcula el tiempo y los aceleradores necesarios para completar la misión biológica.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px">
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Nivel de la Misión (1-10)</label>
+              <input type="number" class="form-input" id="bqLevel" min="1" max="10" value="1" oninput="calcBioQuest()">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Tipo de Monstruo</label>
+              <select class="form-select" id="bqType" onchange="calcBioQuest()">
+                <option value="1">Tipo 1 (Básico)</option>
+                <option value="2">Tipo 2 (Intermedio)</option>
+                <option value="3">Tipo 3 (Avanzado)</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Aceleradores disponibles</label>
+              <input type="number" class="form-input" id="bqAccel" min="0" value="0" oninput="calcBioQuest()">
+            </div>
+          </div>
+          <div id="bqResult"></div>
+        </div>
+      </div>
+
+      <!-- ==================== CALCULADORA CABALLO ==================== -->
+      <div class="tool-panel" id="tool-horse">
+        <div class="panel-header">
+          <span class="panel-header-icon">🐴</span>
+          <div>
+            <h2>Calculadora de Caballo</h2>
+            <p>Calcula los puntos de hambre y comida necesarios para subir de nivel a tu caballo.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px">
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Nivel actual del caballo</label>
+              <input type="number" class="form-input" id="horseLvlCurr" min="1" max="29" value="1" oninput="calcHorse()">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Nivel objetivo</label>
+              <input type="number" class="form-input" id="horseLvlTarget" min="2" max="30" value="20" oninput="calcHorse()">
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Tipo de comida</label>
+              <select class="form-select" id="horseFood" onchange="calcHorse()">
+                <option value="1">Zanahorias frescas (+10 hambre)</option>
+                <option value="2">Pienso normal (+25 hambre)</option>
+                <option value="3">Pienso especial (+50 hambre)</option>
+              </select>
+            </div>
+          </div>
+          <div id="horseResult"></div>
+        </div>
+      </div>
+
+      <!-- ==================== CALCULADORA GAYA ==================== -->
+      <div class="tool-panel" id="tool-gaya">
+        <div class="panel-header">
+          <span class="panel-header-icon">🌀</span>
+          <div>
+            <h2>Calculadora Gaya</h2>
+            <p>Estima la cantidad de puntos Gaya y el equipo necesario para desbloquear habilidades.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px">
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Clase de personaje</label>
+              <select class="form-select" id="gayaClass" onchange="calcGaya()">
+                <option value="warrior">Guerrero</option>
+                <option value="ninja">Ninja</option>
+                <option value="sura">Sura</option>
+                <option value="shaman">Chamán</option>
+                <option value="lycan">Lycan</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Habilidad Gaya objetivo</label>
+              <select class="form-select" id="gayaSkill" onchange="calcGaya()">
+                <option value="P">Rango P (500 pts)</option>
+                <option value="G">Rango G (1.000 pts)</option>
+                <option value="Gp">Rango G+ (2.000 pts)</option>
+                <option value="PG">Rango PG (5.000 pts)</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Puntos Gaya actuales</label>
+              <input type="number" class="form-input" id="gayaCurr" min="0" value="0" oninput="calcGaya()">
+            </div>
+          </div>
+          <div id="gayaResult"></div>
+        </div>
+      </div>
+
+      <!-- ==================== VARITA DE AURA ==================== -->
+      <div class="tool-panel" id="tool-aurawand">
+        <div class="panel-header">
+          <span class="panel-header-icon">✨</span>
+          <div>
+            <h2>Varita de Aura</h2>
+            <p>Calcula los materiales y probabilidades para mejorar tu varita de aura al nivel deseado.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px">
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Nivel actual de la varita</label>
+              <select class="form-select" id="wandLvlCurr" onchange="calcAuraWand()">
+                <option value="0">Sin mejora (+0)</option>
+                <option value="1">+1</option>
+                <option value="2">+2</option>
+                <option value="3">+3</option>
+                <option value="4">+4</option>
+                <option value="5">+5</option>
+                <option value="6">+6</option>
+                <option value="7">+7</option>
+                <option value="8">+8</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Nivel objetivo</label>
+              <select class="form-select" id="wandLvlTarget" onchange="calcAuraWand()">
+                <option value="1">+1</option>
+                <option value="2">+2</option>
+                <option value="3">+3</option>
+                <option value="4">+4</option>
+                <option value="5">+5</option>
+                <option value="6">+6</option>
+                <option value="7">+7</option>
+                <option value="8">+8</option>
+                <option value="9">+9</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px">Tipo de Aura</label>
+              <select class="form-select" id="wandType" onchange="calcAuraWand()">
+                <option value="attack">Ataque</option>
+                <option value="defense">Defensa</option>
+                <option value="magic">Magia</option>
+              </select>
+            </div>
+          </div>
+          <div id="wandResult"></div>
+        </div>
+      </div>
+
     </div><!-- end main panels -->
   </div>
 </div>
@@ -912,6 +1157,11 @@
         <li><a href="#" onclick="showTool('upgrade',null)">Probabilidad Mejora</a></li>
         <li><a href="#" onclick="showTool('trading',null)">Cristal de Comercio</a></li>
         <li><a href="#" onclick="showTool('ctk',null)">Caza al Rey</a></li>
+        <li><a href="#" onclick="showTool('dragon',null)">Alquimia Dragón</a></li>
+        <li><a href="#" onclick="showTool('bioquest',null)">Bio-Quest</a></li>
+        <li><a href="#" onclick="showTool('horse',null)">Calculadora Caballo</a></li>
+        <li><a href="#" onclick="showTool('gaya',null)">Calculadora Gaya</a></li>
+        <li><a href="#" onclick="showTool('aurawand',null)">Varita de Aura</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -1463,6 +1713,241 @@ buildMobDB();
 buildUpgradeSelector();
 loadCostumeSet();
 startCtkTimer();
+
+/* ===== ALQUIMIA PIEDRA DEL DRAGÓN ===== */
+const DRAGON_DATA = {
+  // [nivel_actual → nivel_objetivo]: [piedras_necesarias, probabilidad_%]
+  levels: [
+    { from:1, to:2, stones:2,  prob:100, polvo:5  },
+    { from:2, to:3, stones:4,  prob:80,  polvo:10 },
+    { from:3, to:4, stones:8,  prob:60,  polvo:20 },
+    { from:4, to:5, stones:16, prob:40,  polvo:40 },
+    { from:5, to:6, stones:32, prob:20,  polvo:80 },
+  ]
+};
+
+function calcDragon() {
+  const from = parseInt(document.getElementById('dragonLvl').value);
+  const to   = parseInt(document.getElementById('dragonTarget').value);
+  const type = document.getElementById('dragonType').options[document.getElementById('dragonType').selectedIndex].text;
+  const el   = document.getElementById('dragonResult');
+
+  if (to <= from) {
+    el.innerHTML = '<div class="result-box" style="border-color:var(--accent-red);color:var(--accent-red)">⚠️ El nivel objetivo debe ser mayor que el nivel actual.</div>';
+    return;
+  }
+
+  const steps = DRAGON_DATA.levels.filter(l => l.from >= from && l.from < to);
+  let totalStones = 0, totalPolvo = 0;
+  let tableRows = '';
+  let expectedStones = 0, expectedPolvo = 0;
+
+  steps.forEach(s => {
+    const expected = Math.ceil(s.stones * (100 / s.prob));
+    expectedStones += expected;
+    totalStones += s.stones;
+    totalPolvo += s.polvo;
+    expectedPolvo += Math.ceil(s.polvo * (100 / s.prob));
+    tableRows += `<tr>
+      <td>Nivel ${s.from} → ${s.from+1}</td>
+      <td>${s.stones}</td>
+      <td>${s.prob}%</td>
+      <td>~${expected}</td>
+      <td>${s.polvo}</td>
+    </tr>`;
+  });
+
+  el.innerHTML = `
+    <div class="result-box">
+      <div style="margin-bottom:16px;font-weight:600;color:var(--accent-gold);font-size:16px">
+        🐉 ${type}: Nivel ${from} → ${to}
+      </div>
+      <div class="table-wrap"><table class="tool-table">
+        <thead><tr><th>Mejora</th><th>Piedras (mín)</th><th>Probabilidad</th><th>Piedras (esperado)</th><th>Polvo de Dragón</th></tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:16px">
+        <div class="stat-card"><div class="stat-value">${totalStones}</div><div class="stat-label">Piedras mínimas</div></div>
+        <div class="stat-card"><div class="stat-value">~${expectedStones}</div><div class="stat-label">Piedras esperadas</div></div>
+        <div class="stat-card"><div class="stat-value">${totalPolvo}</div><div class="stat-label">Polvo mínimo</div></div>
+        <div class="stat-card"><div class="stat-value">~${expectedPolvo}</div><div class="stat-label">Polvo esperado</div></div>
+      </div>
+    </div>`;
+}
+
+/* ===== BIO-QUEST ===== */
+const BQ_BASE_TIME = [0, 8, 24, 72, 168, 360, 720, 1440, 2880, 4320, 7200]; // horas por nivel
+const BQ_TYPE_MULT = { '1': 1.0, '2': 1.5, '3': 2.0 };
+const BQ_ACCEL_REDUCE = 2; // horas reducidas por acelerador
+
+function calcBioQuest() {
+  const lvl   = Math.max(1, Math.min(10, parseInt(document.getElementById('bqLevel').value) || 1));
+  const type  = document.getElementById('bqType').value;
+  const accel = Math.max(0, parseInt(document.getElementById('bqAccel').value) || 0);
+  const el    = document.getElementById('bqResult');
+
+  const baseHours = BQ_BASE_TIME[lvl];
+  const mult      = BQ_TYPE_MULT[type];
+  const totalHours = Math.max(0, Math.round(baseHours * mult) - accel * BQ_ACCEL_REDUCE);
+  const days  = Math.floor(totalHours / 24);
+  const hours = totalHours % 24;
+  const accelsNeeded = Math.ceil((baseHours * mult) / BQ_ACCEL_REDUCE);
+
+  el.innerHTML = `
+    <div class="result-box">
+      <div style="font-weight:600;color:var(--accent-gold);font-size:16px;margin-bottom:16px">🧬 Bio-Quest Nivel ${lvl} — Tipo ${type}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px">
+        <div class="stat-card"><div class="stat-value">${Math.round(baseHours * mult)}h</div><div class="stat-label">Tiempo base total</div></div>
+        <div class="stat-card"><div class="stat-value">${accel}</div><div class="stat-label">Aceleradores usados</div></div>
+        <div class="stat-card" style="${totalHours === 0 ? 'border-color:var(--accent-gold)' : ''}">
+          <div class="stat-value" style="${totalHours === 0 ? 'color:var(--accent-gold)' : ''}">${totalHours === 0 ? '¡Listo!' : (days > 0 ? days+'d ' : '')+hours+'h'}</div>
+          <div class="stat-label">Tiempo restante</div>
+        </div>
+        <div class="stat-card"><div class="stat-value">${accelsNeeded}</div><div class="stat-label">Aceleradores para saltar</div></div>
+      </div>
+      <div style="margin-top:14px;font-size:13px;color:var(--text-muted)">
+        ℹ️ Cada acelerador reduce ${BQ_ACCEL_REDUCE} horas. Con ${accelsNeeded} aceleradores puedes completarla instantáneamente.
+      </div>
+    </div>`;
+}
+
+/* ===== CALCULADORA CABALLO ===== */
+const HORSE_HUNGER_PER_LVL = [0,100,120,140,160,200,240,280,320,380,440,500,580,660,740,840,940,1060,1180,1320,1480,1660,1860,2080,2320,2580,2860,3160,3480,3820];
+const HORSE_FOOD_HUNGER    = { '1': 10, '2': 25, '3': 50 };
+
+function calcHorse() {
+  const curr   = Math.max(1,  Math.min(29, parseInt(document.getElementById('horseLvlCurr').value)   || 1));
+  const target = Math.max(2,  Math.min(30, parseInt(document.getElementById('horseLvlTarget').value) || 20));
+  const food   = document.getElementById('horseFood').value;
+  const el     = document.getElementById('horseResult');
+
+  if (target <= curr) {
+    el.innerHTML = '<div class="result-box" style="border-color:var(--accent-red);color:var(--accent-red)">⚠️ El nivel objetivo debe ser mayor al nivel actual.</div>';
+    return;
+  }
+
+  let totalHunger = 0;
+  let tableRows = '';
+  for (let i = curr; i < target; i++) {
+    const h = HORSE_HUNGER_PER_LVL[i] || 4000;
+    totalHunger += h;
+    tableRows += `<tr><td>Nivel ${i} → ${i+1}</td><td>${h.toLocaleString()}</td></tr>`;
+  }
+
+  const perFood   = HORSE_FOOD_HUNGER[food];
+  const foodLabel = document.getElementById('horseFood').options[document.getElementById('horseFood').selectedIndex].text;
+  const unidades  = Math.ceil(totalHunger / perFood);
+
+  el.innerHTML = `
+    <div class="result-box">
+      <div style="font-weight:600;color:var(--accent-gold);font-size:16px;margin-bottom:16px">🐴 Caballo Nivel ${curr} → ${target}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px">
+        <div class="stat-card"><div class="stat-value">${totalHunger.toLocaleString()}</div><div class="stat-label">Hambre total necesaria</div></div>
+        <div class="stat-card"><div class="stat-value">${unidades.toLocaleString()}</div><div class="stat-label">${foodLabel.split('(')[0].trim()}</div></div>
+      </div>
+      <div class="table-wrap"><table class="tool-table">
+        <thead><tr><th>Nivel</th><th>Hambre necesaria</th></tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table></div>
+    </div>`;
+}
+
+/* ===== CALCULADORA GAYA ===== */
+const GAYA_RANKS = { 'P': 500, 'G': 1000, 'Gp': 2000, 'PG': 5000 };
+const GAYA_PTS_PER_RUN = { 'warrior': 12, 'ninja': 10, 'sura': 11, 'shaman': 10, 'lycan': 13 };
+
+function calcGaya() {
+  const cls    = document.getElementById('gayaClass').value;
+  const skill  = document.getElementById('gayaSkill').value;
+  const curr   = Math.max(0, parseInt(document.getElementById('gayaCurr').value) || 0);
+  const target = GAYA_RANKS[skill];
+  const el     = document.getElementById('gayaResult');
+
+  const needed = Math.max(0, target - curr);
+  const ptsRun = GAYA_PTS_PER_RUN[cls];
+  const runs   = needed > 0 ? Math.ceil(needed / ptsRun) : 0;
+  const pct    = Math.min(100, Math.round((curr / target) * 100));
+
+  el.innerHTML = `
+    <div class="result-box">
+      <div style="font-weight:600;color:var(--accent-gold);font-size:16px;margin-bottom:16px">🌀 Gaya — Rango ${skill}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px">
+        <div class="stat-card"><div class="stat-value">${curr.toLocaleString()}</div><div class="stat-label">Puntos actuales</div></div>
+        <div class="stat-card"><div class="stat-value">${target.toLocaleString()}</div><div class="stat-label">Puntos objetivo</div></div>
+        <div class="stat-card"><div class="stat-value">${needed.toLocaleString()}</div><div class="stat-label">Puntos restantes</div></div>
+        <div class="stat-card"><div class="stat-value">${runs.toLocaleString()}</div><div class="stat-label">Runs necesarios (~${ptsRun} pts/run)</div></div>
+      </div>
+      <div style="background:var(--bg-primary);border-radius:8px;overflow:hidden;height:12px;margin-bottom:8px">
+        <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--accent-red),var(--accent-gold));border-radius:8px;transition:width .4s"></div>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);text-align:right">${pct}% completado</div>
+    </div>`;
+}
+
+/* ===== VARITA DE AURA ===== */
+const WAND_DATA = [
+  { from:0, to:1, mats:5,  prob:100, yang:50000    },
+  { from:1, to:2, mats:8,  prob:90,  yang:100000   },
+  { from:2, to:3, mats:12, prob:80,  yang:200000   },
+  { from:3, to:4, mats:18, prob:70,  yang:400000   },
+  { from:4, to:5, mats:25, prob:60,  yang:700000   },
+  { from:5, to:6, mats:35, prob:50,  yang:1200000  },
+  { from:6, to:7, mats:50, prob:40,  yang:2000000  },
+  { from:7, to:8, mats:70, prob:30,  yang:3500000  },
+  { from:8, to:9, mats:100,prob:20,  yang:6000000  },
+];
+const WAND_TYPE_LABELS = { attack:'Ataque', defense:'Defensa', magic:'Magia' };
+
+function calcAuraWand() {
+  const from = parseInt(document.getElementById('wandLvlCurr').value);
+  const to   = parseInt(document.getElementById('wandLvlTarget').value);
+  const type = document.getElementById('wandType').value;
+  const el   = document.getElementById('wandResult');
+
+  if (to <= from) {
+    el.innerHTML = '<div class="result-box" style="border-color:var(--accent-red);color:var(--accent-red)">⚠️ El nivel objetivo debe ser mayor al nivel actual.</div>';
+    return;
+  }
+
+  const steps = WAND_DATA.filter(s => s.from >= from && s.from < to);
+  let totalMats = 0, totalYang = 0, expectedMats = 0, expectedYang = 0;
+  let tableRows = '';
+
+  steps.forEach(s => {
+    const expMats = Math.ceil(s.mats * (100 / s.prob));
+    const expYang = Math.ceil(s.yang * (100 / s.prob));
+    totalMats += s.mats; totalYang += s.yang;
+    expectedMats += expMats; expectedYang += expYang;
+    tableRows += `<tr>
+      <td>+${s.from} → +${s.to}</td>
+      <td>${s.prob}%</td>
+      <td>${s.mats} (~${expMats})</td>
+      <td>${s.yang.toLocaleString()} (~${expYang.toLocaleString()})</td>
+    </tr>`;
+  });
+
+  el.innerHTML = `
+    <div class="result-box">
+      <div style="font-weight:600;color:var(--accent-gold);font-size:16px;margin-bottom:16px">✨ Varita de Aura ${WAND_TYPE_LABELS[type]}: +${from} → +${to}</div>
+      <div class="table-wrap"><table class="tool-table">
+        <thead><tr><th>Mejora</th><th>Prob.</th><th>Fragmentos de Aura</th><th>Yang</th></tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:16px">
+        <div class="stat-card"><div class="stat-value">${totalMats}</div><div class="stat-label">Fragmentos mínimos</div></div>
+        <div class="stat-card"><div class="stat-value">~${expectedMats}</div><div class="stat-label">Fragmentos esperados</div></div>
+        <div class="stat-card"><div class="stat-value">${totalYang.toLocaleString()}</div><div class="stat-label">Yang mínimo</div></div>
+        <div class="stat-card"><div class="stat-value">~${expectedYang.toLocaleString()}</div><div class="stat-label">Yang esperado</div></div>
+      </div>
+    </div>`;
+}
+
+// Init new tools
+calcDragon();
+calcBioQuest();
+calcHorse();
+calcGaya();
+calcAuraWand();
 
 document.getElementById('menuToggle').addEventListener('click', () =>
   document.getElementById('mainNav').classList.toggle('open'));
