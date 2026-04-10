@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wiki – CheffM2</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .wiki-layout { padding: 32px 24px; max-width: 1200px; margin: 0 auto; }
+    .monster-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .monster-card:hover {
+      border-color: var(--accent-red);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-glow-red);
+    }
+    .monster-emoji { font-size: 48px; display: block; text-align: center; margin-bottom: 12px; }
+    .monster-name { font-size: 16px; text-align: center; margin-bottom: 8px; }
+    .monster-stats { display: flex; flex-direction: column; gap: 4px; }
+    .monster-stat { display: flex; justify-content: space-between; font-size: 13px; }
+    .monster-stat span:first-child { color: var(--text-muted); }
+    .monster-stat span:last-child { color: var(--text-primary); font-weight: 600; }
+
+    .item-card {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .item-card:hover { border-color: var(--accent-gold); background: var(--bg-card-hover); }
+    .item-icon { font-size: 36px; flex-shrink: 0; }
+    .item-info { flex: 1; }
+    .item-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .item-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+    .item-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .map-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .map-card:hover { border-color: var(--accent-blue); transform: translateY(-3px); }
+    .map-thumb {
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      background: linear-gradient(135deg, rgba(41,128,185,0.1), rgba(142,68,173,0.1));
+    }
+    .map-info { padding: 16px; }
+    .map-name { font-size: 16px; margin-bottom: 6px; }
+    .map-desc { font-size: 13px; color: var(--text-secondary); }
+    .map-levels { margin-top: 8px; }
+
+    .wiki-search-results { display: none; }
+    .wiki-search-results.show { display: block; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="navbar-logo">C</div>
+    <div class="navbar-title">Cheff<span>M2</span></div>
+  </div>
+  <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+  <ul class="navbar-nav" id="mainNav">
+    <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+    <li><a href="herramientas.html"><i class="fas fa-tools"></i> Herramientas</a></li>
+    <li><a href="wiki.html" class="active"><i class="fas fa-book"></i> Wiki</a></li>
+    <li><a href="guias.html"><i class="fas fa-scroll"></i> Guías</a></li>
+    <li><a href="foro.html"><i class="fas fa-comments"></i> Foro</a></li>
+    <li><a href="comercio.html"><i class="fas fa-store"></i> Comercio</a></li>
+    <li><a href="https://www.twitch.tv/" target="_blank" class="navbar-twitch"><i class="fab fa-twitch"></i> Ver en Twitch</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+
+  <div class="page-header">
+    <div class="section-tag">Portal CheffM2</div>
+    <h1 class="page-header-title">📖 <span style="color: var(--accent-gold);">Wiki de Metin2</span></h1>
+    <p class="page-header-subtitle">Base de datos completa del juego: monstruos, mapas, items y más</p>
+
+    <div style="max-width: 500px; margin: 24px auto 0;">
+      <div class="search-bar">
+        <input type="text" class="search-input" id="wikiSearch" placeholder="Buscar en la wiki..." oninput="searchWiki()" />
+        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wiki-layout">
+    <div class="wiki-layout" style="padding: 0; display: grid; grid-template-columns: 240px 1fr; gap: 24px;">
+
+      <!-- SIDEBAR -->
+      <aside class="wiki-sidebar">
+        <h4><i class="fas fa-list"></i> Categorías</h4>
+
+        <div class="wiki-nav-item active" onclick="showWikiSection('monsters', this)">
+          <span>👹</span> Monstruos
+        </div>
+        <div class="wiki-nav-item" onclick="showWikiSection('maps', this)">
+          <span>🗺️</span> Mapas
+        </div>
+        <div class="wiki-nav-item" onclick="showWikiSection('items', this)">
+          <span>⚔️</span> Armas
+        </div>
+        <div class="wiki-nav-item" onclick="showWikiSection('armor', this)">
+          <span>🛡️</span> Armaduras
+        </div>
+        <div class="wiki-nav-item" onclick="showWikiSection('accessories', this)">
+          <span>💍</span> Accesorios
+        </div>
+        <div class="wiki-nav-item" onclick="showWikiSection('potions', this)">
+          <span>🧪</span> Pociones
+        </div>
+        <div class="wiki-nav-item" onclick="showWikiSection('npcs', this)">
+          <span>🧙</span> NPCs
+        </div>
+        <div class="wiki-nav-item" onclick="showWikiSection('quests', this)">
+          <span>📜</span> Misiones
+        </div>
+
+        <br/>
+        <h4><i class="fas fa-fire"></i> Popular</h4>
+        <div class="wiki-nav-item" onclick="showWikiSection('metins', this)">
+          <span>🔴</span> Metins
+        </div>
+        <div class="wiki-nav-item" onclick="showWikiSection('bosses', this)">
+          <span>💀</span> Jefes
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main>
+
+        <!-- MONSTERS -->
+        <div id="wiki-monsters" class="wiki-section">
+          <div class="wiki-content">
+            <div class="wiki-content-header">
+              <h2>👹 Monstruos</h2>
+              <p style="color: var(--text-secondary); font-size: 14px; margin-top: 6px;">Lista de monstruos del juego con stats y drops</p>
+            </div>
+            <div class="wiki-content-body">
+              <div class="grid-4" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px;">
+                <div class="monster-card">
+                  <span class="monster-emoji">🐺</span>
+                  <h3 class="monster-name">Lobo Salvaje</h3>
+                  <div class="monster-stats">
+                    <div class="monster-stat"><span>Nivel</span><span><span class="badge badge-green">5</span></span></div>
+                    <div class="monster-stat"><span>HP</span><span>250</span></div>
+                    <div class="monster-stat"><span>EXP</span><span>120</span></div>
+                    <div class="monster-stat"><span>Zona</span><span>Aldea Inicial</span></div>
+                  </div>
+                </div>
+                <div class="monster-card">
+                  <span class="monster-emoji">🐗</span>
+                  <h3 class="monster-name">Jabalí Feroz</h3>
+                  <div class="monster-stats">
+                    <div class="monster-stat"><span>Nivel</span><span><span class="badge badge-green">8</span></span></div>
+                    <div class="monster-stat"><span>HP</span><span>480</span></div>
+                    <div class="monster-stat"><span>EXP</span><span>280</span></div>
+                    <div class="monster-stat"><span>Zona</span><span>Bosque Sur</span></div>
+                  </div>
+                </div>
+                <div class="monster-card">
+                  <span class="monster-emoji">💀</span>
+                  <h3 class="monster-name">Esqueleto</h3>
+                  <div class="monster-stats">
+                    <div class="monster-stat"><span>Nivel</span><span><span class="badge badge-gold">18</span></span></div>
+                    <div class="monster-stat"><span>HP</span><span>1.200</span></div>
+                    <div class="monster-stat"><span>EXP</span><span>850</span></div>
+                    <div class="monster-stat"><span>Zona</span><span>Cementerio</span></div>
+                  </div>
+                </div>
+                <div class="monster-card">
+                  <span class="monster-emoji">🧟</span>
+                  <h3 class="monster-name">Zombi Antiguo</h3>
+                  <div class="monster-stats">
+                    <div class="monster-stat"><span>Nivel</span><span><span class="badge badge-gold">25</span></span></div>
+                    <div class="monster-stat"><span>HP</span><span>2.800</span></div>
+                    <div class="monster-stat"><span>EXP</span><span>1.500</span></div>
+                    <div class="monster-stat"><span>Zona</span><span>T. de los Muertos</span></div>
+                  </div>
+                </div>
+                <div class="monster-card">
+                  <span class="monster-emoji">🦎</span>
+                  <h3 class="monster-name">Lagarto Gigante</h3>
+                  <div class="monster-stats">
+                    <div class="monster-stat"><span>Nivel</span><span><span class="badge badge-gold">35</span></span></div>
+                    <div class="monster-stat"><span>HP</span><span>6.000</span></div>
+                    <div class="monster-stat"><span>EXP</span><span>3.200</span></div>
+                    <div class="monster-stat"><span>Zona</span><span>Desierto</span></div>
+                  </div>
+                </div>
+                <div class="monster-card">
+                  <span class="monster-emoji">👹</span>
+                  <h3 class="monster-name">Ogro Verde</h3>
+                  <div class="monster-stats">
+                    <div class="monster-stat"><span>Nivel</span><span><span class="badge badge-red">45</span></span></div>
+                    <div class="monster-stat"><span>HP</span><span>12.000</span></div>
+                    <div class="monster-stat"><span>EXP</span><span>8.000</span></div>
+                    <div class="monster-stat"><span>Zona</span><span>T. de los Muertos</span></div>
+                  </div>
+                </div>
+                <div class="monster-card">
+                  <span class="monster-emoji">🐍</span>
+                  <h3 class="monster-name">Serpiente Venenosa</h3>
+                  <div class="monster-stats">
+                    <div class="monster-stat"><span>Nivel</span><span><span class="badge badge-red">52</span></span></div>
+                    <div class="monster-stat"><span>HP</span><span>18.000</span></div>
+                    <div class="monster-stat"><span>EXP</span><span>14.000</span></div>
+                    <div class="monster-stat"><span>Zona</span><span>Bosque Maldito</span></div>
+                  </div>
+                </div>
+                <div class="monster-card">
+                  <span class="monster-emoji">🔥</span>
+                  <h3 class="monster-name">Demonio de Fuego</h3>
+                  <div class="monster-stats">
+                    <div class="monster-stat"><span>Nivel</span><span><span class="badge badge-red">65</span></span></div>
+                    <div class="monster-stat"><span>HP</span><span>35.000</span></div>
+                    <div class="monster-stat"><span>EXP</span><span>28.000</span></div>
+                    <div class="monster-stat"><span>Zona</span><span>Volcán Infernal</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAPS -->
+        <div id="wiki-maps" class="wiki-section" style="display:none;">
+          <div class="wiki-content">
+            <div class="wiki-content-header">
+              <h2>🗺️ Mapas del Juego</h2>
+              <p style="color: var(--text-secondary); font-size: 14px; margin-top: 6px;">Todas las zonas del mundo de Metin2</p>
+            </div>
+            <div class="wiki-content-body">
+              <div class="grid-3" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;">
+                <div class="map-card">
+                  <div class="map-thumb">🏡</div>
+                  <div class="map-info">
+                    <h3 class="map-name">Aldea Inicial</h3>
+                    <p class="map-desc">El punto de partida para todos los aventureros.</p>
+                    <div class="map-levels"><span class="badge badge-green">Nv. 1-15</span></div>
+                  </div>
+                </div>
+                <div class="map-card">
+                  <div class="map-thumb">🌲</div>
+                  <div class="map-info">
+                    <h3 class="map-name">Bosque del Sur</h3>
+                    <p class="map-desc">Zona boscosa con lobos y jabalíes.</p>
+                    <div class="map-levels"><span class="badge badge-green">Nv. 10-25</span></div>
+                  </div>
+                </div>
+                <div class="map-card">
+                  <div class="map-thumb">⚰️</div>
+                  <div class="map-info">
+                    <h3 class="map-name">Tierra de los Muertos</h3>
+                    <p class="map-desc">Zona peligrosa con no-muertos y ogros.</p>
+                    <div class="map-levels"><span class="badge badge-gold">Nv. 30-55</span></div>
+                  </div>
+                </div>
+                <div class="map-card">
+                  <div class="map-thumb">🏜️</div>
+                  <div class="map-info">
+                    <h3 class="map-name">Gran Desierto</h3>
+                    <p class="map-desc">Lagartos y criaturas del desierto.</p>
+                    <div class="map-levels"><span class="badge badge-gold">Nv. 35-50</span></div>
+                  </div>
+                </div>
+                <div class="map-card">
+                  <div class="map-thumb">🌑</div>
+                  <div class="map-info">
+                    <h3 class="map-name">Bosque Maldito</h3>
+                    <p class="map-desc">Serpientes venenosas y monstruos oscuros.</p>
+                    <div class="map-levels"><span class="badge badge-red">Nv. 50-65</span></div>
+                  </div>
+                </div>
+                <div class="map-card">
+                  <div class="map-thumb">🌋</div>
+                  <div class="map-info">
+                    <h3 class="map-name">Volcán Infernal</h3>
+                    <p class="map-desc">Demonios de fuego y guerreros caídos.</p>
+                    <div class="map-levels"><span class="badge badge-red">Nv. 60-80</span></div>
+                  </div>
+                </div>
+                <div class="map-card">
+                  <div class="map-thumb">❄️</div>
+                  <div class="map-info">
+                    <h3 class="map-name">Montaña Helada</h3>
+                    <p class="map-desc">Criaturas del hielo y yetis.</p>
+                    <div class="map-levels"><span class="badge badge-red">Nv. 75-90</span></div>
+                  </div>
+                </div>
+                <div class="map-card">
+                  <div class="map-thumb">🏯</div>
+                  <div class="map-info">
+                    <h3 class="map-name">Cueva del Dragón</h3>
+                    <p class="map-desc">La mazmorra más peligrosa. Solo para los más valientes.</p>
+                    <div class="map-levels"><span class="badge badge-purple">Nv. 90+</span></div>
+                  </div>
+                </div>
+                <div class="map-card">
+                  <div class="map-thumb">⚔️</div>
+                  <div class="map-info">
+                    <h3 class="map-name">Campo de Batalla PvP</h3>
+                    <p class="map-desc">Arena de combate entre jugadores.</p>
+                    <div class="map-levels"><span class="badge badge-purple">Todos los niveles</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ITEMS / WEAPONS -->
+        <div id="wiki-items" class="wiki-section" style="display:none;">
+          <div class="wiki-content">
+            <div class="wiki-content-header">
+              <h2>⚔️ Armas</h2>
+            </div>
+            <div class="wiki-content-body">
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div class="item-card">
+                  <span class="item-icon">🗡️</span>
+                  <div class="item-info">
+                    <div class="item-name">Espada de Hierro</div>
+                    <div class="item-desc">Arma básica para guerreros principiantes.</div>
+                    <div class="item-stats">
+                      <span class="badge badge-red">Atq: 15-25</span>
+                      <span class="badge badge-green">Nv. req: 1</span>
+                      <span class="badge badge-gold">Precio: 5.000 Yang</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="item-card">
+                  <span class="item-icon">⚔️</span>
+                  <div class="item-info">
+                    <div class="item-name">Espada de Acero</div>
+                    <div class="item-desc">Arma resistente forjada por herreros expertos.</div>
+                    <div class="item-stats">
+                      <span class="badge badge-red">Atq: 35-50</span>
+                      <span class="badge badge-gold">Nv. req: 20</span>
+                      <span class="badge badge-gold">Precio: 80.000 Yang</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="item-card">
+                  <span class="item-icon">🔥</span>
+                  <div class="item-info">
+                    <div class="item-name">Espada de Fuego</div>
+                    <div class="item-desc">Arma imbuida con llamas del volcán infernal.</div>
+                    <div class="item-stats">
+                      <span class="badge badge-red">Atq: 80-110</span>
+                      <span class="badge badge-red">Nv. req: 45</span>
+                      <span class="badge badge-gold">Precio: 2M Yang</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="item-card">
+                  <span class="item-icon">💎</span>
+                  <div class="item-info">
+                    <div class="item-name">Espada del Dragón</div>
+                    <div class="item-desc">Arma legendaria forjada con escamas de dragón.</div>
+                    <div class="item-stats">
+                      <span class="badge badge-red">Atq: 150-200</span>
+                      <span class="badge badge-red">Nv. req: 75</span>
+                      <span class="badge badge-purple">Precio: 20M Yang</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="item-card">
+                  <span class="item-icon">🌟</span>
+                  <div class="item-info">
+                    <div class="item-name">Arma de Tigre +9</div>
+                    <div class="item-desc">La mejor arma del juego, completamente mejorada al máximo.</div>
+                    <div class="item-stats">
+                      <span class="badge badge-red">Atq: 300-400</span>
+                      <span class="badge badge-red">Nv. req: 99</span>
+                      <span class="badge badge-purple">Precio: 500M+ Yang</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ARMOR -->
+        <div id="wiki-armor" class="wiki-section" style="display:none;">
+          <div class="wiki-content">
+            <div class="wiki-content-header">
+              <h2>🛡️ Armaduras</h2>
+            </div>
+            <div class="wiki-content-body">
+              <div style="overflow-x: auto;">
+                <table class="wiki-table">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Defensa</th>
+                      <th>Nivel</th>
+                      <th>Clase</th>
+                      <th>Precio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Cota de Malla</td><td>20-30</td><td><span class="badge badge-green">1</span></td><td>Guerrero</td><td>8.000</td></tr>
+                    <tr><td>Armadura de Cuero</td><td>15-25</td><td><span class="badge badge-green">1</span></td><td>Ninja</td><td>6.000</td></tr>
+                    <tr><td>Túnica de Seda</td><td>10-18</td><td><span class="badge badge-green">1</span></td><td>Sura/Chamán</td><td>5.000</td></tr>
+                    <tr><td>Armadura de Placas</td><td>65-85</td><td><span class="badge badge-gold">30</span></td><td>Guerrero</td><td>500.000</td></tr>
+                    <tr><td>Armadura Sombría</td><td>50-70</td><td><span class="badge badge-gold">30</span></td><td>Ninja</td><td>400.000</td></tr>
+                    <tr><td>Manto Arcano</td><td>35-55</td><td><span class="badge badge-gold">30</span></td><td>Sura</td><td>350.000</td></tr>
+                    <tr><td>Ropas del Chamán</td><td>40-60</td><td><span class="badge badge-gold">30</span></td><td>Chamán</td><td>380.000</td></tr>
+                    <tr><td>Armadura de Dragón</td><td>150-200</td><td><span class="badge badge-red">75</span></td><td>Todos</td><td>15.000.000</td></tr>
+                    <tr><td>Armadura Suprema +9</td><td>350-450</td><td><span class="badge badge-red">99</span></td><td>Todos</td><td>200.000.000+</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACCESSORIES -->
+        <div id="wiki-accessories" class="wiki-section" style="display:none;">
+          <div class="wiki-content">
+            <div class="wiki-content-header">
+              <h2>💍 Accesorios</h2>
+            </div>
+            <div class="wiki-content-body">
+              <div style="overflow-x: auto;">
+                <table class="wiki-table">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Tipo</th>
+                      <th>Bonus</th>
+                      <th>Nivel</th>
+                      <th>Rareza</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Anillo de Cobre</td><td>Anillo</td><td>+5 HP</td><td><span class="badge badge-green">1</span></td><td><span class="badge badge-green">Común</span></td></tr>
+                    <tr><td>Collar de Huesos</td><td>Collar</td><td>+3 Ataque</td><td><span class="badge badge-gold">15</span></td><td><span class="badge badge-gold">Poco común</span></td></tr>
+                    <tr><td>Anillo de Rubí</td><td>Anillo</td><td>+8% Resistencia</td><td><span class="badge badge-gold">35</span></td><td><span class="badge badge-blue">Raro</span></td></tr>
+                    <tr><td>Brazalete de Dragón</td><td>Brazalete</td><td>+15% Magia Ataque</td><td><span class="badge badge-red">65</span></td><td><span class="badge badge-purple">Épico</span></td></tr>
+                    <tr><td>Collar del Señor</td><td>Collar</td><td>+50 Ataque, +10% Crit</td><td><span class="badge badge-red">85</span></td><td><span class="badge badge-purple">Legendario</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- POTIONS -->
+        <div id="wiki-potions" class="wiki-section" style="display:none;">
+          <div class="wiki-content">
+            <div class="wiki-content-header">
+              <h2>🧪 Pociones</h2>
+            </div>
+            <div class="wiki-content-body">
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div class="item-card">
+                  <span class="item-icon">🔴</span>
+                  <div class="item-info">
+                    <div class="item-name">Poción de HP Pequeña</div>
+                    <div class="item-desc">Restaura 200 HP instantáneamente.</div>
+                    <div class="item-stats">
+                      <span class="badge badge-green">+200 HP</span>
+                      <span class="badge badge-gold">500 Yang</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="item-card">
+                  <span class="item-icon">❤️</span>
+                  <div class="item-info">
+                    <div class="item-name">Poción de HP Grande</div>
+                    <div class="item-desc">Restaura 2.000 HP a lo largo de 10 segundos.</div>
+                    <div class="item-stats">
+                      <span class="badge badge-green">+2.000 HP</span>
+                      <span class="badge badge-gold">5.000 Yang</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="item-card">
+                  <span class="item-icon">💙</span>
+                  <div class="item-info">
+                    <div class="item-name">Poción de SP</div>
+                    <div class="item-desc">Restaura 300 puntos de habilidad.</div>
+                    <div class="item-stats">
+                      <span class="badge badge-blue">+300 SP</span>
+                      <span class="badge badge-gold">800 Yang</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="item-card">
+                  <span class="item-icon">⭐</span>
+                  <div class="item-info">
+                    <div class="item-name">Elixir de Velocidad</div>
+                    <div class="item-desc">Aumenta la velocidad de movimiento y ataque un 30% durante 3 minutos.</div>
+                    <div class="item-stats">
+                      <span class="badge badge-purple">+30% Velocidad</span>
+                      <span class="badge badge-purple">3 min</span>
+                      <span class="badge badge-gold">50.000 Yang</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NPCs -->
+        <div id="wiki-npcs" class="wiki-section" style="display:none;">
+          <div class="wiki-content">
+            <div class="wiki-content-header">
+              <h2>🧙 NPCs</h2>
+            </div>
+            <div class="wiki-content-body">
+              <div style="overflow-x: auto;">
+                <table class="wiki-table">
+                  <thead>
+                    <tr><th>NPC</th><th>Función</th><th>Ubicación</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>🧙 Herrero</td><td>Mejora de equipo, forja</td><td>Todas las aldeas</td></tr>
+                    <tr><td>🏪 Mercader</td><td>Compra/venta de items</td><td>Todas las aldeas</td></tr>
+                    <tr><td>💊 Alquimista</td><td>Pociones, elixires</td><td>Aldea Principal</td></tr>
+                    <tr><td>📜 Maestro de Misiones</td><td>Misiones principales</td><td>Aldea Principal</td></tr>
+                    <tr><td>⚔️ Instructor de Combate</td><td>Entrenamiento, habilidades</td><td>Dojo Central</td></tr>
+                    <tr><td>💎 Joyero</td><td>Piedras de dragón</td><td>Capital del Reino</td></tr>
+                    <tr><td>🏦 Banquero</td><td>Almacenamiento, Yang</td><td>Capital del Reino</td></tr>
+                    <tr><td>🎯 Cazador de Recompensas</td><td>Misiones de élite</td><td>Taberna Principal</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUESTS -->
+        <div id="wiki-quests" class="wiki-section" style="display:none;">
+          <div class="wiki-content">
+            <div class="wiki-content-header">
+              <h2>📜 Misiones</h2>
+            </div>
+            <div class="wiki-content-body">
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="background: var(--bg-secondary); border-radius: var(--radius); padding: 16px; border-left: 4px solid var(--accent-gold);">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <h4>🌟 La Amenaza del Metin</h4>
+                    <span class="badge badge-gold">Nv. 1+</span>
+                  </div>
+                  <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;">
+                    Elimina 5 Metines de Fuego que han aparecido cerca de la aldea. Habla con el Maestro para iniciar.
+                  </p>
+                  <div style="display: flex; gap: 8px;">
+                    <span class="badge badge-green">Recompensa: 5.000 EXP</span>
+                    <span class="badge badge-gold">10.000 Yang</span>
+                  </div>
+                </div>
+                <div style="background: var(--bg-secondary); border-radius: var(--radius); padding: 16px; border-left: 4px solid var(--accent-blue);">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <h4>⚔️ El Señor Oscuro</h4>
+                    <span class="badge badge-red">Nv. 50+</span>
+                  </div>
+                  <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;">
+                    Derrota al Rey Demonio en la Cueva Oscura. Se recomienda ir en grupo de 5.
+                  </p>
+                  <div style="display: flex; gap: 8px;">
+                    <span class="badge badge-green">500.000 EXP</span>
+                    <span class="badge badge-gold">1.000.000 Yang</span>
+                    <span class="badge badge-purple">Item Épico</span>
+                  </div>
+                </div>
+                <div style="background: var(--bg-secondary); border-radius: var(--radius); padding: 16px; border-left: 4px solid var(--accent-red);">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <h4>🐉 El Dragón Eterno</h4>
+                    <span class="badge badge-purple">Nv. 90+</span>
+                  </div>
+                  <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;">
+                    La misión más difícil del juego. Forma un grupo de 10 héroes y enfréntate al Dragón Supremo.
+                  </p>
+                  <div style="display: flex; gap: 8px;">
+                    <span class="badge badge-green">5.000.000 EXP</span>
+                    <span class="badge badge-gold">10.000.000 Yang</span>
+                    <span class="badge badge-purple">Título: Matadragones</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- METINS -->
+        <div id="wiki-metins" class="wiki-section" style="display:none;">
+          <div class="wiki-content">
+            <div class="wiki-content-header">
+              <h2>🔴 Metines</h2>
+              <p style="color: var(--text-secondary); font-size: 14px; margin-top: 6px;">Las piedras Metin son la mayor amenaza del juego. Aparecen en todos los mapas.</p>
+            </div>
+            <div class="wiki-content-body">
+              <div style="overflow-x: auto;">
+                <table class="wiki-table">
+                  <thead>
+                    <tr><th>Metin</th><th>Nivel</th><th>Zona</th><th>Drop Especial</th><th>Tiempo Reaparición</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>🔴 Metin de Tierra</td><td><span class="badge badge-green">15-25</span></td><td>Bosque Sur</td><td>Piedra Verde</td><td>30 min</td></tr>
+                    <tr><td>🔥 Metin de Fuego</td><td><span class="badge badge-gold">35-50</span></td><td>Desierto</td><td>Piedra Roja</td><td>45 min</td></tr>
+                    <tr><td>💀 Metin de Muerte</td><td><span class="badge badge-gold">45-60</span></td><td>T. de los Muertos</td><td>Piedra Violeta</td><td>60 min</td></tr>
+                    <tr><td>❄️ Metin de Hielo</td><td><span class="badge badge-red">65-75</span></td><td>Montaña Helada</td><td>Piedra Azul</td><td>90 min</td></tr>
+                    <tr><td>⚡ Metin de Tormenta</td><td><span class="badge badge-red">75-85</span></td><td>Volcán</td><td>Piedra Naranja</td><td>120 min</td></tr>
+                    <tr><td>🌑 Metin de Oscuridad</td><td><span class="badge badge-purple">90-99</span></td><td>Valle Oscuro</td><td>Piedra Blanca</td><td>180 min</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOSSES -->
+        <div id="wiki-bosses" class="wiki-section" style="display:none;">
+          <div class="wiki-content">
+            <div class="wiki-content-header">
+              <h2>💀 Jefes</h2>
+              <p style="color: var(--text-secondary); font-size: 14px; margin-top: 6px;">Los enemigos más poderosos del juego. Requieren grupos coordinados.</p>
+            </div>
+            <div class="wiki-content-body">
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="item-card" style="background: rgba(231,76,60,0.05); border-color: rgba(231,76,60,0.2);">
+                  <span class="item-icon">👑</span>
+                  <div class="item-info">
+                    <div class="item-name" style="font-size: 17px;">Rey Demonio</div>
+                    <div class="item-desc">El terror de la Cueva Oscura. Usa ataques de área devastadores.</div>
+                    <div class="item-stats">
+                      <span class="badge badge-red">Nv. 55</span>
+                      <span class="badge badge-red">HP: 500.000</span>
+                      <span class="badge badge-purple">5 jugadores rec.</span>
+                      <span class="badge badge-gold">Drop: Espada Oscura</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="item-card" style="background: rgba(231,76,60,0.05); border-color: rgba(231,76,60,0.2);">
+                  <span class="item-icon">🐲</span>
+                  <div class="item-info">
+                    <div class="item-name" style="font-size: 17px;">Dragón Supremo</div>
+                    <div class="item-desc">El jefe final del juego. Solo los más poderosos pueden enfrentarlo.</div>
+                    <div class="item-stats">
+                      <span class="badge badge-purple">Nv. 99</span>
+                      <span class="badge badge-purple">HP: 10.000.000</span>
+                      <span class="badge badge-purple">10+ jugadores rec.</span>
+                      <span class="badge badge-gold">Drop: Armadura Legendaria</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="item-card" style="background: rgba(231,76,60,0.05); border-color: rgba(231,76,60,0.2);">
+                  <span class="item-icon">🦂</span>
+                  <div class="item-info">
+                    <div class="item-name" style="font-size: 17px;">Alacrán Gigante</div>
+                    <div class="item-desc">Jefe del desierto. Sus picaduras envenenan gravemente.</div>
+                    <div class="item-stats">
+                      <span class="badge badge-gold">Nv. 40</span>
+                      <span class="badge badge-gold">HP: 80.000</span>
+                      <span class="badge badge-blue">2-3 jugadores rec.</span>
+                      <span class="badge badge-gold">Drop: Cota Desértica</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>Cheff<span>M2</span></h3>
+      <p>El portal definitivo de Metin2 creado por el streamer Cheff.</p>
+      <div class="footer-social">
+        <a href="https://www.twitch.tv/" target="_blank"><i class="fab fa-twitch"></i></a>
+        <a href="https://www.youtube.com/" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="https://discord.gg/" target="_blank"><i class="fab fa-discord"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Wiki</h4>
+      <ul>
+        <li><a href="#" onclick="showWikiSection('monsters', null)">Monstruos</a></li>
+        <li><a href="#" onclick="showWikiSection('maps', null)">Mapas</a></li>
+        <li><a href="#" onclick="showWikiSection('items', null)">Armas</a></li>
+        <li><a href="#" onclick="showWikiSection('metins', null)">Metines</a></li>
+        <li><a href="#" onclick="showWikiSection('bosses', null)">Jefes</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Navegación</h4>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="herramientas.html">Herramientas</a></li>
+        <li><a href="guias.html">Guías</a></li>
+        <li><a href="foro.html">Foro</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Comunidad</h4>
+      <ul>
+        <li><a href="https://discord.gg/" target="_blank">Discord</a></li>
+        <li><a href="https://www.twitch.tv/" target="_blank">Twitch</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CheffM2 · Portal no oficial de Metin2</p>
+  </div>
+</footer>
+
+<script>
+function showWikiSection(section, el) {
+  document.querySelectorAll('.wiki-section').forEach(s => s.style.display = 'none');
+  document.querySelectorAll('.wiki-nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('wiki-' + section).style.display = 'block';
+  if (el) el.classList.add('active');
+}
+
+function searchWiki() {
+  const q = document.getElementById('wikiSearch').value.toLowerCase();
+  if (q.length < 2) return;
+  // Simple search hint
+}
+
+// Mobile menu
+const menuToggle = document.getElementById('menuToggle');
+const mainNav = document.getElementById('mainNav');
+menuToggle.addEventListener('click', () => mainNav.classList.toggle('open'));
+
+// Handle hash
+const hash = window.location.hash.replace('#', '');
+if (hash && document.getElementById('wiki-' + hash)) {
+  showWikiSection(hash, null);
+}
+</script>
+</body>
+</html>

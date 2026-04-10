@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CheffM2 – Herramientas & Wiki de Metin2</title>
+  <meta name="description" content="El portal definitivo de Metin2 para el streamer Cheff. Herramientas, wiki, guías y foro." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .features-section { background: var(--bg-secondary); }
+    .feature-big-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: all 0.3s;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-big-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .feature-big-card.tools::before { background: linear-gradient(90deg, #e74c3c, #f39c12); }
+    .feature-big-card.wiki::before { background: linear-gradient(90deg, #2980b9, #8e44ad); }
+    .feature-big-card.guides::before { background: linear-gradient(90deg, #27ae60, #2ecc71); }
+    .feature-big-card.forum::before { background: linear-gradient(90deg, #8e44ad, #2980b9); }
+    .feature-big-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-6px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    .feature-big-icon { font-size: 40px; }
+    .feature-big-title { font-size: 24px; color: var(--text-primary); }
+    .feature-big-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
+    .feature-big-link { font-size: 14px; color: var(--accent-gold); margin-top: auto; }
+
+    .news-item {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .news-item:last-child { border-bottom: none; }
+    .news-date {
+      width: 50px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .news-day { font-family: var(--font-title); font-size: 28px; color: var(--accent-gold); display: block; line-height: 1; }
+    .news-month { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+    .news-content h4 { font-size: 15px; margin-bottom: 6px; }
+    .news-content p { font-size: 13px; color: var(--text-secondary); }
+
+    .twitch-section {
+      background: linear-gradient(135deg, rgba(145,70,255,0.08), rgba(192,57,43,0.08));
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .twitch-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(145,70,255,0.3);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .twitch-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(145,70,255,0.05) 0%, transparent 70%);
+    }
+    .twitch-icon { font-size: 64px; color: #9146ff; margin-bottom: 20px; position: relative; }
+    .twitch-card h2 { font-size: 32px; margin-bottom: 12px; position: relative; }
+    .twitch-card p { font-size: 17px; color: var(--text-secondary); max-width: 500px; margin: 0 auto 28px; position: relative; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="navbar-logo">C</div>
+    <div class="navbar-title">Cheff<span>M2</span></div>
+  </div>
+
+  <button class="menu-toggle" id="menuToggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <ul class="navbar-nav" id="mainNav">
+    <li><a href="index.html" class="active"><i class="fas fa-home"></i> Inicio</a></li>
+    <li><a href="herramientas.html"><i class="fas fa-tools"></i> Herramientas</a></li>
+    <li><a href="wiki.html"><i class="fas fa-book"></i> Wiki</a></li>
+    <li><a href="guias.html"><i class="fas fa-scroll"></i> Guías</a></li>
+    <li><a href="foro.html"><i class="fas fa-comments"></i> Foro</a></li>
+    <li><a href="comercio.html"><i class="fas fa-store"></i> Comercio</a></li>
+    <li>
+      <a href="https://www.twitch.tv/" target="_blank" class="navbar-twitch">
+        <i class="fab fa-twitch"></i> Ver en Twitch
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-particles" id="particles"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="live-dot"></span>
+        Streamer Oficial · Metin2
+      </div>
+
+      <h1 class="hero-title">
+        <div class="name">CHEFF</div>
+      </h1>
+      <p class="hero-subtitle">El Portal Definitivo de Metin2</p>
+      <p class="hero-description">
+        Herramientas profesionales, wiki completa, guías de personaje y una comunidad activa.
+        Todo lo que necesitas para dominar Metin2.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="herramientas.html" class="btn btn-primary btn-lg">
+          <i class="fas fa-tools"></i> Ver Herramientas
+        </a>
+        <a href="wiki.html" class="btn btn-outline btn-lg">
+          <i class="fas fa-book"></i> Explorar Wiki
+        </a>
+        <a href="https://www.twitch.tv/" target="_blank" class="btn btn-twitch btn-lg">
+          <i class="fab fa-twitch"></i> Directo
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-number">500+</span>
+          <span class="hero-stat-label">Items en Wiki</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-number">12</span>
+          <span class="hero-stat-label">Herramientas</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-number">20+</span>
+          <span class="hero-stat-label">Guías</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-number">1K+</span>
+          <span class="hero-stat-label">Comunidad</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STREAMER -->
+  <section class="section streamer-section">
+    <div class="container">
+      <div class="streamer-card">
+        <div class="streamer-avatar">C</div>
+        <div class="streamer-info">
+          <div class="role">🎮 Streamer · Metin2</div>
+          <h2>Bienvenido al portal de <span>Cheff</span></h2>
+          <p>
+            Soy Cheff, streamer de Metin2 con años de experiencia en el juego.
+            En este portal encontrarás todas las herramientas, guías y recursos que necesitas
+            para mejorar tu experiencia de juego. ¡Únete a la comunidad y sube de nivel!
+          </p>
+          <div class="streamer-links">
+            <a href="https://www.twitch.tv/" target="_blank" class="btn btn-twitch">
+              <i class="fab fa-twitch"></i> Twitch
+            </a>
+            <a href="https://www.youtube.com/" target="_blank" class="btn btn-primary">
+              <i class="fab fa-youtube"></i> YouTube
+            </a>
+            <a href="https://discord.gg/" target="_blank" class="btn btn-outline">
+              <i class="fab fa-discord"></i> Discord
+            </a>
+            <a href="https://www.tiktok.com/" target="_blank" class="btn btn-outline">
+              <i class="fab fa-tiktok"></i> TikTok
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section features-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">¿Qué encontrarás aquí?</div>
+        <h2 class="section-title">Todo lo que necesitas para <span>Metin2</span></h2>
+        <div class="divider"></div>
+        <p class="section-subtitle">
+          Desde calculadoras profesionales hasta una wiki completa del juego,
+          este portal es tu punto de referencia para Metin2.
+        </p>
+      </div>
+
+      <div class="grid-4" style="margin-bottom: 0;">
+        <a href="herramientas.html" class="feature-big-card tools">
+          <div class="feature-big-icon">⚙️</div>
+          <h3 class="feature-big-title">Herramientas</h3>
+          <p class="feature-big-desc">
+            Calculadoras de Yang, experiencia, mejora de equipo, piedras de dragón y mucho más.
+          </p>
+          <span class="feature-big-link">Explorar herramientas →</span>
+        </a>
+
+        <a href="wiki.html" class="feature-big-card wiki">
+          <div class="feature-big-icon">📖</div>
+          <h3 class="feature-big-title">Wiki del Juego</h3>
+          <p class="feature-big-desc">
+            Base de datos completa de monstruos, mapas, objetos, misiones y NPCs del juego.
+          </p>
+          <span class="feature-big-link">Ver wiki →</span>
+        </a>
+
+        <a href="guias.html" class="feature-big-card guides">
+          <div class="feature-big-icon">📜</div>
+          <h3 class="feature-big-title">Guías & Builds</h3>
+          <p class="feature-big-desc">
+            Guías detalladas para cada clase: Guerrero, Ninja, Sura y Chamán. Builds optimizados.
+          </p>
+          <span class="feature-big-link">Ver guías →</span>
+        </a>
+
+        <a href="foro.html" class="feature-big-card forum">
+          <div class="feature-big-icon">💬</div>
+          <h3 class="feature-big-title">Foro</h3>
+          <p class="feature-big-desc">
+            Comparte estrategias, pide ayuda, vende items y conecta con la comunidad de Metin2.
+          </p>
+          <span class="feature-big-link">Ir al foro →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS PREVIEW -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Herramientas</div>
+        <h2 class="section-title">Calculadoras <span>Profesionales</span></h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="tools-grid">
+        <a href="herramientas.html#yang" class="tool-card">
+          <div class="card-icon gold">💰</div>
+          <h3 class="card-title">Calculadora de Yang</h3>
+          <p class="card-desc">Convierte Yang a Won y viceversa. Calcula el valor de tus items y transacciones.</p>
+        </a>
+        <a href="herramientas.html#exp" class="tool-card">
+          <div class="card-icon blue">⭐</div>
+          <h3 class="card-title">Calculadora de EXP</h3>
+          <p class="card-desc">Averigua cuánta experiencia necesitas para subir al siguiente nivel.</p>
+        </a>
+        <a href="herramientas.html#upgrade" class="tool-card">
+          <div class="card-icon red">🔨</div>
+          <h3 class="card-title">Mejora de Equipo</h3>
+          <p class="card-desc">Calcula las probabilidades de éxito al mejorar tu armadura y armas.</p>
+        </a>
+        <a href="herramientas.html#stone" class="tool-card">
+          <div class="card-icon purple">💎</div>
+          <h3 class="card-title">Piedras de Dragón</h3>
+          <p class="card-desc">Encuentra las mejores combinaciones de piedras para tu build.</p>
+        </a>
+        <a href="herramientas.html#bonus" class="tool-card">
+          <div class="card-icon green">📊</div>
+          <h3 class="card-title">Calculadora de Bonus</h3>
+          <p class="card-desc">Compara diferentes bonus y descubre cuál es más rentable para tu personaje.</p>
+        </a>
+        <a href="herramientas.html#skills" class="tool-card">
+          <div class="card-icon gold">⚡</div>
+          <h3 class="card-title">Planner de Skills</h3>
+          <p class="card-desc">Planifica la distribución de tus puntos de habilidad antes de gastarlos.</p>
+        </a>
+      </div>
+
+      <div style="text-align: center; margin-top: 40px;">
+        <a href="herramientas.html" class="btn btn-primary btn-lg">
+          <i class="fas fa-tools"></i> Ver todas las herramientas
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TWITCH CTA -->
+  <section class="section twitch-section">
+    <div class="container">
+      <div class="twitch-card">
+        <div class="twitch-icon"><i class="fab fa-twitch"></i></div>
+        <h2>¡Únete al directo de <span style="color: var(--accent-gold);">Cheff</span>!</h2>
+        <p>
+          Entra al canal de Twitch y disfruta de partidas en directo, sorteos,
+          drops exclusivos y la mejor comunidad de Metin2.
+        </p>
+        <a href="https://www.twitch.tv/" target="_blank" class="btn btn-twitch btn-lg">
+          <i class="fab fa-twitch"></i> Ver Canal en Twitch
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWS -->
+  <section class="section">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+        <!-- Últimas noticias -->
+        <div>
+          <div class="section-tag" style="margin-bottom: 16px;">Actualidad</div>
+          <h2 class="section-title" style="text-align: left; margin-bottom: 24px;">
+            Últimas <span>Noticias</span>
+          </h2>
+
+          <div class="news-item">
+            <div class="news-date">
+              <span class="news-day">08</span>
+              <span class="news-month">Abr</span>
+            </div>
+            <div class="news-content">
+              <span class="badge badge-red" style="margin-bottom: 6px;">Parche</span>
+              <h4>Nueva actualización: Dragón Supremo</h4>
+              <p>Se añade el nuevo jefe Dragón Supremo en el reino del Este. Nuevas recompensas.</p>
+            </div>
+          </div>
+
+          <div class="news-item">
+            <div class="news-date">
+              <span class="news-day">05</span>
+              <span class="news-month">Abr</span>
+            </div>
+            <div class="news-content">
+              <span class="badge badge-gold" style="margin-bottom: 6px;">Evento</span>
+              <h4>Evento de Primavera activo</h4>
+              <p>Consigue flores de primavera y canjéalas por items exclusivos del evento.</p>
+            </div>
+          </div>
+
+          <div class="news-item">
+            <div class="news-date">
+              <span class="news-day">01</span>
+              <span class="news-month">Abr</span>
+            </div>
+            <div class="news-content">
+              <span class="badge badge-blue" style="margin-bottom: 6px;">Wiki</span>
+              <h4>Wiki actualizada con nuevos items</h4>
+              <p>Añadidos 50 nuevos items del parche 1.4 en la sección de equipamiento.</p>
+            </div>
+          </div>
+
+          <div class="news-item">
+            <div class="news-date">
+              <span class="news-day">28</span>
+              <span class="news-month">Mar</span>
+            </div>
+            <div class="news-content">
+              <span class="badge badge-green" style="margin-bottom: 6px;">Guía</span>
+              <h4>Nueva guía: Guerrero de Fuego PvP</h4>
+              <p>Cheff publica su build definitiva de Guerrero de Fuego para el PvP de alta nivel.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wiki rápida -->
+        <div>
+          <div class="section-tag" style="margin-bottom: 16px;">Búsqueda Rápida</div>
+          <h2 class="section-title" style="text-align: left; margin-bottom: 24px;">
+            Buscar en la <span>Wiki</span>
+          </h2>
+
+          <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Buscar monstruo, item, mapa..." id="quickSearch" />
+            <a href="wiki.html" class="btn btn-primary">
+              <i class="fas fa-search"></i>
+            </a>
+          </div>
+
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; text-align: center;">
+            Búsquedas populares:
+          </p>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 32px;">
+            <a href="wiki.html" class="badge badge-red" style="cursor:pointer;">Metin de Fuego</a>
+            <a href="wiki.html" class="badge badge-gold" style="cursor:pointer;">Arma de Tigre</a>
+            <a href="wiki.html" class="badge badge-blue" style="cursor:pointer;">Guerrero Nivel 90</a>
+            <a href="wiki.html" class="badge badge-purple" style="cursor:pointer;">Sura Hechicero</a>
+            <a href="wiki.html" class="badge badge-green" style="cursor:pointer;">Misión Principal</a>
+            <a href="wiki.html" class="badge badge-gold" style="cursor:pointer;">Piedra Amarilla</a>
+          </div>
+
+          <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden;">
+            <table class="wiki-table">
+              <thead>
+                <tr>
+                  <th>Monstruo</th>
+                  <th>Nivel</th>
+                  <th>Zona</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Metin de Fuego</td>
+                  <td><span class="badge badge-red">Var.</span></td>
+                  <td>Todos los mapas</td>
+                </tr>
+                <tr>
+                  <td>Rey Demonio</td>
+                  <td><span class="badge badge-red">Jefe</span></td>
+                  <td>Cueva Oscura</td>
+                </tr>
+                <tr>
+                  <td>Ogro Verde</td>
+                  <td><span class="badge badge-gold">45</span></td>
+                  <td>Tierra de los Muertos</td>
+                </tr>
+                <tr>
+                  <td>Serpiente Venenosa</td>
+                  <td><span class="badge badge-blue">30</span></td>
+                  <td>Bosque Maldito</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="text-align: center; margin-top: 20px;">
+            <a href="wiki.html" class="btn btn-outline">Ver Wiki Completa <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>Cheff<span>M2</span></h3>
+      <p>El portal definitivo de Metin2 creado por el streamer Cheff. Herramientas, wiki, guías y comunidad.</p>
+      <div class="footer-social">
+        <a href="https://www.twitch.tv/" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
+        <a href="https://www.youtube.com/" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://discord.gg/" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+        <a href="https://www.tiktok.com/" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://twitter.com/" target="_blank" title="Twitter/X"><i class="fab fa-x-twitter"></i></a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Herramientas</h4>
+      <ul>
+        <li><a href="herramientas.html#yang">Calculadora de Yang</a></li>
+        <li><a href="herramientas.html#exp">Calculadora de EXP</a></li>
+        <li><a href="herramientas.html#upgrade">Mejora de Equipo</a></li>
+        <li><a href="herramientas.html#stone">Piedras de Dragón</a></li>
+        <li><a href="herramientas.html#bonus">Calc. de Bonus</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Wiki</h4>
+      <ul>
+        <li><a href="wiki.html#monsters">Monstruos</a></li>
+        <li><a href="wiki.html#maps">Mapas</a></li>
+        <li><a href="wiki.html#items">Objetos</a></li>
+        <li><a href="wiki.html#npcs">NPCs</a></li>
+        <li><a href="wiki.html#quests">Misiones</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Comunidad</h4>
+      <ul>
+        <li><a href="guias.html">Guías</a></li>
+        <li><a href="foro.html">Foro</a></li>
+        <li><a href="https://discord.gg/" target="_blank">Discord</a></li>
+        <li><a href="https://www.twitch.tv/" target="_blank">Twitch</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 CheffM2 · Portal no oficial de Metin2 · Todos los derechos reservados</p>
+    <p>Metin2 es propiedad de Gameforge. Este sitio no está afiliado oficialmente.</p>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu
+  const menuToggle = document.getElementById('menuToggle');
+  const mainNav = document.getElementById('mainNav');
+  menuToggle.addEventListener('click', () => {
+    mainNav.classList.toggle('open');
+  });
+
+  // Particles
+  function createParticles() {
+    const container = document.getElementById('particles');
+    const count = 30;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDuration = (8 + Math.random() * 15) + 's';
+      p.style.animationDelay = (Math.random() * 10) + 's';
+      p.style.width = p.style.height = (1 + Math.random() * 3) + 'px';
+      if (Math.random() > 0.5) p.style.background = '#e74c3c';
+      container.appendChild(p);
+    }
+  }
+  createParticles();
+</script>
+</body>
+</html>

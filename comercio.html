@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tienda de Jugadores – CheffM2</title>
+  <meta name="description" content="Explora los items en venta por los jugadores de Metin2. Busca por nombre, categoría y precio." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ===== SHOP LAYOUT ===== */
+    .shop-wrapper { max-width: 1400px; margin: 0 auto; padding: 28px 24px; }
+
+    /* ===== FILTERS BAR ===== */
+    .filters-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filters-bar .form-input,
+    .filters-bar .form-select { min-width: 120px; flex: 1; }
+    #filterSeller, #filterCategory { min-width: 180px; }
+    .price-range-group {
+      display: flex; align-items: center; gap: 6px;
+      flex-shrink: 0;
+    }
+    .price-range-group label {
+      font-size: 11px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .5px;
+      white-space: nowrap;
+    }
+    .bonus-epic  { color: #f5c518; font-weight: 700; }
+    .bonus-rare  { color: #bb8fce; font-weight: 600; }
+    .bonus-normal{ color: var(--text-secondary); }
+    .filters-count {
+      font-size: 13px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      margin-left: auto;
+    }
+    .filters-count strong { color: var(--accent-gold); }
+
+    /* ===== SORT TABS ===== */
+    .sort-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .sort-btn {
+      padding: 6px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--font-body);
+    }
+    .sort-btn:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+    .sort-btn.active { background: rgba(243,156,18,0.12); border-color: var(--accent-gold); color: var(--accent-gold); }
+    .view-toggle { margin-left: auto; display: flex; gap: 6px; }
+    .view-btn {
+      width: 34px; height: 34px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+    .view-btn.active, .view-btn:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+
+    /* ===== ITEMS GRID ===== */
+    #itemsGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    #itemsGrid.list-view { grid-template-columns: 1fr; }
+
+    /* ===== ITEM CARD ===== */
+    .item-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+    }
+    .item-card:hover {
+      border-color: var(--accent-gold);
+      background: var(--bg-card-hover);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-glow-gold);
+    }
+    .item-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gradient-gold);
+      transform: scaleX(0);
+      transition: transform 0.25s;
+    }
+    .item-card:hover::after { transform: scaleX(1); }
+
+    .item-icon-wrap {
+      width: 64px; height: 64px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .item-icon-wrap img {
+      width: 56px; height: 56px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+    .icon-placeholder {
+      display: none;
+      font-size: 28px;
+      line-height: 1;
+    }
+    .item-icon-wrap.broken .icon-placeholder { display: flex; }
+    .item-icon-wrap.broken img { display: none; }
+
+    .item-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+      word-break: break-word;
+    }
+    .item-seller { font-size: 11px; color: var(--text-muted); }
+    .item-seller span { color: var(--accent-gold); font-weight: 600; }
+    .item-price {
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: auto;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .price-won   { background: rgba(145,70,255,0.15); color: #b39ddb; border: 1px solid rgba(145,70,255,0.2); }
+    .price-yang  { background: rgba(243,156,18,0.12); color: var(--accent-gold); border: 1px solid rgba(243,156,18,0.2); }
+    .price-both  { background: linear-gradient(135deg,rgba(145,70,255,0.1),rgba(243,156,18,0.1)); color: var(--text-primary); border: 1px solid rgba(243,156,18,0.25); }
+    .price-free  { background: rgba(88,214,141,0.1); color: #58d68d; border: 1px solid rgba(88,214,141,0.2); }
+    .price-won-line  { color: #b39ddb; }
+    .price-yang-line { color: var(--accent-gold); }
+
+    .item-attrs { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+    .attr-chip {
+      font-size: 10px;
+      padding: 2px 7px;
+      background: rgba(192,57,43,0.12);
+      border: 1px solid rgba(192,57,43,0.2);
+      border-radius: 10px;
+      color: var(--accent-red-bright);
+    }
+
+    /* ===== LIST VIEW ===== */
+    #itemsGrid.list-view .item-card {
+      flex-direction: row;
+      text-align: left;
+      padding: 14px 18px;
+      gap: 16px;
+    }
+    #itemsGrid.list-view .item-card::after { display: none; }
+    #itemsGrid.list-view .item-name { font-size: 14px; }
+    #itemsGrid.list-view .item-attrs { justify-content: flex-start; }
+    #itemsGrid.list-view .item-price { margin-top: 0; margin-left: auto; flex-shrink: 0; }
+    #itemsGrid.list-view .item-icon-wrap { width: 52px; height: 52px; }
+    #itemsGrid.list-view .item-icon-wrap img { width: 44px; height: 44px; }
+    .list-info { flex: 1; min-width: 0; }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .modal-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--gradient-gold);
+    }
+    .modal-close {
+      position: absolute; top: 14px; right: 18px;
+      background: none; border: none;
+      color: var(--text-muted); font-size: 22px;
+      cursor: pointer; line-height: 1;
+    }
+    .modal-close:hover { color: var(--text-primary); }
+    .modal-item-header {
+      display: flex; gap: 20px; align-items: flex-start;
+      margin-bottom: 24px;
+    }
+    .modal-icon-wrap {
+      width: 80px; height: 80px; flex-shrink: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-icon-wrap img { width: 72px; height: 72px; object-fit: contain; image-rendering: pixelated; }
+    .modal-icon-wrap .icon-placeholder { display: none; font-size: 40px; }
+    .modal-icon-wrap.broken img { display: none; }
+    .modal-icon-wrap.broken .icon-placeholder { display: flex; }
+    .modal-title { font-family: var(--font-title); font-size: 22px; margin-bottom: 6px; }
+    .modal-seller { font-size: 14px; color: var(--text-muted); }
+    .modal-seller strong { color: var(--accent-gold); }
+    .modal-section { margin-bottom: 20px; }
+    .modal-section h4 {
+      font-size: 12px; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--text-muted);
+      margin-bottom: 10px; padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .modal-row {
+      display: flex; justify-content: space-between;
+      font-size: 14px; padding: 7px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .modal-row:last-child { border-bottom: none; }
+    .modal-row span:first-child { color: var(--text-muted); }
+    .modal-row span:last-child { font-weight: 700; color: var(--text-primary); }
+    .modal-attr-list { display: flex; flex-direction: column; gap: 6px; }
+    .modal-attr-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px;
+      background: rgba(192,57,43,0.06);
+      border: 1px solid rgba(192,57,43,0.15);
+      border-radius: var(--radius);
+      font-size: 14px;
+    }
+    .modal-attr-row .attr-icon { font-size: 16px; flex-shrink: 0; }
+    .modal-attr-row .attr-name { flex: 1; color: var(--text-secondary); }
+    .modal-attr-row .attr-val { color: var(--accent-gold); font-weight: 700; }
+
+    /* ===== PAGINATION ===== */
+    .pagination {
+      display: flex; gap: 6px; justify-content: center;
+      flex-wrap: wrap; margin: 8px 0 32px;
+    }
+    .page-btn {
+      min-width: 36px; height: 36px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      color: var(--text-secondary);
+      font-family: var(--font-body);
+      font-size: 13px; font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      padding: 0 10px;
+    }
+    .page-btn:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+    .page-btn.active { background: rgba(243,156,18,0.15); border-color: var(--accent-gold); color: var(--accent-gold); }
+    .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .page-info { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; padding: 0 8px; }
+
+    /* ===== LOADING / EMPTY ===== */
+    .loading-state { text-align: center; padding: 80px 24px; }
+    .spinner {
+      width: 48px; height: 48px;
+      border: 3px solid var(--border-color);
+      border-top-color: var(--accent-gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .empty-state { text-align: center; padding: 80px 24px; }
+    .empty-state .emoji { font-size: 64px; margin-bottom: 16px; }
+
+    /* ===== CATEGORY BADGE COLORS ===== */
+    .cat-weapon    { background: rgba(231,76,60,0.1);   color: var(--accent-red-bright); border: 1px solid rgba(231,76,60,0.2); }
+    .cat-armor     { background: rgba(41,128,185,0.1);  color: #5dade2; border: 1px solid rgba(41,128,185,0.2); }
+    .cat-accessory { background: rgba(243,156,18,0.1);  color: var(--accent-gold); border: 1px solid rgba(243,156,18,0.2); }
+    .cat-costume   { background: rgba(142,68,173,0.1);  color: #bb8fce; border: 1px solid rgba(142,68,173,0.2); }
+    .cat-material  { background: rgba(39,174,96,0.1);   color: #58d68d; border: 1px solid rgba(39,174,96,0.2); }
+    .cat-other     { background: rgba(100,100,120,0.1); color: var(--text-muted); border: 1px solid var(--border-color); }
+
+    /* ===== MULTI-BONUS FILTER ===== */
+    /* ===== MULTI-BONUS FILTER ===== */
+    .bonus-filter-section {
+      flex: 2;
+      min-width: 300px;
+      background: rgba(243,156,18,0.04);
+      border: 1px solid rgba(243,156,18,0.15);
+      border-radius: var(--radius-lg);
+      padding: 12px 14px 10px;
+    }
+    .bonus-filter-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .bonus-filter-header label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      flex: 1;
+    }
+    .bonus-header-hint {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 400;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .bonus-add-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: rgba(243,156,18,0.1);
+      border: 1px solid rgba(243,156,18,0.3);
+      border-radius: 20px;
+      color: var(--accent-gold);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all .2s;
+      font-family: var(--font-body);
+    }
+    .bonus-add-btn:hover { background: rgba(243,156,18,0.22); border-color: var(--accent-gold); }
+    .bonus-add-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+    .bonus-slot-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .bonus-and-divider {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 2px 0;
+    }
+    .bonus-and-divider::before,
+    .bonus-and-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(243,156,18,0.15);
+    }
+    .bonus-and-divider span {
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(243,156,18,0.5);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .bonus-slot {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 4px 6px 4px 10px;
+      transition: border-color .2s;
+    }
+    .bonus-slot:focus-within {
+      border-color: rgba(243,156,18,0.4);
+      background: rgba(243,156,18,0.03);
+    }
+    .bonus-slot-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .bonus-slot .bonus-name-input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-size: 13px;
+      font-family: var(--font-body);
+      padding: 4px 0;
+    }
+    .bonus-slot .bonus-name-input::placeholder { color: var(--text-muted); }
+    .bonus-min-sep {
+      font-size: 12px;
+      color: var(--accent-gold);
+      font-weight: 700;
+      flex-shrink: 0;
+      opacity: .7;
+    }
+    .bonus-slot .bonus-min-input {
+      width: 64px;
+      flex-shrink: 0;
+      background: transparent;
+      border: none;
+      border-left: 1px solid var(--border-color);
+      outline: none;
+      color: var(--accent-gold);
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--font-body);
+      padding: 4px 4px 4px 8px;
+      -moz-appearance: textfield;
+    }
+    .bonus-slot .bonus-min-input::-webkit-inner-spin-button,
+    .bonus-slot .bonus-min-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .bonus-slot .bonus-min-input::placeholder { color: var(--text-muted); font-weight: 400; }
+    .bonus-remove-btn {
+      width: 20px; height: 20px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 50%;
+      color: var(--text-muted);
+      font-size: 15px; line-height: 1;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: all .15s;
+      padding: 0;
+    }
+    .bonus-remove-btn:hover {
+      background: rgba(192,57,43,0.15);
+      border-color: rgba(192,57,43,0.3);
+      color: var(--accent-red-bright);
+    }
+
+    /* ===== SEARCHABLE CATEGORY WRAPPER ===== */
+    .search-input-wrap { position: relative; flex: 1; min-width: 180px; }
+    .search-input-wrap .form-input { width: 100%; box-sizing: border-box; }
+    .cat-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0; right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      max-height: 240px;
+      overflow-y: auto;
+      z-index: 100;
+      display: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,.5);
+    }
+    .cat-dropdown.open { display: block; }
+    .cat-option {
+      padding: 9px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color);
+      transition: background .15s;
+    }
+    .cat-option:last-child { border-bottom: none; }
+    .cat-option:hover, .cat-option.highlighted { background: rgba(243,156,18,0.08); color: var(--text-primary); }
+    .cat-option.selected { color: var(--accent-gold); font-weight: 600; }
+
+    @media (max-width: 600px) {
+      #itemsGrid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="navbar-logo">C</div>
+    <div class="navbar-title">Cheff<span>M2</span></div>
+  </div>
+  <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+  <ul class="navbar-nav" id="mainNav">
+    <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+    <li><a href="herramientas.html"><i class="fas fa-tools"></i> Herramientas</a></li>
+    <li><a href="wiki.html"><i class="fas fa-book"></i> Wiki</a></li>
+    <li><a href="guias.html"><i class="fas fa-scroll"></i> Guías</a></li>
+    <li><a href="comercio.html" class="active"><i class="fas fa-store"></i> Comercio</a></li>
+    <li><a href="foro.html"><i class="fas fa-comments"></i> Foro</a></li>
+    <li><a href="https://www.twitch.tv/" target="_blank" class="navbar-twitch"><i class="fab fa-twitch"></i> Twitch</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+  <div class="page-header">
+    <div class="section-tag">Portal CheffM2</div>
+    <h1 class="page-header-title">🏪 <span style="color:var(--accent-gold)">Tienda de Jugadores</span></h1>
+    <p class="page-header-subtitle">Items en venta por jugadores · Actualizado en tiempo real</p>
+  </div>
+
+  <div class="shop-wrapper">
+
+    <!-- FILTERS ROW 1 -->
+    <div class="filters-bar">
+      <input type="text" class="form-input" id="searchName" placeholder="🔍  Buscar por nombre de item..." />
+
+      <!-- Seller – searchable via datalist -->
+      <input type="text" class="form-input" id="filterSeller"
+             placeholder="🧑  Filtrar por vendedor…" list="sellerList" autocomplete="off" />
+      <datalist id="sellerList"></datalist>
+
+      <!-- Category – custom searchable dropdown -->
+      <div class="search-input-wrap" id="catWrap">
+        <input type="text" class="form-input" id="filterCategory"
+               placeholder="📂  Categoría…" autocomplete="off" />
+        <div class="cat-dropdown" id="catDropdown"></div>
+      </div>
+
+      <select class="form-select" id="sortBy">
+        <option value="">Ordenar por…</option>
+        <option value="price_asc">Precio ↑</option>
+        <option value="price_desc">Precio ↓</option>
+        <option value="qty_desc">Cantidad ↓</option>
+        <option value="name_asc">Nombre A-Z</option>
+        <option value="plus_desc">Mejora ↓</option>
+      </select>
+      <div class="filters-count" id="countLabel">Cargando…</div>
+    </div>
+
+    <!-- FILTERS ROW 2: Price + Plus + Bonus -->
+    <div class="filters-bar" style="gap:10px; padding:14px 20px;">
+      <div class="price-range-group">
+        <label>Yang</label>
+        <input type="number" class="form-input" id="minYang" placeholder="Mín" min="0" style="width:110px;" />
+        <span style="color:var(--text-muted)">—</span>
+        <input type="number" class="form-input" id="maxYang" placeholder="Máx" min="0" style="width:130px;" />
+      </div>
+      <div class="price-range-group">
+        <label>Won</label>
+        <input type="number" class="form-input" id="minWon" placeholder="Mín" min="0" style="width:80px;" />
+        <span style="color:var(--text-muted)">—</span>
+        <input type="number" class="form-input" id="maxWon" placeholder="Máx" min="0" style="width:90px;" />
+      </div>
+      <div class="price-range-group">
+        <label>Mejora</label>
+        <select class="form-select" id="filterPlus" style="min-width:90px;">
+          <option value="">Todos</option>
+          <option value="0">+0</option>
+          <option value="1">+1</option>
+          <option value="2">+2</option>
+          <option value="3">+3</option>
+          <option value="4">+4</option>
+          <option value="5">+5</option>
+          <option value="6">+6</option>
+          <option value="7">+7</option>
+          <option value="8">+8</option>
+          <option value="9">+9</option>
+        </select>
+      </div>
+      <!-- MULTI-BONUS FILTER -->
+      <div class="bonus-filter-section">
+        <div class="bonus-filter-header">
+          <label>✨ Bonus
+            <span class="bonus-header-hint" id="bonusCountLabel">&nbsp;· hasta 6 · todos deben coincidir</span>
+          </label>
+          <button class="bonus-add-btn" id="bonusAddBtn" onclick="addBonusSlot()" title="Añadir bonus">
+            + Añadir
+          </button>
+        </div>
+        <div class="bonus-slot-wrap" id="bonusSlotsContainer"></div>
+        <datalist id="bonusList"></datalist>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="resetFilters()" style="white-space:nowrap;flex-shrink:0;">✕ Limpiar</button>
+    </div>
+
+    <!-- SORT TAGS + VIEW TOGGLE -->
+    <div class="sort-row" id="catTagRow">
+      <span style="font-size:13px; color:var(--text-muted);">Tipo:</span>
+      <button class="sort-btn active" onclick="setCatFilter('', this)">Todos</button>
+      <button class="sort-btn" onclick="setCatFilter('weapon', this)">⚔️ Armas</button>
+      <button class="sort-btn" onclick="setCatFilter('armor', this)">🛡️ Armaduras</button>
+      <button class="sort-btn" onclick="setCatFilter('accessory', this)">💍 Accesorios</button>
+      <button class="sort-btn" onclick="setCatFilter('material', this)">🧪 Materiales</button>
+      <button class="sort-btn" onclick="setCatFilter('costume', this)">👘 Cosméticos</button>
+      <button class="sort-btn" onclick="setCatFilter('other', this)">📦 Otros</button>
+      <div class="view-toggle">
+        <button class="view-btn active" id="gridViewBtn" onclick="setView('grid')" title="Vista cuadrícula">⊞</button>
+        <button class="view-btn" id="listViewBtn" onclick="setView('list')" title="Vista lista">☰</button>
+      </div>
+    </div>
+
+    <!-- LOADING STATE -->
+    <div class="loading-state" id="loadingState">
+      <div class="spinner"></div>
+      <p style="color:var(--text-muted);">Cargando items de la tienda…</p>
+    </div>
+
+    <!-- ITEMS GRID -->
+    <div id="itemsGrid" style="display:none;"></div>
+
+    <!-- PAGINATION -->
+    <div class="pagination" id="pagination"></div>
+
+  </div>
+</div>
+
+<!-- ITEM DETAIL MODAL -->
+<div class="modal-overlay" id="itemModal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('itemModal').classList.remove('open')">×</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>Cheff<span>M2</span></h3>
+      <p>El portal definitivo de Metin2 creado por el streamer Cheff.</p>
+      <div class="footer-social">
+        <a href="https://www.twitch.tv/" target="_blank"><i class="fab fa-twitch"></i></a>
+        <a href="https://www.youtube.com/" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="https://discord.gg/" target="_blank"><i class="fab fa-discord"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navegación</h4>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="herramientas.html">Herramientas</a></li>
+        <li><a href="wiki.html">Wiki</a></li>
+        <li><a href="guias.html">Guías</a></li>
+        <li><a href="foro.html">Foro</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Comunidad</h4>
+      <ul>
+        <li><a href="https://discord.gg/" target="_blank">Discord</a></li>
+        <li><a href="https://www.twitch.tv/" target="_blank">Twitch</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Datos</h4>
+      <ul>
+        <li><a href="#">Actualizar items</a></li>
+        <li><a href="herramientas.html">Herramientas</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CheffM2 · Portal no oficial de Metin2</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const ICON_LOCAL = './data/icons/';
+const ICON_CDN   = 'https://metin2alerts.com/m2_data/icons/';
+
+/* 1 Won = 100.000.000 Yang (usado para ordenar precios mixtos) */
+const WON_TO_YANG = 100_000_000;
+
+/* ============================================================
+   CATEGORY SYSTEM
+   Formato: "type-subtype"  (extraído directo del campo category en 531.json)
+   ============================================================ */
+const DETAIL_CAT_MAP = {
+  // ── Tipo 1: Cajas/Mascotas especiales ──────────────────────
+  '1-1': 'Baúl especial',
+  '1-2': 'Mascota',
+  '1-3': 'Huevo de Mascota',
+  // ── Tipo 2: Armas ──────────────────────────────────────────
+  '2-0': 'Espada (1 mano)',
+  '2-1': 'Daga / Puñal',
+  '2-2': 'Arco',
+  '2-3': 'Espada 2 manos',
+  '2-4': 'Campana',
+  '2-5': 'Garra',
+  '2-6': 'Abanico',
+  '2-7': 'Flecha',
+  '2-8': 'Maza',
+  // ── Tipo 3: Armaduras ──────────────────────────────────────
+  '3-0': 'Armadura (cuerpo)',
+  '3-1': 'Casco / Capucha',
+  '3-2': 'Escudo',
+  '3-3': 'Guantes',
+  '3-4': 'Botas (armadura)',
+  // ── Tipo 4: Accesorios ─────────────────────────────────────
+  '4-0': 'Brazalete',
+  '4-1': 'Botas',
+  '4-2': 'Collar',
+  '4-3': 'Pendientes',
+  '4-4': 'Cinturón',
+  '4-5': 'Talismán / Tótem',
+  // ── Tipo 5: Materiales generales ───────────────────────────
+  '5-0': 'Material General',
+  '5-1': 'Piedra / Recurso',
+  '5-2': 'Libro',
+  '5-3': 'Runa / Mejora',
+  // ── Tipo 6: Capas / Especial ───────────────────────────────
+  '6-0': 'Capa',
+  '6-1': 'Capa especial',
+  '6-2': 'Capa de valor',
+  // ── Tipo 7: Herramientas / Pesca ───────────────────────────
+  '7-0': 'Caña de Pescar',
+  '7-1': 'Pico',
+  '7-2': 'Comida / Pez',
+  '7-3': 'Mineral',
+  // ── Tipo 8: Almas de Dragón (Dragon Soul) ─────────────────
+  '8-0': 'Diamante Dragón',
+  '8-1': 'Rubí Dragón',
+  '8-2': 'Jade Dragón',
+  '8-3': 'Zafiro Dragón',
+  '8-4': 'Granate Dragón',
+  '8-5': 'Ónice Dragón',
+  '8-6': 'Amatista Dragón',
+  '8-7': 'Esencia Dragón',
+  // ── Tipo 9: Cosmético / Disfraz especial ───────────────────
+  '9-0': 'Disfraz Arma',
+  '9-1': 'Disfraz Armadura',
+  '9-2': 'Disfraz Accesorio',
+  '9-3': 'Disfraz Capa / Estola',
+  '9-4': 'Transferencia Atuendo',
+  '9-5': 'Aura',
+  // ── Tipo 10: Monturas ──────────────────────────────────────
+  '10-0': 'Montura',
+  '10-1': 'Montura especial',
+  '10-4': 'Montura (aleatorio)',
+  // ── Tipo 12: Items especiales / Cofres ─────────────────────
+  '12-0': 'Baúl / Cofre',
+  '12-1': 'Anillo especial',
+  '12-2': 'Disfraz Peinado',
+  '12-3': 'Disfraz Hombro',
+  '12-4': 'Libro de Habilidad',
+  '12-5': 'Bola Polimorfa',
+  '12-6': 'Item Especial',
+  '12-7': 'Llave / Cofre llave',
+};
+
+const TYPE_META = {
+  '1' : { label:'Baúl/Mascota', cls:'cat-other',     emoji:'📦', group:'other'     },
+  '2' : { label:'Arma',         cls:'cat-weapon',    emoji:'⚔️',  group:'weapon'    },
+  '3' : { label:'Armadura',     cls:'cat-armor',     emoji:'🛡️',  group:'armor'     },
+  '4' : { label:'Accesorio',    cls:'cat-accessory', emoji:'💍',  group:'accessory' },
+  '5' : { label:'Material',     cls:'cat-material',  emoji:'🧪',  group:'material'  },
+  '6' : { label:'Capa',         cls:'cat-costume',   emoji:'🧣',  group:'costume'   },
+  '7' : { label:'Herramienta',  cls:'cat-other',     emoji:'🎣',  group:'other'     },
+  '8' : { label:'Alma Dragón',  cls:'cat-material',  emoji:'💎',  group:'material'  },
+  '9' : { label:'Cosmético',    cls:'cat-costume',   emoji:'✨',  group:'costume'   },
+  '10': { label:'Montura',      cls:'cat-costume',   emoji:'🐎',  group:'costume'   },
+  '11': { label:'Especial',     cls:'cat-other',     emoji:'🔮',  group:'other'     },
+  '12': { label:'Especial',     cls:'cat-other',     emoji:'🔮',  group:'other'     },
+};
+
+/**
+ * Obtiene metadata de categoría a partir del código "type-subtype"
+ */
+function getCat(category) {
+  if (!category) return { label:'Otro', cls:'cat-other', emoji:'📦', group:'other', name:'Otro' };
+  const parts   = category.split('-');
+  const type    = parts[0] || '0';
+  const sub     = parts[1] || '0';
+  const key     = `${type}-${sub}`;
+  const detName = DETAIL_CAT_MAP[key] || null;
+  const meta    = TYPE_META[type] || { label:'Otro', cls:'cat-other', emoji:'📦', group:'other' };
+  return { ...meta, name: detName || meta.label };
+}
+
+/* ============================================================
+   PRECIO
+   ============================================================ */
+/**
+ * Devuelve info de precio para mostrar en tarjeta.
+ * Maneja: solo won, solo yang, won+yang, gratis
+ */
+function formatPrice(item) {
+  const won  = item.wonPrice  || 0;
+  const yang = item.yangPrice || 0;
+  if (won > 0 && yang > 0) {
+    return {
+      html: `<span class="price-won-line">💜 ${won.toLocaleString()} Won</span><br><span class="price-yang-line">💰 ${yang.toLocaleString()} Yang</span>`,
+      cls: 'price-both', text: `${won.toLocaleString()} Won + ${yang.toLocaleString()} Yang`
+    };
+  }
+  if (won > 0)  return { html:`💜 ${won.toLocaleString()} Won`,   cls:'price-won',  text:`${won.toLocaleString()} Won`   };
+  if (yang > 0) return { html:`💰 ${yang.toLocaleString()} Yang`, cls:'price-yang', text:`${yang.toLocaleString()} Yang` };
+  return { html:'🎁 Gratis', cls:'price-free', text:'Gratis' };
+}
+
+/** Convierte precio a yang equivalente para ordenar. 1 Won = 100.000.000 Yang */
+function priceToYang(item) {
+  return (item.wonPrice || 0) * WON_TO_YANG + (item.yangPrice || 0);
+}
+
+/* ============================================================
+   BONUS RARITY
+   ============================================================ */
+const RARITY_THRESHOLDS = {
+  1:2000,2:80,3:12,4:12,5:12,6:12,7:8,8:20,9:20,
+  10:30,11:30,12:8,13:8,14:8,15:10,16:10,17:10,
+  27:15,28:15,29:15,30:15,31:15,32:15,33:15,34:15,
+  41:5,42:5,43:20,44:20,45:20,47:5,53:50,54:5,55:50,
+  65:5,71:10,72:30,87:25,88:25,89:25,92:5,93:8,96:15,
+  105:30,106:30
+};
+function getBonusRarity(statId, val) {
+  const thresh = RARITY_THRESHOLDS[statId];
+  if (thresh === undefined) return val >= 20 ? 'epic' : val >= 10 ? 'rare' : '';
+  if (val >= thresh)        return 'epic';
+  if (val >= thresh * 0.65) return 'rare';
+  return '';
+}
+
+/* ============================================================
+   DETECTAR NIVEL DE MEJORA  (+7, +9, etc.)
+   ============================================================ */
+function detectPlus(name) {
+  const m = (name || '').match(/\+(\d+)/g);
+  if (!m) return 0;
+  return Math.max(...m.map(s => parseInt(s.slice(1))));
+}
+
+/* ============================================================
+   ESTADO GLOBAL
+   ============================================================ */
+let itemsGlobal    = [];
+let itemNames      = {};
+let itemIcons      = {};
+let statMap        = {};
+let filteredItems  = [];
+let currentPage    = 1;
+const PER_PAGE     = 48;
+let currentView    = 'grid';
+let activeCatGroup = '';
+
+// Estado del dropdown de categoría
+let catAllOptions  = [];   // [{code, label}]
+let selectedCatCode = '';  // Código exacto seleccionado (o '' = todos)
+let catDropdownOpen = false;
+
+// Estado del filtro multi-bonus
+const MAX_BONUS_SLOTS = 6;
+let bonusSlotCount = 0;   // cuántos slots hay ahora mismo
+
+/* ============================================================
+   MULTI-BONUS FILTER
+   ============================================================ */
+function updateBonusUI() {
+  const addBtn = document.getElementById('bonusAddBtn');
+  const label  = document.getElementById('bonusCountLabel');
+  addBtn.disabled = bonusSlotCount >= MAX_BONUS_SLOTS;
+  if (bonusSlotCount >= MAX_BONUS_SLOTS) {
+    label.textContent = ' · máximo alcanzado';
+  } else {
+    label.textContent = ' · hasta 6 · todos deben coincidir';
+  }
+}
+
+function addBonusSlot() {
+  if (bonusSlotCount >= MAX_BONUS_SLOTS) return;
+  bonusSlotCount++;
+  const idx       = bonusSlotCount;
+  const container = document.getElementById('bonusSlotsContainer');
+
+  const wrap = document.createElement('div');
+  wrap.dataset.slotIdx = idx;
+
+  // Divisor "Y" entre slots
+  if (idx > 1) {
+    wrap.innerHTML = `
+      <div class="bonus-and-divider"><span>Y</span></div>`;
+  }
+
+  wrap.innerHTML += `
+    <div class="bonus-slot">
+      <span class="bonus-slot-icon">⚡</span>
+      <input type="text"   class="bonus-name-input" id="filterBonus${idx}"
+             placeholder="Nombre del bonus…" list="bonusList" autocomplete="off" />
+      <span class="bonus-min-sep">≥</span>
+      <input type="number" class="bonus-min-input"  id="filterBonusMin${idx}"
+             placeholder="min" min="0" title="Valor mínimo" />
+      ${idx > 1
+        ? `<button class="bonus-remove-btn" onclick="removeBonusSlot(${idx})" title="Quitar">×</button>`
+        : `<div style="width:20px;flex-shrink:0;"></div>`}
+    </div>`;
+
+  container.appendChild(wrap);
+
+  document.getElementById(`filterBonus${idx}`).addEventListener('input', applyFilters);
+  document.getElementById(`filterBonusMin${idx}`).addEventListener('input', applyFilters);
+
+  updateBonusUI();
+}
+
+function removeBonusSlot(idx) {
+  const container = document.getElementById('bonusSlotsContainer');
+  const slot = container.querySelector(`[data-slot-idx="${idx}"]`);
+  if (slot) container.removeChild(slot);
+  bonusSlotCount--;
+  updateBonusUI();
+  applyFilters();
+}
+
+/**
+ * Devuelve array de { text, minVal } para cada slot activo.
+ * text    → string a buscar en los enchTexts del item (contains)
+ * minVal  → valor mínimo requerido del bonus (0 = sin restricción)
+ */
+function getBonusQueries() {
+  const queries   = [];
+  const container = document.getElementById('bonusSlotsContainer');
+  if (!container) return queries;
+
+  container.querySelectorAll('[data-slot-idx]').forEach(slot => {
+    const idx    = slot.dataset.slotIdx;
+    const nameEl = document.getElementById(`filterBonus${idx}`);
+    const minEl  = document.getElementById(`filterBonusMin${idx}`);
+    if (!nameEl) return;
+    const text   = nameEl.value.toLowerCase().trim();
+    const minVal = minEl ? (parseFloat(minEl.value) || 0) : 0;
+    if (text) queries.push({ text, minVal });
+  });
+  return queries;
+}
+
+function clearBonusSlots() {
+  const container = document.getElementById('bonusSlotsContainer');
+  container.innerHTML = '';
+  bonusSlotCount = 0;
+  addBonusSlot();   // siempre deja al menos 1
+}
+
+/* ============================================================
+   DROPDOWN PERSONALIZADO DE CATEGORÍA
+   ============================================================ */
+function buildCatOptions() {
+  const catMap = {};
+  itemsGlobal.forEach(i => {
+    if (!i.__rawCategory) return;
+    if (!catMap[i.__rawCategory]) {
+      const cat = getCat(i.__rawCategory);
+      catMap[i.__rawCategory] = `${cat.emoji} ${cat.name}`;
+    }
+  });
+  catAllOptions = Object.keys(catMap)
+    .sort((a, b) => catMap[a].localeCompare(catMap[b]))
+    .map(code => ({ code, label: catMap[code] }));
+}
+
+function renderCatDropdown(filter) {
+  const dd    = document.getElementById('catDropdown');
+  const query = (filter || '').toLowerCase();
+  const opts  = query
+    ? catAllOptions.filter(o => o.label.toLowerCase().includes(query) || o.code.includes(query))
+    : catAllOptions;
+
+  if (opts.length === 0) {
+    dd.innerHTML = '<div class="cat-option" style="color:var(--text-muted);cursor:default;">Sin resultados</div>';
+  } else {
+    const allHtml = `<div class="cat-option${selectedCatCode === '' ? ' selected' : ''}"
+       data-code="" data-label="📂 Todas las categorías">📂 Todas las categorías</div>`;
+    dd.innerHTML = allHtml + opts.map(o =>
+      `<div class="cat-option${selectedCatCode === o.code ? ' selected' : ''}"
+            data-code="${o.code}" data-label="${o.label}">${o.label} <span style="color:var(--text-muted);font-size:11px;">(${o.code})</span></div>`
+    ).join('');
+  }
+
+  dd.querySelectorAll('.cat-option').forEach(el => {
+    el.addEventListener('click', () => {
+      selectedCatCode = el.dataset.code;
+      const inp = document.getElementById('filterCategory');
+      inp.value = el.dataset.code === '' ? '' : el.dataset.label;
+      closeCatDropdown();
+      applyFilters();
+    });
+  });
+}
+
+function openCatDropdown() {
+  const dd = document.getElementById('catDropdown');
+  renderCatDropdown(document.getElementById('filterCategory').value);
+  dd.classList.add('open');
+  catDropdownOpen = true;
+}
+
+function closeCatDropdown() {
+  document.getElementById('catDropdown').classList.remove('open');
+  catDropdownOpen = false;
+}
+
+function initCatDropdown() {
+  const inp = document.getElementById('filterCategory');
+  const wrap = document.getElementById('catWrap');
+
+  inp.addEventListener('focus', openCatDropdown);
+  inp.addEventListener('input', () => {
+    // Al escribir libremente: busca en opciones pero NO fija código (contains)
+    selectedCatCode = '__text__';   // señal especial: filtrar por texto
+    openCatDropdown();
+    renderCatDropdown(inp.value);
+    applyFilters();
+  });
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeCatDropdown();
+  });
+
+  document.addEventListener('click', e => {
+    if (!wrap.contains(e.target)) closeCatDropdown();
+  });
+}
+
+/* ============================================================
+   RENDER CARDS
+   ============================================================ */
+function renderCards(items) {
+  const grid = document.getElementById('itemsGrid');
+  if (items.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+      <div class="emoji">🔍</div>
+      <h3 style="margin-bottom:8px;">Sin resultados</h3>
+      <p style="color:var(--text-muted);">Prueba con otros filtros de búsqueda.</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = items.map(item => {
+    const vnum  = item.vnum;
+    const name  = itemNames[vnum] || item.name || '???';
+    const icon  = itemIcons[vnum];
+    const price = formatPrice(item);
+    const cat   = getCat(item.category);
+    const attrs = (item.attrs || []).slice(0, 3);
+
+    const wrapBroken = icon ? '' : ' broken';
+    const imgTag = icon
+      ? `<img src="${ICON_LOCAL}${icon}" alt="${name}" loading="lazy"
+             onerror="this.onerror=function(){this.closest('.item-icon-wrap').classList.add('broken');this.style.display='none';};this.src='${ICON_CDN}${icon}';">`
+      : '';
+
+    const plus     = item.__plus || 0;
+    const attrHtml = attrs.length
+      ? `<div class="item-attrs">${attrs.map(([id, val]) => {
+          const tpl    = statMap[id] || ('Bonus '+id);
+          const text   = tpl.replace('%d', val).replace('%%','%');
+          const rarity = getBonusRarity(id, Math.abs(val));
+          const cls    = rarity === 'epic' ? 'bonus-epic' : rarity === 'rare' ? 'bonus-rare' : '';
+          return `<span class="attr-chip${cls ? ' '+cls : ''}">${text}</span>`;
+        }).join('')}</div>`
+      : '';
+
+    const catName   = cat.name || cat.label;
+    const plusBadge = plus > 0 ? `<span class="badge badge-gold" style="font-size:11px;">+${plus}</span>` : '';
+
+    const listInfo = currentView === 'list'
+      ? `<div class="list-info">
+          <div class="item-name">${name}</div>
+          <div class="item-seller">Vendedor: <span>${item.seller || '—'}</span></div>
+          ${attrHtml}
+        </div>`
+      : `<div class="item-name">${name}</div>
+         <div class="item-seller">Vendedor: <span>${item.seller || '—'}</span></div>
+         ${attrHtml}`;
+
+    return `<div class="item-card" onclick="openModal(${item.id || item.__idx}, ${vnum})" data-id="${item.__idx}">
+      <div class="item-icon-wrap${wrapBroken}">
+        ${imgTag}
+        <span class="icon-placeholder">${cat.emoji}</span>
+      </div>
+      ${listInfo}
+      <div style="margin-top:auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;">
+        <span class="badge ${cat.cls}" style="font-size:10px;" title="${catName}">${cat.emoji} ${catName.length > 14 ? catName.slice(0,13)+'…' : catName}</span>
+        ${plusBadge}
+        ${item.quantity > 1 ? `<span class="badge badge-blue" style="font-size:10px;">×${item.quantity}</span>` : ''}
+      </div>
+      <span class="item-price ${price.cls}">${price.html}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ============================================================
+   PAGINACIÓN
+   ============================================================ */
+function renderPagination(total) {
+  const pages = Math.ceil(total / PER_PAGE);
+  const pag   = document.getElementById('pagination');
+  if (pages <= 1) { pag.innerHTML = ''; return; }
+
+  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+  const range = 2;
+  for (let i = 1; i <= pages; i++) {
+    if (i === 1 || i === pages || (i >= currentPage - range && i <= currentPage + range)) {
+      html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    } else if (i === currentPage - range - 1 || i === currentPage + range + 1) {
+      html += `<span class="page-info">…</span>`;
+    }
+  }
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===pages?'disabled':''}>›</button>`;
+  html += `<span class="page-info">${currentPage} / ${pages}</span>`;
+  pag.innerHTML = html;
+}
+
+function goPage(n) {
+  const pages = Math.ceil(filteredItems.length / PER_PAGE);
+  if (n < 1 || n > pages) return;
+  currentPage = n;
+  renderCards(filteredItems.slice((n-1)*PER_PAGE, n*PER_PAGE));
+  renderPagination(filteredItems.length);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================================
+   FILTROS
+   ============================================================ */
+function applyFilters() {
+  const q       = document.getElementById('searchName').value.toLowerCase().trim();
+  const seller  = document.getElementById('filterSeller').value.toLowerCase().trim();
+  const catText = document.getElementById('filterCategory').value.toLowerCase().trim();
+  const sortVal = document.getElementById('sortBy').value;
+  const plusVal   = document.getElementById('filterPlus').value;
+  const bonusQs   = getBonusQueries();   // array de términos (todos deben cumplirse)
+
+  // Rango de precios
+  const minYang = parseFloat(document.getElementById('minYang').value) || 0;
+  const maxYang = parseFloat(document.getElementById('maxYang').value) || Infinity;
+  const minWon  = parseFloat(document.getElementById('minWon').value)  || 0;
+  const maxWon  = parseFloat(document.getElementById('maxWon').value)  || Infinity;
+  const hasYangFilter = minYang > 0 || maxYang < Infinity;
+  const hasWonFilter  = minWon  > 0 || maxWon  < Infinity;
+
+  filteredItems = itemsGlobal.filter(item => {
+    // Nombre
+    if (q && !(item.__nameLower || '').includes(q)) return false;
+
+    // Vendedor (contains)
+    if (seller && !(item.seller || '').toLowerCase().includes(seller)) return false;
+
+    // Categoría:
+    // - Si hay código exacto seleccionado → filtro exacto por código
+    // - Si hay texto libre → contains sobre nombre de categoría
+    if (selectedCatCode && selectedCatCode !== '__text__') {
+      if (item.__rawCategory !== selectedCatCode) return false;
+    } else if (selectedCatCode === '__text__' && catText) {
+      const catDisplayName = (item.__catName || '').toLowerCase();
+      const catCode        = (item.__rawCategory || '').toLowerCase();
+      if (!catDisplayName.includes(catText) && !catCode.includes(catText)) return false;
+    }
+
+    // Grupo de tipo (botones de acceso rápido)
+    if (activeCatGroup && getCat(item.category).group !== activeCatGroup) return false;
+
+    // Mejora
+    if (plusVal !== '' && (item.__plus || 0) !== parseInt(plusVal)) return false;
+
+    // Multi-bonus (AND): el item debe satisfacer TODOS los filtros de bonus
+    // Cada filtro = { text, minVal }
+    // El item debe tener al menos UN attr cuyo texto contenga `text`
+    // y cuyo valor sea >= minVal (si minVal > 0)
+    if (bonusQs.length > 0) {
+      const enchList = item.__enchList || [];
+      for (const { text, minVal } of bonusQs) {
+        const match = enchList.some(e =>
+          e.text.includes(text) && (minVal <= 0 || e.val >= minVal)
+        );
+        if (!match) return false;
+      }
+    }
+
+    // Precio Yang (se aplica sobre yangPrice del item)
+    if (hasYangFilter && (item.yangPrice || 0) > 0) {
+      const y = item.yangPrice;
+      if (y < minYang || y > maxYang) return false;
+    }
+
+    // Precio Won (se aplica sobre wonPrice del item)
+    if (hasWonFilter && (item.wonPrice || 0) > 0) {
+      const w = item.wonPrice;
+      if (w < minWon || w > maxWon) return false;
+    }
+
+    return true;
+  });
+
+  // Ordenación — usa yang equivalente para precios mixtos
+  if (sortVal === 'price_asc') {
+    filteredItems.sort((a, b) => priceToYang(a) - priceToYang(b));
+  } else if (sortVal === 'price_desc') {
+    filteredItems.sort((a, b) => priceToYang(b) - priceToYang(a));
+  } else if (sortVal === 'qty_desc') {
+    filteredItems.sort((a, b) => b.quantity - a.quantity);
+  } else if (sortVal === 'name_asc') {
+    filteredItems.sort((a, b) => (a.__nameLower || '').localeCompare(b.__nameLower || ''));
+  } else if (sortVal === 'plus_desc') {
+    filteredItems.sort((a, b) => (b.__plus || 0) - (a.__plus || 0));
+  }
+
+  currentPage = 1;
+  document.getElementById('countLabel').innerHTML = `<strong>${filteredItems.length.toLocaleString()}</strong> items`;
+  renderCards(filteredItems.slice(0, PER_PAGE));
+  renderPagination(filteredItems.length);
+}
+
+function resetFilters() {
+  ['searchName','filterSeller','filterCategory','minYang','maxYang','minWon','maxWon'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('sortBy').value    = '';
+  document.getElementById('filterPlus').value = '';
+  selectedCatCode = '';
+  activeCatGroup  = '';
+  clearBonusSlots();
+  document.querySelectorAll('.sort-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+  applyFilters();
+}
+
+function setCatFilter(group, btn) {
+  activeCatGroup = group;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+/* ============================================================
+   VISTA
+   ============================================================ */
+function setView(v) {
+  currentView = v;
+  const grid  = document.getElementById('itemsGrid');
+  grid.classList.toggle('list-view', v === 'list');
+  document.getElementById('gridViewBtn').classList.toggle('active', v === 'grid');
+  document.getElementById('listViewBtn').classList.toggle('active', v === 'list');
+  applyFilters();
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+function openModal(idx, vnum) {
+  const item = itemsGlobal[idx] || itemsGlobal.find(i => i.vnum === vnum);
+  if (!item) return;
+
+  const name  = itemNames[vnum] || item.name || '???';
+  const icon  = itemIcons[vnum];
+  const price = formatPrice(item);
+  const cat   = getCat(item.category);
+  const attrs = item.attrs || [];
+
+  const modalWrapBroken = icon ? '' : ' broken';
+  const imgTag = icon
+    ? `<img src="${ICON_LOCAL}${icon}" alt="${name}" loading="lazy"
+           onerror="this.onerror=function(){this.closest('.modal-icon-wrap').classList.add('broken');this.style.display='none';};this.src='${ICON_CDN}${icon}';">`
+    : '';
+
+  // Precio detallado en modal
+  const won  = item.wonPrice  || 0;
+  const yang = item.yangPrice || 0;
+  let priceRows = '';
+  if (won > 0)  priceRows += `<div class="modal-row"><span>Precio Won</span><span class="price-won-line">💜 ${won.toLocaleString()} Won</span></div>`;
+  if (yang > 0) priceRows += `<div class="modal-row"><span>Precio Yang</span><span class="price-yang-line">💰 ${yang.toLocaleString()} Yang</span></div>`;
+  if (won === 0 && yang === 0) priceRows = `<div class="modal-row"><span>Precio</span><span style="color:#58d68d;">🎁 Gratis</span></div>`;
+  if (won > 0 && yang > 0)
+    priceRows += `<div class="modal-row"><span>Equiv. Yang total</span><span style="color:var(--text-muted);font-size:12px;">${(won * WON_TO_YANG + yang).toLocaleString()} Yang</span></div>`;
+  if (won > 0 && item.quantity > 1)
+    priceRows += `<div class="modal-row"><span>Total Won (×${item.quantity})</span><span class="price-won-line">${(won * item.quantity).toLocaleString()} Won</span></div>`;
+  if (yang > 0 && item.quantity > 1)
+    priceRows += `<div class="modal-row"><span>Total Yang (×${item.quantity})</span><span class="price-yang-line">${(yang * item.quantity).toLocaleString()} Yang</span></div>`;
+
+  const attrsHtml = attrs.length
+    ? `<div class="modal-section">
+        <h4>✨ Bonus del item</h4>
+        <div class="modal-attr-list">
+          ${attrs.map(([id, val]) => {
+            const tpl    = statMap[id] || ('Bonus ID ' + id);
+            const text   = tpl.replace('%d', val).replace('%%','%');
+            const rarity = getBonusRarity(id, Math.abs(val));
+            const color  = rarity === 'epic' ? 'var(--accent-gold)' : rarity === 'rare' ? '#bb8fce' : 'var(--text-secondary)';
+            return `<div class="modal-attr-row">
+              <span class="attr-icon">${rarity === 'epic' ? '⭐' : rarity === 'rare' ? '🔮' : '⚡'}</span>
+              <span class="attr-name" style="color:${color}">${text}</span>
+              <span class="attr-val" style="color:${color}">+${val}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`
+    : '';
+
+  const socketsHtml = item.sockets && item.sockets.filter(s => s > 0).length
+    ? `<div class="modal-section">
+        <h4>💎 Ranuras (Sockets)</h4>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          ${item.sockets.filter(s => s > 0).map(s =>
+            `<span class="badge badge-blue" style="font-size:12px;">⬡ ${s}</span>`
+          ).join('')}
+        </div>
+      </div>`
+    : '';
+
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-item-header">
+      <div class="modal-icon-wrap${modalWrapBroken}">
+        ${imgTag}
+        <span class="icon-placeholder">${cat.emoji}</span>
+      </div>
+      <div>
+        <div class="modal-title">${name}</div>
+        <div class="modal-seller">Vendedor: <strong>${item.seller || '—'}</strong></div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge ${cat.cls}">${cat.emoji} ${cat.label}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h4>📋 Detalles</h4>
+      <div class="modal-row"><span>VNUM</span><span>#${vnum}</span></div>
+      <div class="modal-row"><span>Categoría</span><span>${cat.emoji} ${cat.name} <span style="color:var(--text-muted);font-size:11px;">(${item.category})</span></span></div>
+      <div class="modal-row"><span>Cantidad</span><span>×${item.quantity}</span></div>
+      ${priceRows}
+    </div>
+
+    ${attrsHtml}
+    ${socketsHtml}
+
+    <div style="text-align:center;margin-top:8px;">
+      <button class="btn btn-outline btn-sm"
+              onclick="document.getElementById('itemModal').classList.remove('open')">
+        Cerrar
+      </button>
+    </div>`;
+
+  document.getElementById('itemModal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target.id === 'itemModal')
+    document.getElementById('itemModal').classList.remove('open');
+}
+
+/* ============================================================
+   PREPROCESAR ITEMS
+   ============================================================ */
+function preprocessItems() {
+  itemsGlobal.forEach((item, idx) => {
+    item.__idx          = idx;
+    const name          = itemNames[String(item.vnum)] || item.name || '';
+    item.__nameLower    = name.toLowerCase();
+    item.__plus         = detectPlus(name);
+    item.__rawCategory  = item.category || '';
+    const catObj        = getCat(item.category);
+    item.__catName      = `${catObj.emoji} ${catObj.name}`;
+    item.__group        = catObj.group;
+    item.__priceYang    = priceToYang(item);
+    // __enchList: array de { text, val } por attr
+    // text = template SIN el valor (para matching, igual que la datalist)
+    // val  = valor numérico del bonus (para comparar con el mínimo)
+    item.__enchList = (item.attrs || []).map(([id, val]) => {
+      if (!id) return null;
+      const tpl = statMap[String(id)];
+      if (!tpl) return null;
+      return {
+        text: tpl.replace('%d', '').replace('%%', '%').toLowerCase().replace(/\s+/g, ' ').trim(),
+        val:  Math.abs(val)
+      };
+    }).filter(Boolean);
+    // __enchTexts: solo los strings (compatibilidad con otras partes del código)
+    item.__enchTexts = item.__enchList.map(e => e.text);
+  });
+}
+
+/* ============================================================
+   RELLENAR DATALISTS
+   ============================================================ */
+function fillSellerDatalist() {
+  const dl = document.getElementById('sellerList');
+  const cnt = {};
+  itemsGlobal.forEach(i => { if (i.seller) cnt[i.seller] = (cnt[i.seller] || 0) + 1; });
+  const sellers = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a]).slice(0, 300);
+  dl.innerHTML  = sellers.map(s => `<option value="${s}">`).join('');
+}
+
+function fillBonusDatalist() {
+  const dl  = document.getElementById('bonusList');
+  const set = new Set();
+  Object.values(statMap).forEach(v => {
+    const clean = v.replace('%d','').replace('%%','%').trim();
+    if (clean) set.add(clean);
+  });
+  dl.innerHTML = [...set].sort().map(s => `<option value="${s}">`).join('');
+}
+
+/* ============================================================
+   CARGA DE DATOS
+   ============================================================ */
+(async () => {
+  const loadingEl = document.getElementById('loadingState');
+  const gridEl    = document.getElementById('itemsGrid');
+  try {
+    const [items, names, icons, stats] = await Promise.all([
+      fetch('./data/531.json').then(r => r.json()),
+      fetch('./data/item_names.json').then(r => r.json()),
+      fetch('./data/item_icon.json').then(r => r.json()),
+      fetch('./data/stat_map.json').then(r => r.json()),
+    ]);
+
+    itemsGlobal = items;
+    itemNames   = names;
+    itemIcons   = icons;
+    statMap     = stats;
+
+    preprocessItems();
+
+    loadingEl.style.display = 'none';
+    gridEl.style.display    = 'grid';
+
+    buildCatOptions();
+    initCatDropdown();
+    fillSellerDatalist();
+    fillBonusDatalist();
+    applyFilters();
+
+    // Arrancar el primer slot de bonus
+    addBonusSlot();
+
+    // Listeners de filtros estáticos
+    ['searchName','filterSeller','sortBy','filterPlus',
+     'minYang','maxYang','minWon','maxWon'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input',  applyFilters);
+      el.addEventListener('change', applyFilters);
+    });
+
+  } catch (err) {
+    loadingEl.innerHTML = `
+      <div class="emoji" style="font-size:64px;margin-bottom:16px;">⚠️</div>
+      <h3 style="margin-bottom:8px;color:var(--accent-red-bright);">Error cargando datos</h3>
+      <p style="color:var(--text-muted);margin-bottom:20px;">No se pudieron cargar los archivos de datos.<br>
+         Asegúrate de que la carpeta <code>data/</code> contiene los archivos JSON.</p>
+      <code style="font-size:12px;color:var(--text-muted);">${err.message}</code>`;
+  }
+})();
+
+/* ============================================================
+   MISC
+   ============================================================ */
+document.getElementById('menuToggle').addEventListener('click', () =>
+  document.getElementById('mainNav').classList.toggle('open'));
+</script>
+</body>
+</html>

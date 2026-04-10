@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guías & Builds – CheffM2</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .class-hero {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 32px;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .class-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      background-size: cover;
+    }
+    .class-icon-big {
+      font-size: 80px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .class-hero-info { position: relative; z-index: 1; }
+    .class-hero-info h2 { font-size: 32px; margin-bottom: 8px; }
+    .class-hero-info p { color: var(--text-secondary); font-size: 15px; margin-bottom: 16px; line-height: 1.7; }
+    .class-rating {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .class-rating-item { text-align: center; }
+    .class-rating-item label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px; }
+    .rating-stars { font-size: 18px; }
+
+    .build-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .build-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(192, 57, 43, 0.05);
+      cursor: pointer;
+    }
+    .build-header:hover { background: rgba(192, 57, 43, 0.08); }
+    .build-header h3 { font-size: 17px; }
+    .build-body { padding: 24px; display: none; }
+    .build-body.open { display: block; }
+
+    .equipment-slot {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .equipment-slot:last-child { border-bottom: none; }
+    .slot-icon { font-size: 24px; width: 36px; text-align: center; }
+    .slot-name { font-size: 13px; color: var(--text-muted); width: 100px; }
+    .slot-item { flex: 1; font-size: 14px; font-weight: 600; }
+    .slot-bonus { font-size: 13px; color: var(--accent-gold); }
+
+    .tip-box {
+      background: rgba(243, 156, 18, 0.08);
+      border: 1px solid rgba(243, 156, 18, 0.2);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin: 16px 0;
+    }
+    .tip-box strong { color: var(--accent-gold); }
+
+    .step-list { list-style: none; counter-reset: steps; }
+    .step-list li {
+      counter-increment: steps;
+      padding: 12px 16px 12px 56px;
+      position: relative;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .step-list li:last-child { border-bottom: none; }
+    .step-list li::before {
+      content: counter(steps);
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      background: var(--gradient-red);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-title);
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .combo-section {
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 16px;
+    }
+    .combo-section h4 { font-size: 14px; color: var(--accent-gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+    .combo-skills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .skill-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius);
+      font-size: 13px;
+    }
+    .combo-arrow { color: var(--accent-red); font-size: 18px; }
+
+    @media (max-width: 768px) {
+      .class-hero { grid-template-columns: 1fr; text-align: center; }
+      .class-rating { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="navbar-logo">C</div>
+    <div class="navbar-title">Cheff<span>M2</span></div>
+  </div>
+  <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+  <ul class="navbar-nav" id="mainNav">
+    <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+    <li><a href="herramientas.html"><i class="fas fa-tools"></i> Herramientas</a></li>
+    <li><a href="wiki.html"><i class="fas fa-book"></i> Wiki</a></li>
+    <li><a href="guias.html" class="active"><i class="fas fa-scroll"></i> Guías</a></li>
+    <li><a href="foro.html"><i class="fas fa-comments"></i> Foro</a></li>
+    <li><a href="comercio.html"><i class="fas fa-store"></i> Comercio</a></li>
+    <li><a href="https://www.twitch.tv/" target="_blank" class="navbar-twitch"><i class="fab fa-twitch"></i> Ver en Twitch</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+
+  <div class="page-header">
+    <div class="section-tag">Portal CheffM2</div>
+    <h1 class="page-header-title">📜 <span style="color: var(--accent-gold);">Guías & Builds</span></h1>
+    <p class="page-header-subtitle">Guías escritas por Cheff con builds optimizados para cada clase</p>
+  </div>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- CLASS SELECTOR -->
+      <div class="class-tabs" id="classTabs">
+        <button class="class-tab active" onclick="showClass('warrior', this)">⚔️ Guerrero</button>
+        <button class="class-tab" onclick="showClass('ninja', this)">🗡️ Ninja</button>
+        <button class="class-tab" onclick="showClass('sura', this)">🔮 Sura</button>
+        <button class="class-tab" onclick="showClass('shaman', this)">🌿 Chamán</button>
+        <button class="class-tab" onclick="showClass('general', this)">📖 Guías Generales</button>
+      </div>
+
+      <!-- ===== WARRIOR ===== -->
+      <div id="class-warrior" class="class-section">
+        <div class="class-hero">
+          <div class="class-icon-big">⚔️</div>
+          <div class="class-hero-info">
+            <h2>Guerrero <span style="color:var(--accent-red)">—</span> El Tanque Imparable</h2>
+            <p>
+              El Guerrero es la clase más resistente y directa de Metin2. Con alta defensa y ataques físicos devastadores,
+              es ideal para el farmeo de metines y el combate cuerpo a cuerpo. Su build varía según el estilo de juego:
+              Fuego para PvP agresivo, Tierra para PvE defensivo.
+            </p>
+            <div class="class-rating">
+              <div class="class-rating-item">
+                <label>Dificultad</label>
+                <div class="rating-stars">⭐⭐☆☆☆</div>
+              </div>
+              <div class="class-rating-item">
+                <label>PvE</label>
+                <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              </div>
+              <div class="class-rating-item">
+                <label>PvP</label>
+                <div class="rating-stars">⭐⭐⭐⭐☆</div>
+              </div>
+              <div class="class-rating-item">
+                <label>Grupo</label>
+                <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat distribution -->
+        <div class="build-card">
+          <div class="build-header" onclick="toggleBuild(this)">
+            <h3>📊 Distribución de Stats — Guerrero de Fuego (PvP)</h3>
+            <span style="color: var(--accent-gold); font-size: 20px;">+</span>
+          </div>
+          <div class="build-body">
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">Build recomendada por Cheff para PvP de alto nivel. Máximo daño ofensivo.</p>
+            <div class="stat-bar">
+              <span class="stat-bar-label">Fuerza (STR)</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill" style="width: 90%"></div></div>
+              <span class="stat-bar-value">90</span>
+            </div>
+            <div class="stat-bar">
+              <span class="stat-bar-label">HP (CON)</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill" style="width: 45%; background: var(--gradient-gold)"></div></div>
+              <span class="stat-bar-value">45</span>
+            </div>
+            <div class="stat-bar">
+              <span class="stat-bar-label">Inteligencia</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill" style="width: 10%; background: linear-gradient(135deg,#2980b9,#3498db)"></div></div>
+              <span class="stat-bar-value">10</span>
+            </div>
+            <div class="stat-bar">
+              <span class="stat-bar-label">Destreza</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill" style="width: 5%; background: linear-gradient(135deg,#27ae60,#2ecc71)"></div></div>
+              <span class="stat-bar-value">5</span>
+            </div>
+            <div class="tip-box">
+              <strong>💡 Consejo de Cheff:</strong> Pon todos los puntos en STR hasta nivel 40, luego divide 2:1 entre STR y CON hasta el nivel final.
+            </div>
+          </div>
+        </div>
+
+        <div class="build-card">
+          <div class="build-header" onclick="toggleBuild(this)">
+            <h3>🛡️ Equipamiento Recomendado — Nivel 75+</h3>
+            <span style="color: var(--accent-gold); font-size: 20px;">+</span>
+          </div>
+          <div class="build-body">
+            <div class="equipment-slot">
+              <span class="slot-icon">⚔️</span>
+              <span class="slot-name">Arma</span>
+              <span class="slot-item">Espada de Tigre +7</span>
+              <span class="slot-bonus">+180 Atk, +15% Vel.</span>
+            </div>
+            <div class="equipment-slot">
+              <span class="slot-icon">🛡️</span>
+              <span class="slot-name">Armadura</span>
+              <span class="slot-item">Armadura de Dragón +6</span>
+              <span class="slot-bonus">+200 Def, +800 HP</span>
+            </div>
+            <div class="equipment-slot">
+              <span class="slot-icon">🪖</span>
+              <span class="slot-name">Casco</span>
+              <span class="slot-item">Casco de Batalla +5</span>
+              <span class="slot-bonus">+80 Def, +5% Resistencia</span>
+            </div>
+            <div class="equipment-slot">
+              <span class="slot-icon">🧤</span>
+              <span class="slot-name">Guantes</span>
+              <span class="slot-item">Guanteletes de Acero +5</span>
+              <span class="slot-bonus">+50 Def, +3% Crit</span>
+            </div>
+            <div class="equipment-slot">
+              <span class="slot-icon">👟</span>
+              <span class="slot-name">Botas</span>
+              <span class="slot-item">Botas de Velocidad +5</span>
+              <span class="slot-bonus">+10% Vel. Movimiento</span>
+            </div>
+            <div class="equipment-slot">
+              <span class="slot-icon">💍</span>
+              <span class="slot-name">Anillo ×2</span>
+              <span class="slot-item">Anillo de Rubí +3</span>
+              <span class="slot-bonus">+8% Resistencia Física</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="build-card">
+          <div class="build-header" onclick="toggleBuild(this)">
+            <h3>⚡ Combos de Habilidades para PvP</h3>
+            <span style="color: var(--accent-gold); font-size: 20px;">+</span>
+          </div>
+          <div class="build-body">
+            <div class="combo-section">
+              <h4>🔥 Combo de apertura (Burst)</h4>
+              <div class="combo-skills">
+                <span class="skill-chip">💥 Golpe Devastador</span>
+                <span class="combo-arrow">→</span>
+                <span class="skill-chip">⚔️ Espada Giratoria</span>
+                <span class="combo-arrow">→</span>
+                <span class="skill-chip">🔥 Furia</span>
+                <span class="combo-arrow">→</span>
+                <span class="skill-chip">💥 Golpe Devastador</span>
+              </div>
+            </div>
+            <div class="combo-section">
+              <h4>🛡️ Combo defensivo (cuando estás bajo de HP)</h4>
+              <div class="combo-skills">
+                <span class="skill-chip">🛡️ Guardia Absoluta</span>
+                <span class="combo-arrow">→</span>
+                <span class="skill-chip">💊 Poción Grande</span>
+                <span class="combo-arrow">→</span>
+                <span class="skill-chip">⚡ Carga</span>
+                <span class="combo-arrow">→</span>
+                <span class="skill-chip">💥 Golpe Devastador</span>
+              </div>
+            </div>
+            <div class="tip-box" style="margin-top: 16px;">
+              <strong>⚠️ Importante:</strong> Activa Guardia Absoluta antes de entrar al combate PvP. El timing es crucial.
+            </div>
+          </div>
+        </div>
+
+        <div class="build-card">
+          <div class="build-header" onclick="toggleBuild(this)">
+            <h3>🎮 Guía de Subida de Nivel — Guerrero 1-99</h3>
+            <span style="color: var(--accent-gold); font-size: 20px;">+</span>
+          </div>
+          <div class="build-body">
+            <ul class="step-list">
+              <li><strong>Nv. 1-15:</strong> Mata lobos y jabalíes en la Aldea Inicial. Completa las misiones de tutorial.</li>
+              <li><strong>Nv. 15-30:</strong> Cementerio y Tierra Oscura. Enfócate en los esqueletos para EXP rápida.</li>
+              <li><strong>Nv. 30-50:</strong> Tierra de los Muertos (zona sur). Farmea ogros verdes para drop de equipo.</li>
+              <li><strong>Nv. 50-65:</strong> Bosque Maldito. Empieza a matar Metines de Tierra para dinero y EXP.</li>
+              <li><strong>Nv. 65-80:</strong> Volcán Infernal. Los demonios de fuego dan muy buena EXP.</li>
+              <li><strong>Nv. 80-99:</strong> Valle del Metin. Farmeo intensivo de Metines de Alto Nivel con buen equipo.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== NINJA ===== -->
+      <div id="class-ninja" class="class-section" style="display:none;">
+        <div class="class-hero">
+          <div class="class-icon-big">🗡️</div>
+          <div class="class-hero-info">
+            <h2>Ninja <span style="color:var(--accent-red)">—</span> La Sombra Veloz</h2>
+            <p>
+              El Ninja es el maestro de la velocidad y el daño burst. Con la build correcta puede eliminar enemigos
+              antes de que reaccionen. Difícil de dominar pero letal en manos expertas. Ideal tanto para PvP rápido
+              como para farmeo de jefes.
+            </p>
+            <div class="class-rating">
+              <div class="class-rating-item">
+                <label>Dificultad</label>
+                <div class="rating-stars">⭐⭐⭐⭐☆</div>
+              </div>
+              <div class="class-rating-item">
+                <label>PvE</label>
+                <div class="rating-stars">⭐⭐⭐⭐☆</div>
+              </div>
+              <div class="class-rating-item">
+                <label>PvP</label>
+                <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              </div>
+              <div class="class-rating-item">
+                <label>Grupo</label>
+                <div class="rating-stars">⭐⭐⭐☆☆</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="build-card">
+          <div class="build-header" onclick="toggleBuild(this)">
+            <h3>📊 Distribución de Stats — Ninja Asesino (PvP Burst)</h3>
+            <span style="color: var(--accent-gold); font-size: 20px;">+</span>
+          </div>
+          <div class="build-body">
+            <div class="stat-bar">
+              <span class="stat-bar-label">Destreza (DEX)</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill" style="width: 80%"></div></div>
+              <span class="stat-bar-value">80</span>
+            </div>
+            <div class="stat-bar">
+              <span class="stat-bar-label">Fuerza (STR)</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill" style="width: 55%; background: var(--gradient-gold)"></div></div>
+              <span class="stat-bar-value">55</span>
+            </div>
+            <div class="stat-bar">
+              <span class="stat-bar-label">HP (CON)</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill" style="width: 15%; background: linear-gradient(135deg,#27ae60,#2ecc71)"></div></div>
+              <span class="stat-bar-value">15</span>
+            </div>
+            <div class="tip-box">
+              <strong>💡 Consejo de Cheff:</strong> El ninja necesita velocidad de ataque al máximo. Prioriza DEX siempre. Un ninja lento es un ninja muerto.
+            </div>
+          </div>
+        </div>
+
+        <div class="build-card">
+          <div class="build-header" onclick="toggleBuild(this)">
+            <h3>⚡ Combo Definitivo del Ninja</h3>
+            <span style="color: var(--accent-gold); font-size: 20px;">+</span>
+          </div>
+          <div class="build-body">
+            <div class="combo-section">
+              <h4>💀 El Combo del Asesino (3 segundos)</h4>
+              <div class="combo-skills">
+                <span class="skill-chip">💨 Sombra</span>
+                <span class="combo-arrow">→</span>
+                <span class="skill-chip">🎯 Tiro Certero</span>
+                <span class="combo-arrow">→</span>
+                <span class="skill-chip">🌀 Veneno</span>
+                <span class="combo-arrow">→</span>
+                <span class="skill-chip">🗡️ Puñalada ×3</span>
+              </div>
+            </div>
+            <div class="tip-box">
+              <strong>💡 Clave:</strong> Entra con Sombra para reducir el daño recibido. El veneno es tu mejor aliado en combates largos.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SURA ===== -->
+      <div id="class-sura" class="class-section" style="display:none;">
+        <div class="class-hero">
+          <div class="class-icon-big">🔮</div>
+          <div class="class-hero-info">
+            <h2>Sura <span style="color:var(--accent-red)">—</span> El Maestro Oscuro</h2>
+            <p>
+              El Sura combina magia oscura con ataques físicos potentes. Tiene dos builds principales:
+              Hechicero (magia pura) y Guerrero Oscuro (híbrido físico-mágico). Una clase compleja y versátil.
+            </p>
+            <div class="class-rating">
+              <div class="class-rating-item">
+                <label>Dificultad</label>
+                <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              </div>
+              <div class="class-rating-item">
+                <label>PvE</label>
+                <div class="rating-stars">⭐⭐⭐⭐☆</div>
+              </div>
+              <div class="class-rating-item">
+                <label>PvP</label>
+                <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              </div>
+              <div class="class-rating-item">
+                <label>Grupo</label>
+                <div class="rating-stars">⭐⭐⭐⭐☆</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="build-card">
+          <div class="build-header" onclick="toggleBuild(this)">
+            <h3>📊 Stats — Sura Hechicero (Magia Pura)</h3>
+            <span style="color: var(--accent-gold); font-size: 20px;">+</span>
+          </div>
+          <div class="build-body">
+            <div class="stat-bar">
+              <span class="stat-bar-label">Inteligencia</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill" style="width: 95%; background: linear-gradient(135deg,#8e44ad,#bb8fce)"></div></div>
+              <span class="stat-bar-value">95</span>
+            </div>
+            <div class="stat-bar">
+              <span class="stat-bar-label">HP (CON)</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill" style="width: 40%; background: var(--gradient-gold)"></div></div>
+              <span class="stat-bar-value">40</span>
+            </div>
+            <div class="stat-bar">
+              <span class="stat-bar-label">Fuerza (STR)</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill" style="width: 15%;"></div></div>
+              <span class="stat-bar-value">15</span>
+            </div>
+            <div class="tip-box">
+              <strong>💡 Consejo de Cheff:</strong> El Sura Hechicero es el rey del daño en área. Su debilidad es la movilidad — siempre lleva pociones de velocidad.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SHAMAN ===== -->
+      <div id="class-shaman" class="class-section" style="display:none;">
+        <div class="class-hero">
+          <div class="class-icon-big">🌿</div>
+          <div class="class-hero-info">
+            <h2>Chamán <span style="color:var(--accent-red)">—</span> El Soporte Divino</h2>
+            <p>
+              El Chamán es el sanador del grupo y una clase muy valorada en el juego. Sus habilidades de curación
+              y apoyo lo hacen indispensable en mazmorras. También puede ser letal en PvP como build de daño mágico.
+            </p>
+            <div class="class-rating">
+              <div class="class-rating-item">
+                <label>Dificultad</label>
+                <div class="rating-stars">⭐⭐⭐☆☆</div>
+              </div>
+              <div class="class-rating-item">
+                <label>PvE</label>
+                <div class="rating-stars">⭐⭐⭐⭐☆</div>
+              </div>
+              <div class="class-rating-item">
+                <label>PvP</label>
+                <div class="rating-stars">⭐⭐⭐☆☆</div>
+              </div>
+              <div class="class-rating-item">
+                <label>Grupo</label>
+                <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="build-card">
+          <div class="build-header" onclick="toggleBuild(this)">
+            <h3>📊 Stats — Chamán Sanador (Soporte de Grupo)</h3>
+            <span style="color: var(--accent-gold); font-size: 20px;">+</span>
+          </div>
+          <div class="build-body">
+            <div class="stat-bar">
+              <span class="stat-bar-label">Inteligencia</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill" style="width: 70%; background: linear-gradient(135deg,#27ae60,#58d68d)"></div></div>
+              <span class="stat-bar-value">70</span>
+            </div>
+            <div class="stat-bar">
+              <span class="stat-bar-label">HP (CON)</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill" style="width: 60%; background: var(--gradient-gold)"></div></div>
+              <span class="stat-bar-value">60</span>
+            </div>
+            <div class="stat-bar">
+              <span class="stat-bar-label">Destreza (DEX)</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill" style="width: 20%; background: linear-gradient(135deg,#2980b9,#5dade2)"></div></div>
+              <span class="stat-bar-value">20</span>
+            </div>
+            <div class="tip-box">
+              <strong>💡 Consejo de Cheff:</strong> El Chamán con alta INT cura más. Con el set de soporte correcto, eres invencible en grupo. Prioriza siempre la velocidad de hechizo.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== GENERAL GUIDES ===== -->
+      <div id="class-general" class="class-section" style="display:none;">
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-bottom: 32px;">
+          <div class="build-card" style="margin-bottom: 0;">
+            <div class="build-header" onclick="toggleBuild(this)">
+              <h3>🔴 Guía: Farmeo de Metines</h3>
+              <span style="color: var(--accent-gold); font-size: 20px;">+</span>
+            </div>
+            <div class="build-body">
+              <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                Los Metines son la fuente principal de Yang y EXP en Metin2. Esta guía cubre cómo farmearlos eficientemente.
+              </p>
+              <ul class="step-list">
+                <li>Usa siempre pociones de velocidad antes de atacar un Metin.</li>
+                <li>Monta guardia alrededor del Metin para evitar mobs de apoyo.</li>
+                <li>Con grupo de 3-5, pueden limpiar zonas mucho más rápido.</li>
+                <li>Llevar al menos 200 pociones de HP por sesión de farmeo.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="build-card" style="margin-bottom: 0;">
+            <div class="build-header" onclick="toggleBuild(this)">
+              <h3>💰 Guía: Ganar Yang Rápido</h3>
+              <span style="color: var(--accent-gold); font-size: 20px;">+</span>
+            </div>
+            <div class="build-body">
+              <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                Métodos probados por Cheff para ganar Yang de forma eficiente.
+              </p>
+              <ul class="step-list">
+                <li><strong>Farmeo de Metines:</strong> 5-10M Yang/hora a nivel 85+.</li>
+                <li><strong>Mejorar y vender equipo:</strong> Compra equipo base, mejora a +5/+6 y vende.</li>
+                <li><strong>Mazmorras en grupo:</strong> Los drops son mejores y se pueden vender.</li>
+                <li><strong>Mercado de jugadores:</strong> Especula con items de evento.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="build-card" style="margin-bottom: 0;">
+            <div class="build-header" onclick="toggleBuild(this)">
+              <h3>⚔️ Guía: PvP para Principiantes</h3>
+              <span style="color: var(--accent-gold); font-size: 20px;">+</span>
+            </div>
+            <div class="build-body">
+              <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                Consejos básicos para empezar en el PvP de Metin2.
+              </p>
+              <ul class="step-list">
+                <li>Aprende los cooldowns de tus habilidades antes de ir al PvP.</li>
+                <li>Siempre lleva pociones de HP y SP para combates prolongados.</li>
+                <li>Estudia los combos de la clase enemiga para anticiparte.</li>
+                <li>La velocidad de movimiento es crucial — invierte en botas buenas.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="build-card" style="margin-bottom: 0;">
+            <div class="build-header" onclick="toggleBuild(this)">
+              <h3>🏆 Guía: Mazmorras y Jefes</h3>
+              <span style="color: var(--accent-gold); font-size: 20px;">+</span>
+            </div>
+            <div class="build-body">
+              <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                Cómo prepararse y enfrentar las mazmorras del endgame.
+              </p>
+              <ul class="step-list">
+                <li>Siempre lleva un Chamán en el grupo para curación constante.</li>
+                <li>Los jefes tienen patrones de ataque — memorízalos.</li>
+                <li>Coordina los stuns con tu equipo para maximizar el daño.</li>
+                <li>Prepara al menos 500 pociones grandes por run de mazmorra.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="build-card">
+          <div class="build-header" onclick="toggleBuild(this)">
+            <h3>🎯 Consejos Generales de Cheff</h3>
+            <span style="color: var(--accent-gold); font-size: 20px;">+</span>
+          </div>
+          <div class="build-body">
+            <div class="tip-box">
+              <strong>💡 #1 — La paciencia es clave:</strong> No gastes todo tu Yang en mejorar equipo al principio. Acumula primero y mejora cuando tengas suficiente para reintentos.
+            </div>
+            <div class="tip-box">
+              <strong>💡 #2 — Comunidad:</strong> Únete a un clan activo lo antes posible. Los clanes dan bonificaciones y facilitan el farmeo en grupo.
+            </div>
+            <div class="tip-box">
+              <strong>💡 #3 — Economía:</strong> Aprende los precios del mercado. Comprar items baratos y venderlos caros es tan importante como el farmeo.
+            </div>
+            <div class="tip-box">
+              <strong>💡 #4 — Eventos:</strong> Participa siempre en los eventos del juego. Suelen dar los mejores items del juego de forma temporal.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>Cheff<span>M2</span></h3>
+      <p>El portal definitivo de Metin2 creado por el streamer Cheff.</p>
+      <div class="footer-social">
+        <a href="https://www.twitch.tv/" target="_blank"><i class="fab fa-twitch"></i></a>
+        <a href="https://www.youtube.com/" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="https://discord.gg/" target="_blank"><i class="fab fa-discord"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Guías</h4>
+      <ul>
+        <li><a href="#" onclick="showClass('warrior', null)">Guerrero</a></li>
+        <li><a href="#" onclick="showClass('ninja', null)">Ninja</a></li>
+        <li><a href="#" onclick="showClass('sura', null)">Sura</a></li>
+        <li><a href="#" onclick="showClass('shaman', null)">Chamán</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Navegación</h4>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="herramientas.html">Herramientas</a></li>
+        <li><a href="wiki.html">Wiki</a></li>
+        <li><a href="foro.html">Foro</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Comunidad</h4>
+      <ul>
+        <li><a href="https://discord.gg/" target="_blank">Discord</a></li>
+        <li><a href="https://www.twitch.tv/" target="_blank">Twitch</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CheffM2 · Portal no oficial de Metin2</p>
+  </div>
+</footer>
+
+<script>
+function showClass(cls, el) {
+  document.querySelectorAll('.class-section').forEach(s => s.style.display = 'none');
+  document.querySelectorAll('.class-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('class-' + cls).style.display = 'block';
+  if (el) el.classList.add('active');
+}
+
+function toggleBuild(header) {
+  const body = header.nextElementSibling;
+  const icon = header.querySelector('span:last-child');
+  body.classList.toggle('open');
+  icon.textContent = body.classList.contains('open') ? '−' : '+';
+}
+
+// Mobile menu
+const menuToggle = document.getElementById('menuToggle');
+const mainNav = document.getElementById('mainNav');
+menuToggle.addEventListener('click', () => mainNav.classList.toggle('open'));
+</script>
+</body>
+</html>
