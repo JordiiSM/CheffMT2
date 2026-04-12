@@ -1,0 +1,68 @@
+window.M2Helper = window.M2Helper || {};
+window.M2Helper.lang = {
+getCurrent: function() {
+const lang = localStorage.getItem("lang");
+return ['de','en','tr'].includes(lang) ? lang : 'de';
+},
+set: function(lang, save = true) {
+if (!['de','en','tr'].includes(lang)) {
+console.warn('Invalid language:', lang);
+return false;
+}
+if (save) {
+localStorage.setItem("lang", lang);
+}
+this.updateButton(lang);
+location.reload();
+return true;
+},
+updateButton: function(lang) {
+const langIcon = document.getElementById("langIcon");
+const langText = document.getElementById("langText");
+if (!langIcon || !langText) {
+console.warn('langIcon or langText not found');
+return;
+}
+const langConfig = {
+de: { flag: 'de.svg', alt: 'DE', text: 'Deutsch' },
+en: { flag: 'gb.svg', alt: 'GB', text: 'English' },
+tr: { flag: 'tr.svg', alt: 'TR', text: 'Türkçe' }
+};
+const config = langConfig[lang] || langConfig.de;
+langIcon.src = `resources/flags/${config.flag}`;
+langIcon.alt = config.alt;
+console.log(`Updated flag to: ${config.flag} for language: ${lang}`);
+langText.textContent = config.text;
+},
+initDropdown: function() {
+const langBtn = document.getElementById("langBtn");
+const langMenu = document.getElementById("langMenu");
+if (!langBtn || !langMenu) {
+console.warn('Language dropdown elements not found');
+return;
+}
+const currentLang = this.getCurrent();
+this.updateButton(currentLang);
+langBtn.addEventListener("click", function(e) {
+e.stopPropagation();
+langMenu.classList.toggle("hidden");
+});
+langMenu.querySelectorAll("button[data-lang]").forEach(function(btn) {
+btn.addEventListener("click", function() {
+const selectedLang = btn.dataset.lang;
+if (window.M2Helper.lang.set(selectedLang)) {
+langMenu.classList.add("hidden");
+}
+});
+});
+document.addEventListener("click", function(e) {
+if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
+langMenu.classList.add("hidden");
+}
+});
+console.log('Language dropdown initialized with language:', currentLang);
+}
+};
+document.addEventListener('DOMContentLoaded', function() {
+window.M2Helper.lang.initDropdown();
+});

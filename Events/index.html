@@ -1,0 +1,1432 @@
+<!DOCTYPE html><html lang="de"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Metin2 Events Guide - Alle Event-Infos | M2-Helper</title>
+<meta name="description" content="Komplette Übersicht aller Metin2 Events. Belohnungen, Strategien und Tipps für maximale Erfolge.">
+<meta name="keywords" content="metin2 events, metin2 okey event, metin2 moonlight, metin2 okey, catch the king, metin2 event guide, metin2, yutnori, seher, seer, goblin, asmodeus, metin2 event belohnungen">
+<meta name="author" content="NikKing97">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<link rel="canonical" href="https://m2-helper.com/events">
+<link rel="icon" href="images/s%C3%B6ldner_2.png" type="image/png">
+<link rel="apple-touch-icon" href="images/s%C3%B6ldner_2.png">
+<meta name="theme-color" content="#3e2611">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://m2-helper.com/events">
+<meta property="og:title" content="Metin2 Events Guide - Helper Tool | M2-Helper">
+<meta property="og:description" content="Complete overview of Metin2 events with rewards, strategies and tips.">
+<meta property="og:image" content="images/s%C3%B6ldner_2.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:site_name" content="M2-Helper">
+<meta property="og:locale" content="de_DE">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Metin2 Events Guide - Helper Tool | M2-Helper">
+<meta name="twitter:description" content="Complete overview of Metin2 events with rewards and tips.">
+<meta name="twitter:image" content="https://m2-helper.com/resources/söldner_2.png">
+<script type="application/ld+json">
+{
+"@context": "https://schema.org",
+"@type": "CollectionPage",
+"name": "Metin2 Events Guide",
+"description": "Umfassende Sammlung von Metin2 Event-Informationen",
+"url": "https://m2-helper.com/events",
+"inLanguage": ["de", "en", "tr"],
+"isPartOf": {
+"@type": "WebSite",
+"name": "M2-Helper",
+"url": "https://m2-helper.com"
+},
+"author": {
+"@type": "Person",
+"name": "NikKing97"
+}
+}
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet">
+<link rel="stylesheet" href="css/search-styles.css">
+<style>
+body{position:relative;font-family:'Montserrat',Arial,sans-serif;}
+/* SVG flag styling */
+.flag-icon {
+display: inline-block;
+width: 1.25rem;
+height: 1.25rem;
+vertical-align: middle;
+}
+/* Fix flag alignment in language button */
+#langIcon {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 1.25rem;
+height: 1.25rem;
+}
+body::before{
+content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.98;
+background:
+radial-gradient(ellipse at 65% 20%, #f1d9a3cc 0%, transparent 65%),
+radial-gradient(ellipse at 30% 85%, #5d050550 0%, transparent 70%),
+linear-gradient(135deg,#2d1a07 0%,#3e2611 45%,#f1d9a3 110%);
+}
+.main-content{position:relative;z-index:100;}
+.dropdown{position:absolute;right:2rem;top:2rem;z-index:1;}
+.event-card {
+transition: all 0.3s ease;
+}
+.event-card:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 25px rgba(93,5,5,0.15);
+}
+.event-content {
+max-height: 0;
+overflow: hidden;
+transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+}
+.event-content.open {
+max-height: none;
+padding: 1.5rem;
+overflow: visible;
+}
+@media (max-width: 640px) {
+.event-content.open {
+padding: 1rem;
+font-size: 0.875rem;
+max-height: none;
+overflow: visible;
+}
+.event-content.open h3 {
+font-size: 1rem;
+}
+.event-content.open h4 {
+font-size: 0.9rem;
+}
+.event-content img:not(.event-showcase-image) {
+max-width: 1.25rem !important;
+height: auto !important;
+margin: 0 0.25rem !important;
+vertical-align: middle;
+}
+.event-content p, .event-content li {
+word-wrap: break-word;
+overflow-wrap: break-word;
+line-height: 1.4;
+}
+/* Special handling for showcase images - should remain visible on mobile */
+.event-showcase-image {
+max-width: 100% !important;
+height: auto !important;
+margin: 0.5rem 0 !important;
+}
+}
+.event-header {
+cursor: pointer;
+border-radius: 0.75rem 0.75rem 0 0;
+transition: background 0.3s ease;
+}
+.event-header.open {
+background: linear-gradient(to right, #5D0505, #341002) !important;
+}
+.expand-icon {
+transition: transform 0.3s ease;
+}
+.expand-icon.rotated {
+transform: rotate(180deg);
+}
+.tips-list {
+list-style: none;
+padding-left: 0;
+}
+.tips-list li {
+position: relative;
+padding-left: 1.25rem;
+margin-bottom: 0.25rem;
+word-wrap: break-word;
+overflow-wrap: break-word;
+}
+.tips-list li::before {
+content: "•";
+position: absolute;
+left: 0;
+top: 0rem;
+color: currentColor;
+font-weight: bold;
+}
+@media (max-width: 640px) {
+.tips-list li {
+font-size: 0.875rem;
+line-height: 1.4;
+padding-left: 1rem;
+}
+.tips-list li img:not(.event-showcase-image) {
+max-width: 1rem !important;
+height: auto !important;
+vertical-align: middle;
+}
+}
+.treasure-ticket-highlight {
+background: rgba(93, 5, 5, 0.1);
+border: 1px solid rgba(93, 5, 5, 0.3);
+border-radius: 0.375rem;
+padding: 0.25rem 0.5rem;
+margin: 0.125rem 0;
+display: inline-block;
+position: relative;
+cursor: help;
+transition: all 0.3s ease;
+word-wrap: break-word;
+overflow-wrap: break-word;
+}
+@media (max-width: 640px) {
+.treasure-ticket-highlight {
+padding: 0.125rem 0.25rem;
+font-size: 0.875rem;
+line-height: 1.3;
+margin: 0.0625rem 0;
+}
+.treasure-ticket-highlight img:not(.event-showcase-image) {
+max-width: 1rem !important;
+height: auto !important;
+margin: 0 0.25rem !important;
+}
+}
+.treasure-ticket-highlight:hover {
+background: rgba(93, 5, 5, 0.2);
+border-color: rgba(93, 5, 5, 0.5);
+box-shadow: 0 2px 8px rgba(93, 5, 5, 0.2);
+}
+.tooltip {
+position: absolute;
+top: 100%;
+left: 50%;
+transform: translateX(-50%);
+background: rgba(52, 16, 2, 0.98);
+color: #F1D9A3;
+padding: 0.75rem;
+border-radius: 0.5rem;
+font-size: 0.875rem;
+box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+border: 1px solid rgba(241, 217, 163, 0.4);
+opacity: 0;
+visibility: hidden;
+transition: opacity 0.3s ease, visibility 0.3s ease;
+z-index: 9999999 !important;
+margin-top: 0.5rem;
+width: 380px;
+max-width: calc(100vw - 2rem);
+white-space: normal;
+text-align: center;
+pointer-events: none;
+backdrop-filter: blur(2px);
+}
+.tooltip::after {
+content: '';
+position: absolute;
+left: 50%;
+transform: translateX(-50%);
+border-left: 5px solid transparent;
+border-right: 5px solid transparent;
+bottom: 100%;
+border-bottom: 5px solid rgba(52, 16, 2, 0.98);
+}
+/* Arrow pointing down (tooltip above element) */
+.tooltip.tooltip-above::after {
+top: 100%;
+bottom: auto;
+border-top: 5px solid rgba(52, 16, 2, 0.98);
+border-bottom: none;
+}
+.treasure-ticket-highlight:hover .tooltip {
+opacity: 1;
+visibility: visible;
+pointer-events: auto;
+}
+.treasure-ticket-highlight {
+position: relative;
+overflow: visible;
+z-index: 1;
+}
+/* Enhanced z-index management for all tooltips */
+.treasure-ticket-highlight:hover {
+z-index: 9999998;
+}
+.treasure-ticket-highlight:hover .tooltip {
+z-index: 9999999 !important;
+}
+/* Special high-priority tooltip for Ring der tödlichen Macht */
+.ring-tooltip-priority .tooltip {
+z-index: 9999999 !important;
+}
+.ring-tooltip-priority:hover .tooltip {
+opacity: 1 !important;
+visibility: visible !important;
+pointer-events: auto !important;
+z-index: 9999999 !important;
+}
+/* Mobile optimization for all text content */
+@media (max-width: 640px) {
+.event-content p, .event-content li {
+max-width: 100%;
+overflow-wrap: break-word;
+word-wrap: break-word;
+hyphens: auto;
+}
+.event-content .inline {
+max-width: 1rem;
+height: auto;
+margin: 0 0.125rem;
+}
+/* Mobile grid optimization */
+.event-content .grid {
+gap: 0.5rem !important;
+}
+.event-content .grid-cols-1 {
+grid-template-columns: 1fr !important;
+}
+.event-content .md\\:grid-cols-3 {
+grid-template-columns: 1fr !important;
+}
+.event-content .md\\:grid-cols-5 {
+grid-template-columns: repeat(2, 1fr) !important;
+}
+/* Mobile flex optimization */
+.event-content .flex-col {
+flex-direction: column !important;
+}
+.event-content .md\\:flex-row {
+flex-direction: column !important;
+}
+.event-content .flex {
+flex-direction: column !important;
+}
+/* Ensure proper spacing for mobile */
+.event-content > * {
+margin-bottom: 1rem;
+}
+.event-content > *:last-child {
+margin-bottom: 0;
+}
+}
+/* Custom grid for rewards table - first column 25%, others equal */
+.rewards-grid-custom {
+display: grid;
+grid-template-columns: 1fr;
+gap: 0.25rem;
+}
+@media (min-width: 640px) {
+.rewards-grid-custom {
+grid-template-columns: repeat(2, 1fr);
+gap: 0.5rem;
+}
+}
+@media (min-width: 1024px) {
+.rewards-grid-custom {
+grid-template-columns: 1fr 2fr 2fr;
+gap: 0.5rem;
+}
+}
+/* Okey loot list table styling (match King loot style) */
+.okey-loot-list table {
+width: 100%;
+border-collapse: separate;
+border-spacing: 0 0.5rem;
+}
+.okey-loot-list table tr {
+background: linear-gradient(to right, rgba(255,255,255,0.8), rgb(255, 251, 235));
+}
+.okey-loot-list table tr td {
+padding: 0.5rem 0.75rem;
+font-size: 0.875rem;
+border-top: 1px solid rgb(253, 230, 138);
+border-bottom: 1px solid rgb(253, 230, 138);
+text-align: left;
+}
+.okey-loot-list table tr td:first-child {
+font-weight: 500;
+color: #341002;
+border-left: 1px solid rgb(253, 230, 138);
+border-radius: 0.375rem 0 0 0.375rem;
+}
+.okey-loot-list table tr td:last-child {
+font-weight: 700;
+color: #5D0505;
+white-space: nowrap;
+text-align: right;
+border-right: 1px solid rgb(253, 230, 138);
+border-radius: 0 0.375rem 0.375rem 0;
+}
+.okey-loot-list table tr td img {
+width: 1.5rem;
+height: 1.5rem;
+}
+.okey-loot-list table tr:hover {
+box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+/* Active Event Styles */
+.card-active {
+position: relative;
+border: 4px solid #22c55e !important; /* Complete green border override */
+animation: pulse-green-border 2s ease-in-out infinite;
+}
+.card-active::before {
+content: attr(data-active);
+position: absolute;
+top: 16px;
+right: 16px;
+background: #22c55e;
+color: white;
+padding: 4px 8px;
+border-radius: 4px;
+font-size: 0.75rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+z-index: 10;
+}
+@keyframes pulse-green-border {
+0%, 100% {
+border-color: #22c55e;
+box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+}
+50% {
+border-color: #16a34a;
+box-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
+}
+}
+/* Coming-Soon Styles */
+.card-coming-soon{
+position: relative;
+filter: grayscale(.3) brightness(.9);
+pointer-events: none;
+}
+.card-coming-soon::after{
+content: attr(data-soon);
+position: absolute;
+inset: 0;
+margin: auto;
+width: 75%;
+max-width: 260px;
+height: 90px;
+display: flex;
+align-items: center;
+justify-content: center;
+transform: rotate(-12deg);
+background: rgba(93,5,5,.92);
+color: #F1D9A3;
+font-weight: 700;
+letter-spacing: .08em;
+font-size: 1.1rem;
+border: 2px solid #F1D9A3;
+border-radius: .6rem;
+text-transform: uppercase;
+pointer-events: none;
+z-index: 5;
+text-align: center;
+line-height: 1.2;
+}
+/* Okey Helper Styles */
+.okey-card {
+position: relative;
+}
+.okey-card.played {
+opacity: 0.4;
+filter: grayscale(100%);
+}
+.okey-card.played::after {
+content: "✓";
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+background: rgba(93, 5, 5, 0.9);
+color: white;
+width: 24px;
+height: 24px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: bold;
+font-size: 14px;
+pointer-events: none;
+}
+/* King Helper Styles */
+.king-field {
+position: relative;
+width: 100%;
+border: 2px solid transparent;
+border-radius: 6px;
+cursor: pointer;
+transition: all 0.2s;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.king-field img {
+width: 100%;
+height: auto;
+display: block;
+border-radius: 4px;
+}
+.king-field:hover {
+border-color: #FECE58;
+box-shadow: 0 0 6px rgba(254, 206, 88, 0.4);
+}
+.king-field.field-selected {
+border: 2px solid #60a5fa !important;
+box-shadow: 0 0 6px rgba(96, 165, 250, 0.6) !important;
+}
+@media (min-width: 640px) {
+.king-field.field-selected {
+border: 4px solid #60a5fa !important;
+box-shadow: 0 0 8px rgba(96, 165, 250, 0.6) !important;
+}
+}
+.king-field.revealed {
+border-color: #FECE58;
+}
+.king-field.five-nearby {
+border: 2px solid #e53e3e;
+box-shadow: 0 0 6px rgba(229, 62, 62, 0.7), inset 0 0 4px rgba(229, 62, 62, 0.4);
+}
+@media (min-width: 640px) {
+.king-field.five-nearby {
+border: 4px solid #e53e3e;
+box-shadow: 0 0 12px rgba(229, 62, 62, 0.7), inset 0 0 8px rgba(229, 62, 62, 0.4);
+}
+}
+.king-field.five-nearby::before {
+content: none;
+}
+.five-prob {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+font-size: 10px;
+font-weight: bold;
+color: #fff;
+background: rgba(120, 120, 120, 0.85);
+padding: 1px 3px;
+border-radius: 3px;
+z-index: 3;
+pointer-events: none;
+line-height: 1.3;
+white-space: nowrap;
+text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+@media (min-width: 640px) {
+.five-prob {
+font-size: 13px;
+padding: 1px 5px;
+border-radius: 4px;
+}
+}
+.king-field.five-nearby .five-prob {
+background: rgba(229, 62, 62, 0.85);
+}
+.inline-mouse-icon {
+display: inline-block;
+vertical-align: middle;
+margin: 0 2px;
+}
+.king-field.five-nearby.field-selected::before {
+content: none;
+}
+.king-field.five-nearby.revealed {
+border-color: #FECE58;
+box-shadow: none;
+}
+.king-field.five-nearby.revealed::before {
+content: none;
+}
+.king-own-card {
+position: relative;
+cursor: pointer;
+transition: all 0.2s;
+border: 2px solid transparent;
+border-radius: 6px;
+padding: 2px;
+text-align: center;
+}
+.king-own-card:hover {
+transform: scale(1.05);
+}
+.king-own-card.selected {
+border: 2px solid #5D0505;
+box-shadow: 0 0 12px rgba(93, 5, 5, 0.9), 0 0 4px rgba(93, 5, 5, 1);
+transform: scale(1.12);
+background: rgba(93, 5, 5, 0.15);
+}
+.king-own-card.played {
+opacity: 0.4;
+filter: grayscale(100%);
+pointer-events: none;
+}
+.king-card-count {
+display: block;
+font-size: 12px;
+font-weight: bold;
+color: #341002;
+margin-top: 2px;
+}
+.king-own-card.played .king-card-count {
+color: #999;
+}
+.king-own-card.played::after {
+content: "✓";
+position: absolute;
+top: 40%;
+left: 50%;
+transform: translate(-50%, -50%);
+background: rgba(93, 5, 5, 0.9);
+color: white;
+width: 24px;
+height: 24px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: bold;
+font-size: 14px;
+pointer-events: none;
+}
+/* Purity Table Styles for Water of Life - Medium Size */
+.purity-flames-table {
+border-collapse: separate;
+border-spacing: 0;
+background: rgba(241, 217, 163, 0.9);
+border: 2px solid #FECE58;
+border-radius: 10px;
+overflow: visible;
+box-shadow: 0 3px 10px rgba(93, 5, 5, 0.2);
+font-size: 0.9rem;
+}
+.purity-flames-table thead tr th:first-child {
+border-top-left-radius: 10px;
+}
+.purity-flames-table thead tr th:last-child {
+border-top-right-radius: 10px;
+}
+.purity-flames-table tbody tr:last-child td:first-child {
+border-bottom-left-radius: 10px;
+}
+.purity-flames-table tbody tr:last-child td:last-child {
+border-bottom-right-radius: 10px;
+}
+.table-header-cell {
+background: #341002;
+color: #F1D9A3;
+padding: 10px 14px;
+font-weight: bold;
+text-align: center;
+border-right: 1px solid rgba(0, 0, 0, 0.2);
+font-size: 0.85rem;
+}
+.table-icon-cell {
+background: #341002;
+padding: 8px 10px;
+text-align: center;
+border-right: 1px solid rgba(0, 0, 0, 0.2);
+position: relative;
+font-size: 0.85rem;
+color: #F1D9A3;
+font-weight: bold;
+}
+.table-icon-cell:last-child {
+border-right: none;
+}
+.table-row-header {
+background: #341002;
+color: #F1D9A3;
+padding: 10px 14px;
+font-weight: bold;
+text-align: center;
+border-right: 1px solid rgba(0, 0, 0, 0.2);
+font-size: 0.85rem;
+}
+.table-number-cell {
+background: rgba(241, 217, 163, 1);
+color: #341002;
+padding: 10px 14px;
+text-align: center;
+font-weight: bold;
+border-right: 1px solid rgba(0, 0, 0, 0.2);
+font-size: 0.85rem;
+}
+.table-number-cell:last-child {
+border-right: none;
+}
+/* Mobile responsive styles for purity table */
+@media (max-width: 640px) {
+.purity-flames-table {
+font-size: 0.75rem;
+border-radius: 8px;
+}
+.table-header-cell,
+.table-row-header {
+padding: 6px 8px;
+font-size: 0.7rem;
+}
+.table-icon-cell {
+padding: 6px 8px;
+font-size: 0.7rem;
+}
+.table-number-cell {
+padding: 6px 8px;
+font-size: 0.7rem;
+}
+}
+/* Yutnori Calculator Styles - Inspired by Dragon Alchemy */
+.yutnori-material-input-row {
+background: rgba(52, 16, 2, 0.1);
+border: 1px solid rgba(254, 206, 88, 0.3);
+border-radius: 0.5rem;
+padding: 1rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+transition: all 0.3s ease;
+}
+.yutnori-material-input-row:hover {
+background: rgba(52, 16, 2, 0.2);
+border-color: rgba(254, 206, 88, 0.5);
+transform: translateY(-1px);
+box-shadow: 0 2px 8px rgba(93, 5, 5, 0.1);
+}
+.yutnori-material-icon {
+width: 2rem;
+height: 2rem;
+object-fit: contain;
+flex-shrink: 0;
+}
+.yutnori-material-label {
+color: #341002;
+font-weight: bold;
+font-size: 0.875rem;
+min-width: 0;
+flex: 1;
+}
+.yutnori-material-input-wide {
+background: #341002;
+border: 2px solid #FECE58;
+border-radius: 0.375rem;
+color: #F1D9A3;
+padding: 0.5rem 0.75rem;
+width: 120px;
+text-align: center;
+font-weight: bold;
+transition: all 0.3s ease;
+}
+.yutnori-material-input-wide:focus {
+outline: none;
+border-color: #F1D9A3;
+background: rgba(52, 16, 2, 0.9);
+box-shadow: 0 0 0 3px rgba(254, 206, 88, 0.2);
+}
+.yutnori-material-input-wide:hover {
+border-color: #F1D9A3;
+}
+/* Hide number input arrows */
+.yutnori-material-input-wide::-webkit-outer-spin-button,
+.yutnori-material-input-wide::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+.yutnori-material-input-wide[type=number] {
+-moz-appearance: textfield;
+}
+/* Mobile optimizations for Yutnori calculator */
+@media (max-width: 768px) {
+.yutnori-material-input-row {
+flex-direction: column;
+gap: 0.75rem;
+align-items: stretch;
+}
+.yutnori-material-input-wide {
+width: 100%;
+max-width: 150px;
+margin: 0 auto;
+}
+}
+</style>
+</head>
+<body class="min-h-screen text-white flex flex-col items-center main-content">
+<div class="dropdown">
+<button id="langBtn" class="bg-[#341002] rounded-xl py-2.5 px-5 flex items-center gap-2 shadow-lg hover:bg-[#5D0505] transition relative">
+<img src="images/de.svg" alt="DE" class="flag-icon" id="langIcon">
+<span id="langText" class="hidden md:inline font-bold">Deutsch</span>
+<svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</button>
+<div id="langMenu" class="hidden absolute right-0 mt-2 w-40 bg-[#341002]/90 rounded-xl shadow-lg overflow-hidden">
+<button data-lang="de" class="w-full text-left px-4 py-2 hover:bg-[#5D0505] flex items-center gap-2"><img src="images/de.svg" alt="DE" class="flag-icon"> Deutsch</button>
+<button data-lang="en" class="w-full text-left px-4 py-2 hover:bg-[#5D0505] flex items-center gap-2"><img src="images/gb.svg" alt="GB" class="flag-icon"> English</button>
+<button data-lang="tr" class="w-full text-left px-4 py-2 hover:bg-[#5D0505] flex items-center gap-2"><img src="images/tr.svg" alt="TR" class="flag-icon"> Türkçe</button>
+</div>
+</div>
+<div id="search-bar-container"></div>
+<header class="pt-10 text-center">
+<a href="index.html">
+<img src="images/m2helper_logo.png" alt="Metin2 Help Portal" id="site-logo" class="mx-auto w-28 md:w-40 drop-shadow-[0_2px_8px_rgba(93,5,5,0.2)] transition-transform duration-200 ease-out hover:scale-105 hover:drop-shadow-[0_0_20px_rgba(241,217,163,0.6)]">
+</a>
+<h1 id="page-title" class="text-2xl md:text-3xl font-bold text-[#FECE58] mt-4 mb-2"></h1>
+<p id="subtitle" class="text-[#F1D9A3]/80 text-sm md:text-base mb-8"></p>
+</header>
+<main class="max-w-6xl px-2 sm:px-4 pb-8 w-full">
+<div class="event-card bg-[#F1D9A3] border-4 border-[#FECE58] rounded-xl mb-4 shadow-lg overflow-hidden">
+<div class="event-header bg-[#341002] p-4 flex items-center justify-between cursor-pointer" onclick="toggleEvent('treasure-hunt')">
+<div class="flex items-center gap-3 flex-1">
+<div class="w-12 h-12 bg-[#F1D9A3] rounded-lg flex items-center justify-center p-1 flex-shrink-0">
+<img src="images/goblin_key.png" alt="Goblin Key" class="w-full h-full object-contain">
+</div>
+<div id="search-bar-container"></div>
+<div class="flex-1">
+<h2 id="event-treasure-title" class="text-xl font-bold text-[#F1D9A3]"></h2>
+<p id="event-treasure-summary" class="text-sm text-[#F1D9A3]/80 mt-1"></p>
+</div>
+</div>
+<svg class="expand-icon w-6 h-6 text-[#F1D9A3]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</div>
+<div id="treasure-hunt-content" class="event-content bg-[#F1D9A3] text-[#341002]">
+<h3 id="treasure-desc-title" class="font-bold text-lg mb-3"></h3>
+<div id="treasure-desc" class="mb-4">
+</div>
+<h4 id="treasure-hunt-title" class="font-bold mb-2"></h4>
+<div class="flex flex-col md:flex-row gap-4 mb-4">
+<div id="treasure-hunt" class="flex-1 md:w-2/3">
+</div>
+<div class="flex-shrink-0 md:w-1/3">
+<img src="images/Schatzsuche.png" alt="Schatzsuche Interface" class="event-showcase-image w-full h-auto rounded-lg border border-[#341002]/20 shadow-md">
+</div>
+</div>
+<h4 id="treasure-round-rewards-title" class="font-bold mb-2"></h4>
+<div id="treasure-round-rewards" class="mb-4"></div>
+<h4 id="treasure-tips-title" class="font-bold mb-2"></h4>
+<ul id="treasure-tips" class="tips-list space-y-1 mb-4">
+</ul>
+<div class="bg-[#341002]/10 p-3 rounded-lg">
+<p id="treasure-note"></p>
+</div>
+</div>
+</div>
+<div class="event-card bg-[#F1D9A3] border-4 border-[#FECE58] rounded-xl mb-4 shadow-lg overflow-hidden">
+<div class="event-header bg-[#341002] p-4 flex items-center justify-between cursor-pointer" onclick="toggleEvent('underworld')">
+<div class="flex items-center gap-3 flex-1">
+<div class="w-12 h-12 bg-[#F1D9A3] rounded-lg flex items-center justify-center p-1 flex-shrink-0">
+<img src="images/Totenflamme.png" alt="Totenflamme" class="w-full h-full object-contain">
+</div>
+<div class="flex-1">
+<h2 id="event-underworld-title" class="text-xl font-bold text-[#F1D9A3]"></h2>
+<p id="event-underworld-summary" class="text-sm text-[#F1D9A3]/80 mt-1"></p>
+</div>
+</div>
+<svg class="expand-icon w-6 h-6 text-[#F1D9A3]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</div>
+<div id="underworld-content" class="event-content bg-[#F1D9A3] text-[#341002]">
+<h3 id="underworld-desc-title" class="font-bold text-lg mb-3"></h3>
+<div id="underworld-desc" class="mb-4">
+</div>
+<h4 id="underworld-mechanics-title" class="font-bold mb-2"></h4>
+<div id="underworld-mechanics">
+</div>
+<h4 id="underworld-rewards-title" class="font-bold mb-2"></h4>
+<div id="underworld-rewards" class="mb-4">
+<div id="underworld-rewards-table" class="bg-[#341002]/5 p-4 rounded-lg">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 justify-center max-w-2xl mx-auto"></div>
+</div>
+</div>
+<h4 id="underworld-tips-title" class="font-bold mb-2"></h4>
+<ul id="underworld-tips" class="tips-list space-y-1 mb-4">
+</ul>
+<div class="bg-[#341002]/10 p-3 rounded-lg">
+<p id="underworld-note"></p>
+</div>
+</div>
+</div>
+<div class="event-card bg-[#F1D9A3] border-4 border-[#FECE58] rounded-xl mb-4 shadow-lg overflow-hidden">
+<div class="event-header bg-[#341002] p-4 flex items-center justify-between cursor-pointer" onclick="toggleEvent('okey')">
+<div class="flex items-center gap-3 flex-1">
+<div class="w-12 h-12 bg-[#F1D9A3] rounded-lg flex items-center justify-center p-1 flex-shrink-0">
+<img src="images/Okey-Kartenset.png" alt="Okey Kartenset" class="w-full h-full object-contain">
+</div>
+<div class="flex-1">
+<h2 id="event-okey-title" class="text-xl font-bold text-[#F1D9A3]"></h2>
+<p id="event-okey-summary" class="text-sm text-[#F1D9A3]/80 mt-1"></p>
+</div>
+</div>
+<svg class="expand-icon w-6 h-6 text-[#F1D9A3]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</div>
+<div id="okey-content" class="event-content bg-[#F1D9A3] text-[#341002]">
+<h3 id="okey-desc-title" class="font-bold text-lg mb-3"></h3>
+<div id="okey-desc" class="mb-4">
+</div>
+<h4 id="okey-gameplay-title" class="font-bold mb-2"></h4>
+<div class="flex flex-col md:flex-row gap-4 mb-4">
+<div id="okey-gameplay" class="flex-1 md:w-2/3">
+</div>
+<div class="flex-shrink-0 md:w-1/3">
+<img src="images/Okey-Minispielfenster.png" alt="Okey Spielfeld" class="event-showcase-image w-full h-auto rounded-lg border border-[#341002]/20 shadow-md">
+</div>
+</div>
+<div class="pt-4 mb-2" id="okey-helper">
+<h4 id="okey-helper-title" class="font-bold mb-3 text-left"></h4>
+<div class="flex justify-center">
+<div class="bg-[#341002]/10 rounded-xl p-6 w-full max-w-xl flex flex-col items-center">
+<p id="okey-helper-desc" class="text-sm mb-4 text-[#341002]/80 text-center">Klicke auf die Karten, um sie als "gespielt" zu markieren (werden grau dargestellt):</p>
+<div class="grid grid-cols-8 gap-x-0 gap-y-1 mb-4 w-full justify-center" id="okey-card-grid">
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="rot" data-number="1">
+<img src="images/Okey-Karte_1_Rot.png" alt="Rote Karte 1" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="rot" data-number="2">
+<img src="images/Okey-Karte_2_Rot.png" alt="Rote Karte 2" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="rot" data-number="3">
+<img src="images/Okey-Karte_3_Rot.png" alt="Rote Karte 3" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="rot" data-number="4">
+<img src="images/Okey-Karte_4_Rot.png" alt="Rote Karte 4" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="rot" data-number="5">
+<img src="images/Okey-Karte_5_Rot.png" alt="Rote Karte 5" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="rot" data-number="6">
+<img src="images/Okey-Karte_6_Rot.png" alt="Rote Karte 6" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="rot" data-number="7">
+<img src="images/Okey-Karte_7_Rot.png" alt="Rote Karte 7" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="rot" data-number="8">
+<img src="images/Okey-Karte_8_Rot.png" alt="Rote Karte 8" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="gelb" data-number="1">
+<img src="images/Okey-Karte_1_Gelb.png" alt="Gelbe Karte 1" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="gelb" data-number="2">
+<img src="images/Okey-Karte_2_Gelb.png" alt="Gelbe Karte 2" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="gelb" data-number="3">
+<img src="images/Okey-Karte_3_Gelb.png" alt="Gelbe Karte 3" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="gelb" data-number="4">
+<img src="images/Okey-Karte_4_Gelb.png" alt="Gelbe Karte 4" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="gelb" data-number="5">
+<img src="images/Okey-Karte_5_Gelb.png" alt="Gelbe Karte 5" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="gelb" data-number="6">
+<img src="images/Okey-Karte_6_Gelb.png" alt="Gelbe Karte 6" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="gelb" data-number="7">
+<img src="images/Okey-Karte_7_Gelb.png" alt="Gelbe Karte 7" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="gelb" data-number="8">
+<img src="images/Okey-Karte_8_Gelb.png" alt="Gelbe Karte 8" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="blau" data-number="1">
+<img src="images/Okey-Karte_1_Blau.png" alt="Blaue Karte 1" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="blau" data-number="2">
+<img src="images/Okey-Karte_2_Blau.png" alt="Blaue Karte 2" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="blau" data-number="3">
+<img src="images/Okey-Karte_3_Blau.png" alt="Blaue Karte 3" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="blau" data-number="4">
+<img src="images/Okey-Karte_4_Blau.png" alt="Blaue Karte 4" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="blau" data-number="5">
+<img src="images/Okey-Karte_5_Blau.png" alt="Blaue Karte 5" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="blau" data-number="6">
+<img src="images/Okey-Karte_6_Blau.png" alt="Blaue Karte 6" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="blau" data-number="7">
+<img src="images/Okey-Karte_7_Blau.png" alt="Blaue Karte 7" class="w-16 h-auto rounded shadow-sm">
+</div>
+<div class="okey-card cursor-pointer transition-all duration-200 hover:scale-105 max-w-12 mx-auto" data-color="blau" data-number="8">
+<img src="images/Okey-Karte_8_Blau.png" alt="Blaue Karte 8" class="w-16 h-auto rounded shadow-sm">
+</div>
+</div>
+<button id="okey-reset-btn" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-4 py-2 rounded transition-all text-sm font-medium mt-2 mx-auto block">
+<span id="okey-reset-text"></span>
+</button>
+</div>
+</div>
+</div>
+<h4 id="okey-rewards-title" class="font-bold mb-2 mt-6"></h4>
+<div id="okey-rewards" class="mb-4"></div>
+<h4 id="okey-tips-title" class="font-bold mb-2"></h4>
+<ul id="okey-tips" class="tips-list space-y-1 mb-4">
+</ul>
+<div class="bg-[#341002]/10 p-3 rounded-lg">
+<p id="okey-note" class="text-sm"></p>
+</div>
+</div>
+</div>
+<div class="event-card bg-[#F1D9A3] border-4 border-[#FECE58] rounded-xl mb-4 shadow-lg overflow-hidden">
+<div class="event-header bg-[#341002] p-4 flex items-center justify-between cursor-pointer" onclick="toggleEvent('king')">
+<div class="flex items-center gap-3 flex-1">
+<div class="w-12 h-12 bg-[#F1D9A3] rounded-lg flex items-center justify-center p-1 flex-shrink-0">
+<img src="images/K%C3%B6nigsdeck.png" alt="Königsdeck" class="w-full h-full object-contain">
+</div>
+<div class="flex-1">
+<h2 id="event-king-title" class="text-xl font-bold text-[#F1D9A3]"></h2>
+<p id="event-king-summary" class="text-sm text-[#F1D9A3]/80 mt-1"></p>
+</div>
+</div>
+<svg class="expand-icon w-6 h-6 text-[#F1D9A3]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</div>
+<div id="king-content" class="event-content bg-[#F1D9A3] text-[#341002]">
+<h3 id="king-desc-title" class="font-bold text-lg mb-3"></h3>
+<div id="king-desc" class="mb-4">
+</div>
+<h4 id="king-mechanics-title" class="font-bold mb-2"></h4>
+<div id="king-mechanics">
+</div>
+<div class="pt-4 mb-4" id="king-helper">
+<h4 id="king-helper-title" class="font-bold mb-3 text-left"></h4>
+<div class="flex justify-center">
+<div class="bg-[#341002]/10 rounded-xl p-3 sm:p-6 w-full max-w-xl flex flex-col items-center" style="align-items: stretch;">
+<p id="king-helper-desc" class="text-xs sm:text-sm mb-4 text-[#341002]/80 text-center"></p>
+<div class="grid grid-cols-5 gap-1 sm:gap-2 mb-4 w-full max-w-[450px] mx-auto" id="king-board-grid">
+<div class="king-field" data-row="0" data-col="0"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="0" data-col="1"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="0" data-col="2"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="0" data-col="3"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="0" data-col="4"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="1" data-col="0"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="1" data-col="1"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="1" data-col="2"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="1" data-col="3"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="1" data-col="4"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="2" data-col="0"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="2" data-col="1"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="2" data-col="2"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="2" data-col="3"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="2" data-col="4"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="3" data-col="0"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="3" data-col="1"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="3" data-col="2"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="3" data-col="3"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="3" data-col="4"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="4" data-col="0"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="4" data-col="1"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="4" data-col="2"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="4" data-col="3"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+<div class="king-field" data-row="4" data-col="4"><img src="images/Schnapp_den_K%C3%B6nig_verdeckt.png" alt="?"></div>
+</div>
+<div class="grid grid-cols-6 gap-1 sm:gap-3 mb-4 w-full" id="king-own-cards">
+<div class="king-own-card" data-value="1" data-max="7" data-remaining="7">
+<img src="images/Schnapp_den_K%C3%B6nig_Karte_1.png" alt="1" class="w-full h-auto rounded shadow-sm">
+<span class="king-card-count">7x</span>
+</div>
+<div class="king-own-card" data-value="2" data-max="4" data-remaining="4">
+<img src="images/Schnapp_den_K%C3%B6nig_Karte_2.png" alt="2" class="w-full h-auto rounded shadow-sm">
+<span class="king-card-count">4x</span>
+</div>
+<div class="king-own-card" data-value="3" data-max="5" data-remaining="5">
+<img src="images/Schnapp_den_K%C3%B6nig_Karte_3.png" alt="3" class="w-full h-auto rounded shadow-sm">
+<span class="king-card-count">5x</span>
+</div>
+<div class="king-own-card" data-value="4" data-max="5" data-remaining="5">
+<img src="images/Schnapp_den_K%C3%B6nig_Karte_4.png" alt="4" class="w-full h-auto rounded shadow-sm">
+<span class="king-card-count">5x</span>
+</div>
+<div class="king-own-card" data-value="5" data-max="3" data-remaining="3">
+<img src="images/Schnapp_den_K%C3%B6nig_Karte_5.png" alt="5" class="w-full h-auto rounded shadow-sm">
+<span class="king-card-count">3x</span>
+</div>
+<div class="king-own-card" data-value="K" data-max="1" data-remaining="1">
+<img src="images/Schnapp_den_K%C3%B6nig_Karte_K.png" alt="K" class="w-full h-auto rounded shadow-sm">
+<span class="king-card-count">1x</span>
+</div>
+</div>
+<div class="flex items-center justify-center gap-2 mt-2">
+<button id="king-undo-btn" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-3 py-2 rounded transition-all text-sm font-medium opacity-50 cursor-not-allowed" disabled="" title="Undo">
+↩
+</button>
+<button id="king-reset-btn" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-4 py-2 rounded transition-all text-sm font-medium">
+<span id="king-reset-text"></span>
+</button>
+</div>
+<div class="text-xs text-[#341002]/70 mt-5 text-center italic bg-[#341002]/10 p-2 rounded-md">
+<span id="king-helper-credit"></span>
+</div>
+</div>
+</div>
+</div>
+<h4 id="king-rewards-title" class="font-bold mb-2"></h4>
+<div id="king-rewards" class="mb-4">
+<div id="king-rewards-table" class="bg-[#341002]/5 p-4 rounded-lg">
+<div class="rewards-grid-custom mb-4"></div>
+</div>
+</div>
+<h4 id="king-tips-title" class="font-bold mb-2"></h4>
+<ul id="king-tips" class="tips-list space-y-1 mb-4">
+</ul>
+<div class="bg-[#341002]/10 p-3 rounded-lg">
+<p id="king-note" class="text-sm"></p>
+</div>
+</div>
+</div>
+<div class="event-card bg-[#F1D9A3] border-4 border-[#FECE58] rounded-xl mb-4 shadow-lg overflow-hidden">
+<div class="event-header bg-[#341002] p-4 flex items-center justify-between cursor-pointer" onclick="toggleEvent('tombola')">
+<div class="flex items-center gap-3 flex-1">
+<div class="w-12 h-12 bg-[#F1D9A3] rounded-lg flex items-center justify-center p-1 flex-shrink-0">
+<img src="images/tombola-card.png" alt="Tombola Card" class="w-full h-full object-contain">
+</div>
+<div class="flex-1">
+<h2 id="event-tombola-title" class="text-xl font-bold text-[#F1D9A3]"></h2>
+<p id="event-tombola-summary" class="text-sm text-[#F1D9A3]/80 mt-1"></p>
+</div>
+</div>
+<svg class="expand-icon w-6 h-6 text-[#F1D9A3]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</div>
+<div id="tombola-content" class="event-content bg-[#F1D9A3] text-[#341002]">
+<h3 id="tombola-desc-title" class="font-bold text-lg mb-3"></h3>
+<div id="tombola-desc" class="mb-4">
+</div>
+<h4 id="tombola-prices-title" class="font-bold mb-2"></h4>
+<div id="tombola-prices" class="mb-4">
+</div>
+<h4 id="tombola-symbols-title" class="font-bold mb-2"></h4>
+<div id="tombola-symbols" class="mb-4">
+</div>
+<div id="tombola-symbols-table" class="mb-4">
+<div class="bg-[#341002]/10 p-4 rounded-lg overflow-x-auto">
+<div class="grid grid-cols-6 gap-2 min-w-max">
+</div>
+</div>
+</div>
+<div class="mt-6 mb-4">
+<button id="tombola-summer-2025-toggle" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-4 py-2 rounded-lg transition-all text-sm font-medium w-full flex items-center justify-center space-x-2">
+<span id="tombola-summer-2025-title"></span>
+<svg class="w-4 h-4 transition-transform duration-200" id="tombola-summer-2025-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</button>
+<div id="tombola-summer-2025-content" class="hidden mt-4 bg-[#341002]/10 p-4 rounded-lg overflow-x-auto">
+<canvas id="tombola-summer-2025-canvas" width="1000" height="750" class="w-full" style="min-width: 400px;"></canvas>
+<div class="flex justify-center gap-2 mt-2">
+<button id="tombola-summer-2025-reset" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-3 py-2 rounded transition-all text-sm font-medium">
+<span class="text-base">↻</span>
+</button>
+<button id="tombola-summer-2025-sort" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-4 py-2 rounded transition-all text-sm font-medium">
+<span id="tombola-summer-2025-sort-text"></span>
+</button>
+</div>
+<div class="mt-3 p-3">
+<p id="tombola-summer-2025-selection-desc" class="text-xs text-[#5D0505] mb-3 text-center"></p>
+<div id="tombola-summer-2025-stats" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs transition-all duration-300 ease-in-out opacity-0 max-h-0 overflow-hidden">
+<div class="bg-[#341002]/10 rounded p-2">
+<div class="font-bold text-[#5D0505]" id="tombola-summer-2025-talisman-label"></div>
+<div class="text-lg font-bold text-[#341002]" id="tombola-summer-2025-talisman-chance">-</div>
+</div>
+<div class="bg-[#341002]/10 rounded p-2">
+<div class="font-bold text-[#5D0505] mb-2 text-xs" id="tombola-summer-2025-cost-label"></div>
+<div class="grid grid-cols-3 gap-2 text-xs">
+<div class="text-center">
+<div class="font-semibold text-[#5D0505] mb-1">50%</div>
+<div class="text-sm font-bold text-[#341002]" id="tombola-summer-2025-cost-50">-</div>
+</div>
+<div class="text-center">
+<div class="font-semibold text-[#5D0505] mb-1">75%</div>
+<div class="text-sm font-bold text-[#341002]" id="tombola-summer-2025-cost-75">-</div>
+</div>
+<div class="text-center">
+<div class="font-semibold text-[#5D0505] mb-1">90%</div>
+<div class="text-sm font-bold text-[#341002]" id="tombola-summer-2025-cost-90">-</div>
+</div>
+</div>
+</div>
+</div>
+<p id="tombola-summer-2025-chance-note" class="text-xs text-[#5D0505] mt-2 text-center italic"></p>
+</div>
+</div>
+</div>
+<div class="mt-6 mb-4">
+<button id="tombola-winter-2025-toggle" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-4 py-2 rounded-lg transition-all text-sm font-medium w-full flex items-center justify-center space-x-2">
+<span id="tombola-winter-2025-title"></span>
+<svg class="w-4 h-4 transition-transform duration-200" id="tombola-winter-2025-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</button>
+<div id="tombola-winter-2025-content" class="mt-4 bg-[#341002]/10 p-4 rounded-lg overflow-x-auto">
+<canvas id="tombola-winter-2025-canvas" width="1000" height="750" class="w-full" style="min-width: 400px;"></canvas>
+<div class="flex justify-center gap-2 mt-2">
+<button id="tombola-winter-2025-reset" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-3 py-2 rounded transition-all text-sm font-medium">
+<span class="text-base">↻</span>
+</button>
+<button id="tombola-winter-2025-sort" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-4 py-2 rounded transition-all text-sm font-medium">
+<span id="tombola-winter-2025-sort-text"></span>
+</button>
+</div>
+<div class="mt-3 p-3">
+<p id="tombola-winter-2025-selection-desc" class="text-xs text-[#5D0505] mb-3 text-center"></p>
+<div id="tombola-winter-2025-stats" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs transition-all duration-300 ease-in-out opacity-0 max-h-0 overflow-hidden">
+<div class="bg-[#341002]/10 rounded p-2">
+<div class="font-bold text-[#5D0505]" id="tombola-winter-2025-talisman-label"></div>
+<div class="text-lg font-bold text-[#341002]" id="tombola-winter-2025-talisman-chance">-</div>
+</div>
+<div class="bg-[#341002]/10 rounded p-2">
+<div class="font-bold text-[#5D0505] mb-2 text-xs" id="tombola-winter-2025-cost-label"></div>
+<div class="grid grid-cols-3 gap-2 text-xs">
+<div class="text-center">
+<div class="font-semibold text-[#5D0505] mb-1">50%</div>
+<div class="text-sm font-bold text-[#341002]" id="tombola-winter-2025-cost-50">-</div>
+</div>
+<div class="text-center">
+<div class="font-semibold text-[#5D0505] mb-1">75%</div>
+<div class="text-sm font-bold text-[#341002]" id="tombola-winter-2025-cost-75">-</div>
+</div>
+<div class="text-center">
+<div class="font-semibold text-[#5D0505] mb-1">90%</div>
+<div class="text-sm font-bold text-[#341002]" id="tombola-winter-2025-cost-90">-</div>
+</div>
+</div>
+</div>
+</div>
+<p id="tombola-winter-2025-chance-note" class="text-xs text-[#5D0505] mt-2 text-center italic"></p>
+</div>
+</div>
+</div>
+<div class="mt-6 mb-4">
+<button id="tombola-easter-2026-toggle" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-4 py-2 rounded-lg transition-all text-sm font-medium w-full flex items-center justify-center space-x-2">
+<span id="tombola-easter-2026-title"></span>
+<svg class="w-4 h-4 transition-transform duration-200" id="tombola-easter-2026-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</button>
+<div id="tombola-easter-2026-content" class="mt-4 bg-[#341002]/10 p-4 rounded-lg overflow-x-auto">
+<canvas id="tombola-easter-2026-canvas" width="1000" height="750" class="w-full" style="min-width: 400px;"></canvas>
+<div class="flex justify-center gap-2 mt-2">
+<button id="tombola-easter-2026-reset" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-3 py-2 rounded transition-all text-sm font-medium">
+<span class="text-base">↻</span>
+</button>
+<button id="tombola-easter-2026-sort" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-4 py-2 rounded transition-all text-sm font-medium">
+<span id="tombola-easter-2026-sort-text"></span>
+</button>
+</div>
+<div class="mt-3 p-3">
+<p id="tombola-easter-2026-selection-desc" class="text-xs text-[#5D0505] mb-3 text-center"></p>
+<div id="tombola-easter-2026-stats" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs transition-all duration-300 ease-in-out opacity-0 max-h-0 overflow-hidden">
+<div class="bg-[#341002]/10 rounded p-2">
+<div class="font-bold text-[#5D0505]" id="tombola-easter-2026-talisman-label"></div>
+<div class="text-lg font-bold text-[#341002]" id="tombola-easter-2026-talisman-chance">-</div>
+</div>
+<div class="bg-[#341002]/10 rounded p-2">
+<div class="font-bold text-[#5D0505] mb-2 text-xs" id="tombola-easter-2026-cost-label"></div>
+<div class="grid grid-cols-3 gap-2 text-xs">
+<div class="text-center">
+<div class="font-semibold text-[#5D0505] mb-1">50%</div>
+<div class="text-sm font-bold text-[#341002]" id="tombola-easter-2026-cost-50">-</div>
+</div>
+<div class="text-center">
+<div class="font-semibold text-[#5D0505] mb-1">75%</div>
+<div class="text-sm font-bold text-[#341002]" id="tombola-easter-2026-cost-75">-</div>
+</div>
+<div class="text-center">
+<div class="font-semibold text-[#5D0505] mb-1">90%</div>
+<div class="text-sm font-bold text-[#341002]" id="tombola-easter-2026-cost-90">-</div>
+</div>
+</div>
+</div>
+</div>
+<p id="tombola-easter-2026-chance-note" class="text-xs text-[#5D0505] mt-2 text-center italic"></p>
+</div>
+</div>
+</div>
+<h4 id="tombola-tips-title" class="font-bold mb-2"></h4>
+<ul id="tombola-tips" class="tips-list space-y-1 mb-4">
+</ul>
+<div class="bg-[#341002]/10 p-3 rounded-lg">
+<p id="tombola-note"></p>
+</div>
+</div>
+</div>
+<div class="event-card bg-[#F1D9A3] border-4 border-[#FECE58] rounded-xl mb-4 shadow-lg overflow-hidden card-coming-soon" data-soon="Coming Soon">
+<div class="event-header bg-[#341002] p-4 flex items-center justify-between cursor-pointer" onclick="toggleEvent('seer-contest')">
+<div class="flex items-center gap-3 flex-1">
+<div class="w-12 h-12 bg-[#F1D9A3] rounded-lg flex items-center justify-center p-1 flex-shrink-0">
+<img src="images/Tarotset.png" alt="Tarotset" class="w-full h-full object-contain">
+</div>
+<div class="flex-1">
+<h2 id="event-seer-title" class="text-xl font-bold text-[#F1D9A3]"></h2>
+<p id="event-seer-summary" class="text-sm text-[#F1D9A3]/80 mt-1"></p>
+</div>
+</div>
+<svg class="expand-icon w-6 h-6 text-[#F1D9A3]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</div>
+<div id="seer-contest-content" class="event-content bg-[#F1D9A3] text-[#341002]">
+<h3 id="seer-desc-title" class="font-bold text-lg mb-3"></h3>
+<p id="seer-desc" class="mb-4">
+</p>
+<h4 id="seer-tips-title" class="font-bold mb-2"></h4>
+<ul id="seer-tips" class="tips-list space-y-1 mb-4">
+</ul>
+<div class="bg-[#341002]/10 p-3 roun</p>
+</div>
+</div>
+</div>
+<div class=" event-card="" bg-[#f1d9a3]="" border-4="" border-[#fece58]="" rounded-xl="" mb-4="" shadow-lg="" overflow-hidden"="">
+<div class="event-header bg-[#341002] p-4 flex items-center justify-between cursor-pointer" onclick="toggleEvent('yutnori')">
+<div class="flex items-center gap-3 flex-1">
+<div class="w-12 h-12 bg-[#F1D9A3] rounded-lg flex items-center justify-center p-1 flex-shrink-0">
+<img src="images/Yutnori-Spielbrett.png" alt="Yutnori Spielbrett" class="w-full h-full object-contain">
+</div>
+<div class="flex-1">
+<h2 id="event-yutnori-title" class="text-xl font-bold text-[#F1D9A3]"></h2>
+<p id="event-yutnori-summary" class="text-sm text-[#F1D9A3]/80 mt-1"></p>
+</div>
+</div>
+<svg class="expand-icon w-6 h-6 text-[#F1D9A3]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</div>
+<div id="yutnori-content" class="event-content bg-[#F1D9A3] text-[#341002]">
+<h3 id="yutnori-desc-title" class="font-bold text-lg mb-3"></h3>
+<div id="yutnori-desc" class="mb-4">
+</div>
+<h4 id="yutnori-gameplay-title" class="font-bold mb-2"></h4>
+<div class="flex flex-col md:flex-row gap-4 mb-4">
+<div id="yutnori-gameplay" class="flex-1 md:w-2/3">
+</div>
+<div class="flex-shrink-0 md:w-1/3">
+<img src="images/Yut_Nori_Game.png" alt="Yutnori Spielfeld" class="event-showcase-image w-full h-auto rounded-lg border border-[#341002]/20 shadow-md">
+</div>
+</div>
+<h4 id="yutnori-probability-title" class="font-bold mb-2"></h4>
+<p id="yutnori-probability-desc" class="mb-3">
+</p>
+<div id="yutnori-probability-table" class="mb-4">
+</div>
+<h4 id="yutnori-goal-title" class="font-bold mb-2"></h4>
+<p id="yutnori-goal-desc" class="mb-4">
+</p>
+<h4 id="yutnori-rewards-title" class="font-bold mb-2 mt-6"></h4>
+<div id="yutnori-rewards" class="mb-4">
+</div>
+<div id="yutnori-puzzle-chests" class="mt-6 mb-4">
+<h4 id="yutnori-puzzle-chests-label" class="font-bold mb-3"></h4>
+<div class="mb-4 flex justify-center">
+<div class="relative max-w-md w-full">
+<button id="yutnori-chest-dropdown-btn" class="bg-[#F1D9A3] border-2 border-[#341002] rounded-lg px-4 py-2 text-[#341002] font-medium w-full cursor-pointer hover:bg-[#FECE58] transition-colors text-left flex items-center justify-between">
+<span id="yutnori-chest-dropdown-text"></span>
+<svg class="w-5 h-5 transition-transform duration-200" id="yutnori-chest-dropdown-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</button>
+<div id="yutnori-chest-dropdown-menu" class="hidden absolute top-full left-0 w-full bg-[#F1D9A3] border-2 border-[#341002] rounded-lg mt-1 shadow-lg z-50 max-h-60 overflow-y-auto">
+</div>
+</div>
+</div>
+<div id="yutnori-selected-chest" class="hidden bg-[#341002]/10 rounded-xl p-6 w-full max-w-2xl mx-auto">
+<h4 id="yutnori-selected-chest-title" class="font-bold mb-4 text-center"></h4>
+<div class="flex flex-col items-center justify-center space-y-4">
+<div class="w-20 h-20 bg-[#F1D9A3] rounded-lg flex items-center justify-center p-2 border-2 border-[#FECE58]">
+<img id="yutnori-selected-chest-icon" src="" alt="" class="w-full h-full object-contain">
+</div>
+<div class="text-center">
+<h5 id="yutnori-selected-chest-name" class="font-bold text-lg text-[#341002] mb-2"></h5>
+<div class="flex items-center justify-center space-x-2">
+<img src="images/R%C3%A4tselsplitter.png" alt="Rätselsplitter" class="w-6 h-6" data-translate-alt="puzzle-pieces">
+<span id="yutnori-selected-chest-pieces" class="font-bold text-[#341002]"></span>
+<span class="text-[#341002]" data-translate="puzzle-pieces"></span>
+</div>
+</div>
+</div>
+<div class="mt-6">
+<button id="yutnori-loot-toggle" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-4 py-2 rounded transition-all text-sm font-medium w-full flex items-center justify-center space-x-2">
+<span id="yutnori-loot-toggle-text"></span>
+<svg class="w-4 h-4 transition-transform duration-200" id="yutnori-loot-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</button>
+<div id="yutnori-loot-list" class="hidden mt-4 bg-[#341002]/5 rounded-lg p-4">
+</div>
+</div>
+</div>
+</div>
+<div id="yutnori-secret-calculator" class="mt-8 mb-6">
+<div class="bg-[#F1D9A3] border-4 border-[#FECE58] rounded-xl shadow-lg overflow-hidden">
+<div class="bg-[#341002] p-4">
+<h4 id="yutnori-calculator-title" class="text-xl font-bold text-[#F1D9A3]"></h4>
+</div>
+<div class="p-6 text-[#341002]">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+<div class="yutnori-material-input-row">
+<div class="flex items-center gap-3">
+<img src="images/accelerator.png" alt="Yutnori Run" class="yutnori-material-icon">
+<label for="yutnori-minutes-input" id="yutnori-minutes-label" class="yutnori-material-label"></label>
+</div>
+<input type="text" inputmode="numeric" id="yutnori-minutes-input" class="yutnori-material-input-wide" placeholder="0" max="999">
+</div>
+<div class="yutnori-material-input-row">
+<div class="flex items-center gap-3">
+<img src="images/Yutnori-Geheimnis.png" alt="Yutnori-Geheimnis" class="yutnori-material-icon">
+<label for="yutnori-secrets-input" id="yutnori-secrets-label" class="yutnori-material-label"></label>
+</div>
+<input type="text" inputmode="numeric" id="yutnori-secrets-input" class="yutnori-material-input-wide" placeholder="0" max="999">
+</div>
+</div>
+<div class="text-center mb-4">
+<button id="yutnori-calculate-btn" class="bg-[#5D0505] hover:bg-[#5D0505]/80 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+</button>
+</div>
+<div id="yutnori-result" class="hidden bg-[#341002]/10 rounded-lg p-4 border border-[#FECE58]/50">
+<div class="text-center">
+<div class="flex items-center justify-center gap-2 mb-2">
+<img src="images/runs.png" alt="Yutnori-Geheimnis" class="yutnori-material-icon">
+<span id="yutnori-result-label" class="font-bold text-[#341002]"></span>
+</div>
+<div id="yutnori-result-value" class="text-2xl font-bold text-[#5D0505]">-</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h4 id="yutnori-tips-title" class="font-bold mb-2"></h4>
+<ul id="yutnori-tips" class="tips-list space-y-1 mb-4">
+</ul>
+<div class="bg-[#341002]/10 p-3 rounded-lg">
+<p id="yutnori-note"></p>
+</div>
+</div>
+</div>
+</div></div></main>
+<footer class="text-center text-[#F1D9A3]/70 py-6 text-sm main-content">
+© <span id="year"></span> <span>Metin2 Helper by NikKing97. Not official by Gameforge.</span>
+<p></p>
+<a href="https://discord.gg/VxVK7GMWCU" target="_blank" rel="noopener noreferrer" class="underline hover:text-[#FECE58] mr-3">Discord</a>
+<a href="impressum.html" class="underline hover:text-[#FECE58]">Impressum</a>
+</footer>
+<script src="js/search-index.js"></script>
+<script src="js/search-component.js"></script>
+<script src="js/events-translations.js"></script>
+<script src="js/events-core.js"></script>
+<script src="js/events-treasure.js"></script>
+<script src="js/events-underworld.js"></script>
+<script src="js/events-king.js"></script>
+<script src="js/events-okey.js"></script>
+<script src="js/events-tombola.js"></script>
+<script src="js/yutnori-core.js"></script>
+
+</body></html>

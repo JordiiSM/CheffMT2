@@ -1,0 +1,22 @@
+function detectUserLanguage() {
+try {
+const storedLang = localStorage.getItem("lang");
+if (storedLang && ['de','en','tr'].includes(storedLang)) {
+console.log(`Using stored language: ${storedLang}`);
+return storedLang;
+}
+console.log('No stored language found, detecting from browser...');
+const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+const langCode = browserLang.substring(0, 2);
+const validLangs = ['de', 'en', 'tr'];
+let detectedLang = validLangs.includes(langCode) ? langCode : 'en';
+console.log(`Browser language: ${browserLang}, detected language: ${detectedLang}`);
+localStorage.setItem("lang", detectedLang);
+return detectedLang;
+} catch (error) {
+console.warn('Language detection failed, falling back to English:', error);
+localStorage.setItem("lang", 'en');
+return 'en';
+}
+}
+detectUserLanguage();

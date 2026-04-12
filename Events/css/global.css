@@ -1,0 +1,5 @@
+/* Global scrollbar styles */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #3e2611; }
+::-webkit-scrollbar-thumb { background: #f1d9a3; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #a07830; }

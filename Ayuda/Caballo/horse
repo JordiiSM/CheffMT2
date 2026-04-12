@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>Metin2 Pferd Rechner - Level & Medaillen | M2-Helper</title>
+<meta name="description" content="Berechne Pferde-Level und benötigtes Pferdefutter für Metin2 Reittiere. Optimiere dein Pferde-Training mit diesem interaktiven Rechner.">
+<meta name="keywords" content="metin2 pferd, metin2 pferd rechner, metin2 horse calculator, metin2 reittier, metin2 medaillen, metin2 pferd leveln">
+<meta name="author" content="NikKing97">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<link rel="canonical" href="https://m2-helper.com/horse">
+<link rel="icon" href="resources/söldner_2.png" type="image/png" />
+<link rel="apple-touch-icon" href="resources/söldner_2.png">
+<meta name="theme-color" content="#3e2611">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://m2-helper.com/horse">
+<meta property="og:title" content="Metin2 Horse Calculator - Level | M2-Helper">
+<meta property="og:description" content="Calculate horse level and required horse food for Metin2 mounts.">
+<meta property="og:image" content="https://m2-helper.com/resources/söldner_2.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:site_name" content="M2-Helper">
+<meta property="og:locale" content="de_DE">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Metin2 Horse Calculator - Level | M2-Helper">
+<meta name="twitter:description" content="Calculate horse level and required horse food for Metin2 mounts.">
+<meta name="twitter:image" content="https://m2-helper.com/resources/söldner_2.png">
+<script type="application/ld+json">
+{
+"@context": "https://schema.org",
+"@type": "WebApplication",
+"name": "Metin2 Pferd Rechner",
+"description": "Interaktiver Rechner für Pferde-Level in Metin2",
+"url": "https://m2-helper.com/horse",
+"applicationCategory": "UtilitiesApplication",
+"operatingSystem": "Any",
+"inLanguage": ["de", "en", "tr"],
+"isPartOf": {
+"@type": "WebSite",
+"name": "M2-Helper",
+"url": "https://m2-helper.com"
+},
+"author": {
+"@type": "Person",
+"name": "NikKing97"
+}
+}
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="global.css">
+<link rel="stylesheet" >
+<link rel="stylesheet" href="search-styles.css">
+<style>
+body{position:relative;font-family:'Montserrat',Arial,sans-serif;}
+/* SVG flag styling */
+.flag-icon {
+display: inline-block;
+width: 1.25rem;
+height: 1.25rem;
+vertical-align: middle;
+}
+/* Fix flag alignment in language button */
+#langIcon {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 1.25rem;
+height: 1.25rem;
+}
+body::before{
+content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.98;
+background:
+radial-gradient(ellipse at 65% 20%, #f1d9a3cc 0%, transparent 65%),
+radial-gradient(ellipse at 30% 85%, #5d050550 0%, transparent 70%),
+linear-gradient(135deg,#2d1a07 0%,#3e2611 45%,#f1d9a3 110%);
+}
+.main-content{position:relative;z-index:100;}
+.dropdown{position:absolute;right:2rem;top:2rem;z-index:1;}
+.content-section {
+background: rgba(241, 217, 163, 1);
+border: 4px solid #FECE58;
+border-radius: 0.75rem;
+margin-bottom: 2rem;
+overflow: visible;
+box-shadow: 0 4px 12px rgba(93, 5, 5, 0.1);
+}
+.section-header {
+background: #341002;
+padding: 1rem;
+color: #F1D9A3;
+border-radius: 0.5rem 0.5rem 0 0;
+}
+.section-content {
+padding: 1.5rem;
+color: #341002;
+}
+.result-table th:first-child { text-align: left; }
+.result-table td { text-align: right; }
+</style>
+</head>
+<body class="min-h-screen text-white flex flex-col items-center main-content">
+<div class="dropdown">
+<button id="langBtn"
+class="bg-[#341002] rounded-xl py-2.5 px-5 flex items-center gap-2 shadow-lg hover:bg-[#5D0505] transition relative">
+<img src="resources/flags/de.svg" alt="DE" class="flag-icon" id="langIcon">
+<span id="langText" class="hidden md:inline font-bold">Deutsch</span>
+<svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M6 9l6 6 6-6"/>
+</svg>
+</button>
+<div id="langMenu" class="hidden absolute right-0 mt-2 w-40 bg-[#341002]/90 rounded-xl shadow-lg overflow-hidden">
+<button data-lang="de" class="w-full text-left px-4 py-2 hover:bg-[#5D0505] flex items-center gap-2"><img src="resources/flags/de.svg" alt="DE" class="flag-icon"> Deutsch</button>
+<button data-lang="en" class="w-full text-left px-4 py-2 hover:bg-[#5D0505] flex items-center gap-2"><img src="resources/flags/gb.svg" alt="GB" class="flag-icon"> English</button>
+<button data-lang="tr" class="w-full text-left px-4 py-2 hover:bg-[#5D0505] flex items-center gap-2"><img src="resources/flags/tr.svg" alt="TR" class="flag-icon"> Türkçe</button>
+</div>
+</div>
+<div id="search-bar-container"></div>
+<header class="pt-10 text-center">
+<a href="index.html">
+<img src="resources/m2helper_logo.png" alt="Metin2 Help Portal" id="site-logo"
+class="mx-auto w-28 md:w-40 drop-shadow-[0_2px_8px_rgba(93,5,5,0.2)] transition-transform duration-200 ease-out hover:scale-105 hover:drop-shadow-[0_0_20px_rgba(241,217,163,0.6)]" />
+</a>
+<h1 id="title" class="sr-only">Pferd Level-Rechner</h1>
+</header>
+<main class="w-full max-w-[1000px] px-4 md:px-0 mt-8">
+<section class="content-section">
+<div class="section-header">
+<div class="flex items-center justify-center gap-2">
+<img src="resources/Goldenes_Pferdebuch.png" alt="Horse Icon" class="w-6 h-6 shrink-0" />
+<h2 id="page-title" class="font-bold text-lg md:text-xl"></h2>
+</div>
+</div>
+<div class="section-content">
+<p id="horse-section-desc" class="text-sm text-[#341002]/80 mb-4"></p>
+<form id="horse-form" class="space-y-6">
+<div class="grid md:grid-cols-2 gap-6">
+<div>
+<label for="startLevel" id="lbl-startLevel" class="block font-bold mb-2 text-[#5D0505]"></label>
+<div class="flex items-center gap-2">
+<img src="resources/Goldenes_Pferdebuch.png" alt="Start Icon" class="w-6 h-6 shrink-0" />
+<select id="startLevel" class="w-full rounded-md px-3 py-2 text-[#341002]">
+</select>
+</div>
+</div>
+<div>
+<label for="targetLevel" id="lbl-targetLevel" class="block font-bold mb-2 text-[#5D0505]"></label>
+<div class="flex items-center gap-2">
+<img src="resources/Goldenes_Pferdebuch.png" alt="Target Icon" class="w-6 h-6 shrink-0" />
+<select id="targetLevel" class="w-full rounded-md px-3 py-2 text-[#341002]">
+</select>
+</div>
+</div>
+</div>
+<div class="text-center pt-2">
+<button type="button" id="calculate-btn"
+class="w-full max-w-md mx-auto bg-[#5D0505] text-white py-3 rounded-lg text-lg font-medium border border-transparent hover:border-[#FECE58] hover:text-[#FECE58] hover:font-bold transition-colors transition-transform transform">
+</button>
+<p id="champion-note" class="mt-4 text-xs md:text-sm text-gray-700">
+</p>
+<p id="wiki-note" class="mt-2 text-xs md:text-sm text-gray-700">
+</p>
+</div>
+</form>
+</div>
+</section>
+<section id="results" class="content-section mt-8 hidden">
+<div class="section-header">
+<h3 id="results-title" class="font-bold text-lg md:text-xl"></h3>
+</div>
+<div class="section-content">
+<div class="grid grid-cols-1 gap-6">
+<div class="bg-white bg-opacity-60 rounded-lg p-4">
+<h4 id="horsefeed-header" class="font-bold text-[#5D0505] mb-3 flex items-center gap-2">
+<img src="resources/Pferdefutter.png" alt="Food Stack" class="w-5 h-5" />
+<span id="horsefeed-text"></span>
+</h4>
+<table class="w-full result-table">
+<tr>
+<th id="th-needed-exp" class="text-left font-semibold text-[#5D0505] pb-1"></th>
+<td id="needed-exp" class="text-right font-bold">-</td>
+</tr>
+<tr>
+<th id="th-needed-stacks" class="text-left font-semibold text-[#5D0505] pb-1"></th>
+<td id="needed-stacks" class="text-right font-bold">-</td>
+</tr>
+<tr>
+<th id="th-levelup-wheat-stacks" class="text-left font-semibold text-[#5D0505] pb-1"></th>
+<td id="levelup-wheat-stacks" class="text-right font-bold">-</td>
+</tr>
+<tr>
+<th id="th-levelup-gaya" class="text-left font-semibold text-[#5D0505] pb-1"></th>
+<td id="levelup-gaya" class="text-right font-bold">-</td>
+</tr>
+<tr class="border-t border-[#5D0505]/20">
+<th id="th-total-stacks" class="text-left font-bold text-[#5D0505] pt-2 pb-1"></th>
+<td id="total-stacks" class="text-right font-bold pt-2">-</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="grid md:grid-cols-3 gap-6 mt-6">
+<div id="box-careset" class="bg-white bg-opacity-60 rounded-lg p-4">
+<h4 class="font-bold text-[#5D0505] mb-3 flex items-center gap-2">
+<img src="resources/yang.png" alt="Yang" class="w-5 h-5" />
+<span id="costs-careset-text"></span>
+</h4>
+<table class="w-full result-table">
+<tr>
+<th id="th-careset-feeding" class="text-left font-semibold text-[#5D0505] pb-1"></th>
+<td id="careset-feeding-cost" class="text-right font-bold">-</td>
+</tr>
+<tr>
+<th id="th-careset-levelup" class="text-left font-semibold text-[#5D0505] pb-1"></th>
+<td id="careset-levelup-cost" class="text-right font-bold">-</td>
+</tr>
+<tr class="border-t border-[#5D0505]/20">
+<th id="th-careset-total" class="text-left font-bold text-[#5D0505] pt-2 pb-1"></th>
+<td id="careset-total-cost" class="text-right font-bold pt-2">-</td>
+</tr>
+</table>
+</div>
+<div id="box-careset-fs" class="bg-white bg-opacity-60 rounded-lg p-4">
+<h4 class="font-bold text-[#5D0505] mb-3 flex items-center gap-2">
+<img src="resources/yang.png" alt="Yang" class="w-5 h-5" />
+<span id="costs-careset-fs-text"></span>
+</h4>
+<table class="w-full result-table">
+<tr>
+<th id="th-careset-fs-feeding" class="text-left font-semibold text-[#5D0505] pb-1"></th>
+<td id="careset-fs-feeding-cost" class="text-right font-bold">-</td>
+</tr>
+<tr>
+<th id="th-careset-fs-levelup" class="text-left font-semibold text-[#5D0505] pb-1"></th>
+<td id="careset-fs-levelup-cost" class="text-right font-bold">-</td>
+</tr>
+<tr class="border-t border-[#5D0505]/20">
+<th id="th-careset-fs-total" class="text-left font-bold text-[#5D0505] pt-2 pb-1"></th>
+<td id="careset-fs-total-cost" class="text-right font-bold pt-2">-</td>
+</tr>
+</table>
+</div>
+<div id="box-flashsale" class="bg-white bg-opacity-60 rounded-lg p-4">
+<h4 class="font-bold text-[#5D0505] mb-3 flex items-center gap-2">
+<img src="resources/yang.png" alt="Yang" class="w-5 h-5" />
+<span id="costs-flashsale-text"></span>
+</h4>
+<table class="w-full result-table">
+<tr>
+<th id="th-flashsale-feeding" class="text-left font-semibold text-[#5D0505] pb-1"></th>
+<td id="flashsale-feeding-cost" class="text-right font-bold">-</td>
+</tr>
+<tr>
+<th id="th-flashsale-levelup" class="text-left font-semibold text-[#5D0505] pb-1"></th>
+<td id="flashsale-levelup-cost" class="text-right font-bold">-</td>
+</tr>
+<tr class="border-t border-[#5D0505]/20">
+<th id="th-flashsale-total" class="text-left font-bold text-[#5D0505] pt-2 pb-1"></th>
+<td id="flashsale-total-cost" class="text-right font-bold pt-2">-</td>
+</tr>
+</table>
+</div>
+</div>
+<hr class="my-6 border-[#5D0505]/40" />
+<div class="mt-6 bg-white bg-opacity-40 rounded-lg p-4">
+<p id="notes-section" class="text-sm text-[#5D0505]">
+</p>
+</div>
+</div>
+</section>
+</main>
+<footer class="text-center text-[#F1D9A3]/70 py-6 text-sm main-content">
+© <span id="year"></span> <span>Metin2 Helper by NikKing97. Not official by Gameforge.</span>
+<p></p>
+<a href="https://discord.gg/VxVK7GMWCU" target="_blank" rel="noopener noreferrer" class="underline hover:text-[#FECE58] mr-3">Discord</a>
+<a href="impressum.html" class="underline hover:text-[#FECE58]">Impressum</a>
+</footer>
+<script src="search-index.js"></script>
+<script src="search-component.js"></script>
+<script src="horse-translations.js"></script>
+<script src="horse-core.js"></script>
+</body>
+</html>

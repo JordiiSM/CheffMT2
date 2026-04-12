@@ -1,0 +1,240 @@
+const VALID_LANGS = ['de','en','tr'];
+const t = {
+de:{
+flag:'🇩🇪', label:'Deutsch', title:'Petlevel Rechner', btn:'Berechnen', results:'Ergebnisse',
+petLevel:'Aktuelles Level', targetLevel:'Ziellevel',
+priceWeapon:'Preis Waffe +7 (kk)', priceSnack:'Preis Leckerli+ (kk)', priceDelicious:'Preis Stack Köstliches Leckerli (kk)',
+note_under:'Alle Level unter 50 benötigen jeweils eine 70er Waffe +7.',
+basicTitle:'Erfahrung', costTitle:'Kosten', deliciousTitle:'Köstliches Leckerli', optimalTitle:'Optimaler Weg',
+basicRows:{
+totalExpNeed:'Benötigte EXP',
+itemExpNeed:'Benötigte Item EXP',
+weaponNeed:'Benötigte Waffen',
+snackNeed:'Benötigte Leckerli+',
+deliciousExpNeed:'Benötigte EXP',
+deliciousNeed:'Benötigte Köstliche Leckerli'
+},
+costRows:{
+weaponCost:'Waffenkosten',
+snackCost:'Leckerli+ Kosten',
+deliciousCost:'Köstliche Leckerli Kosten'
+},
+optimal:{
+title:'Optimaler Weg',
+intro:'Ab Level <strong>{level}</strong> sind Leckerli+ günstiger als Waffen +7.',
+lineUse:'Bis Level <strong>{level}</strong> {item} verwenden: <strong>{count}</strong> Stück ({price})',
+itemWeapon:'Waffen',
+itemSnack:'Leckerli+',
+totalCost:'Gesamtkosten (Item EXP): <strong>{cost}</strong>',
+totalCostCombined:'Gesamtkosten (EXP & Item EXP): <strong>{cost}</strong>',
+alwaysWeapons:'Waffen +7 sind über den gesamten Bereich günstiger.',
+alwaysSnacks:'Leckerli+ sind über den gesamten Bereich günstiger.',
+multiSegmentIntro:'Optimaler Weg mit mehreren Wechseln:',
+weaponsOnlyTitle:'Nur Waffen +7',
+snacksOnlyTitle:'Nur Leckerli+',
+needed:'Benötigt',
+itemExpCost:'Item EXP Kosten',
+totalWithDelicious:'Gesamt mit Köstlichem Leckerli'
+},
+sectionDesc: 'Gib die Werte für Level, Ziellevel und aktuelle Marktpreise ein, um eine Übersicht der Kosten und den optimalen Weg zu erhalten.',
+errorTarget:'Ziellevel muss größer als Pet Level sein!',
+footer:'Metin2 Helper by NikKing97. Not official by Gameforge.',
+statCalculator: {
+title: 'Petwerte Rechner',
+sectionDesc: 'Gib die Werte für Level, Ziellevel, Pettyp, Alter und aktuelle Stats ein, um voraussichtliche Stats deines Pets zu berechnen.',
+currentLevel: 'Aktuelles Level',
+targetLevel: 'Ziellevel',
+petType: 'Pettyp',
+petTypeInfoTooltip: 'Daten nicht 100% sicher, aber sehr wahrscheinlich korrekt.',
+currentTP: 'TP',
+currentDEF: 'Verteidigung',
+currentMP: 'MP',
+isMeley: 'Meley/Nessie?',
+ageInDays: 'Alter (Tage)',
+ageTooltip: '+0,1% pro ~100 Tage, max +0,8% bei 800+ Tagen.<br>Min/Max/Avg in den Ergebnissen verwenden unterschiedliche Rundungen.',
+calculateBtn: 'Berechnen',
+resultsTitle: 'Voraussichtliche Werte',
+errorModalTitle: 'Fehler',
+errorModalBtn: 'OK',
+legend: {
+title: 'Legende',        whiskers: 'Vertikale Striche: Minimaler und maximaler Wert',        p95: 'Heller Bereich: 95% Wahrscheinlichkeit',
+p50: 'Dunkler Bereich: 50% Wahrscheinlichkeit',
+median: 'Mittlere Linie: Erwartungswert (Durchschnitt)',
+assumption: 'Annahme: Alle Verbesserungs-Sprünge treten mit gleicher Wahrscheinlichkeit auf.'
+},
+tooltips: {
+probability50: '50% Wahrscheinlichkeit',
+probability95: '95% Wahrscheinlichkeit',
+range: 'bis'
+},
+statLabels: {
+tp: 'TP',
+def: 'Verteidigung',
+mp: 'MP'
+},
+errorSelectAll: 'Bitte alle Felder ausfüllen!',
+errorLevelRange: 'Aktuelles Level muss zwischen 1 und 104 liegen, Ziellevel zwischen 2 und 105!',
+errorTargetHigher: 'Ziellevel muss höher als aktuelles Level sein!',
+errorStatsPositive: 'Alle Werte müssen größer als 0 sein!',
+errorAgePositive: 'Alter muss 0 oder höher sein!'
+}
+},
+en:{
+flag:'🇬🇧', label:'English', title:'Pet Level Calculator', btn:'Compute', results:'Results',
+petLevel:'Current level', targetLevel:'Target level',
+priceWeapon:'Weapon +7 price (kk)', priceSnack:'Tasty Treat+ price (kk)', priceDelicious:'Delicious Treat Stack price (kk)',
+note_under:'All levels below 50 each require a level 70 +7 weapon.',
+basicTitle:'Experience', costTitle:'Costs', deliciousTitle:'Delicious Treat', optimalTitle:'Optimal Path',
+basicRows:{
+totalExpNeed:'Total EXP needed',
+itemExpNeed:'Item EXP needed',
+weaponNeed:'Weapons needed',
+snackNeed:'Tasty Treats+ needed',
+deliciousExpNeed:'Total EXP needed',
+deliciousNeed:'Delicious Treats needed'
+},
+costRows:{
+weaponCost:'Weapon cost',
+snackCost:'Tasty Treat+ cost',
+deliciousCost:'Delicious Treat cost'
+},
+optimal:{
+title:'Optimal Path',
+intro:'From level <strong>{level}</strong> onward, Tasty Treat+ is cheaper than +7 weapons.',
+lineUse:'Use {item} up to level <strong>{level}</strong>: <strong>{count}</strong> pcs ({price})',
+itemWeapon:'weapons',
+itemSnack:'Tasty Treat+',
+totalCost:'Total cost (Item EXP): <strong>{cost}</strong>',
+totalCostCombined:'Total cost (EXP & Item EXP): <strong>{cost}</strong>',
+alwaysWeapons:'+7 weapons are cheaper for the entire range.',
+alwaysSnacks:'Tasty Treat+ are cheaper for the entire range.',
+multiSegmentIntro:'Optimal path with multiple transitions:',
+weaponsOnlyTitle:'Weapons +7 only',
+snacksOnlyTitle:'Tasty Treat+ only',
+needed:'Required',
+itemExpCost:'Item EXP cost',
+totalWithDelicious:'Total with Delicious Treat'
+},
+sectionDesc: 'Enter level, target level, and current market prices to get an overview of costs and the optimal path.',
+errorTarget:'Target level must be higher than pet level!',
+footer:'Metin2 Helper by NikKing97. Not official by Gameforge.',
+statCalculator: {
+title: 'Pet Values Calculator',
+sectionDesc: 'Enter level, target level, pet type, age, and current stats to calculate the projected stats of your pet.',
+currentLevel: 'Current Level',
+targetLevel: 'Target Level',
+petType: 'Pet Type',
+petTypeInfoTooltip: 'Data not 100% certain, but very likely correct.',
+currentTP: 'HP',
+currentDEF: 'Defence',
+currentMP: 'SP',
+isMeley: 'Meley/Nessie?',
+ageInDays: 'Age (Days)',
+ageTooltip: '+0.1% per ~100 days, max +0.8% at 800+ days.<br>Min/Max/Avg in results use different rounding.',
+calculateBtn: 'Calculate',
+resultsTitle: 'Projected Stats',
+errorModalTitle: 'Error',
+errorModalBtn: 'OK',
+legend: {
+title: 'Legend',        whiskers: 'Vertical lines: Minimum and maximum value',        p95: 'Light area: 95% probability',
+p50: 'Dark area: 50% probability',
+median: 'Middle line: Expected value (average)',
+assumption: 'Assumption: All improvement increments occur with equal probability.'
+},
+tooltips: {
+probability50: '50% probability',
+probability95: '95% probability',
+range: 'to'
+},
+statLabels: {
+tp: 'HP',
+def: 'Defence',
+mp: 'SP'
+},
+errorSelectAll: 'Please fill in all fields!',
+errorLevelRange: 'Current level must be between 1 and 104, target level between 2 and 105!',
+errorTargetHigher: 'Target level must be higher than current level!',
+errorStatsPositive: 'All values must be greater than 0!',
+errorAgePositive: 'Age must be 0 or higher!'
+}
+},
+tr:{
+flag:'🇹🇷', label:'Türkçe', title:'Pet Seviye Hesaplayıcı', btn:'Hesapla', results:'Sonuçlar',
+petLevel:'Aktif Seviye', targetLevel:'Hedef seviye',
+priceWeapon:'(1x) Silah +7 fiyatı (m)', priceSnack:'(1x) Lezzetli Lokma+ fiyatı (m)', priceDelicious:'(200x) Nefis lokma fiyatı (m)',
+note_under:'50 altındaki her seviye için bir 70 seviye +7 silah gerekir.',
+basicTitle:'Tecrübe', costTitle:'Maliyetler', deliciousTitle:'Lezzetli Snack', optimalTitle:'En Uygun Yol',
+basicRows:{
+totalExpNeed:'Toplam gerekli EXP',
+itemExpNeed:'Eşya EXP gerekli',
+weaponNeed:'Gerekli silah',
+snackNeed:'Lezzetli Lokma+',
+deliciousExpNeed:'Toplam gerekli EXP',
+deliciousNeed:'Gerekli (200x) Nefis Lokma'
+},
+costRows:{
+weaponCost:'Silah maliyeti',
+snackCost:'Lezzetli Lokma+ maliyeti',
+deliciousCost:'Nefis Lokma maliyeti'
+},
+optimal:{
+title:'En Uygun Yol',
+intro:'<strong>{level}</strong>. seviyeden itibaren Lezzetli Lokma+, +7 silahtan daha ucuzdur.',
+lineUse:'<strong>{level}</strong>. seviyeye kadar {item} kullan: <strong>{count}</strong> adet ({price})',
+itemWeapon:'silah',
+itemSnack:'Lezzetli Lokma+',
+totalCost:'Toplam maliyet (Item EXP): <strong>{cost}</strong>',
+totalCostCombined:'Toplam maliyet (EXP & Item EXP): <strong>{cost}</strong>',
+alwaysWeapons:'Tüm aralıkta +7 silah daha ucuz.',
+alwaysSnacks:'Tüm aralıkta Lezzetli Lokma+ daha ucuz.',
+multiSegmentIntro:'Birden fazla geçiş ile en uygun yol:',
+weaponsOnlyTitle:'Sadece +7 Silah',
+snacksOnlyTitle:'Sadece Lezzetli Lokma+',
+needed:'Gerekli',
+itemExpCost:'Item EXP maliyeti',
+totalWithDelicious:'Nefis Lokma ile toplam'
+},
+sectionDesc: 'Seviye, hedef seviye ve güncel piyasa fiyatlarını girerek maliyet özeti ve en uygun yolu görüntüle.',
+errorTarget:'Hedef seviye, pet seviyesinden yüksek olmalıdır!',
+footer:'Metin2 Helper by NikKing97. Gameforge tarafından resmi değildir.',
+statCalculator: {
+title: 'Pet Değerleri Hesaplayıcı',
+sectionDesc: 'Seviye, hedef seviye, pet tipi, yaş ve mevcut statları girerek petinin tahmini statlarını hesapla.',
+currentLevel: 'Mevcut Seviye',
+targetLevel: 'Hedef Seviye',
+petType: 'Pet Tipi',
+petTypeInfoTooltip: 'Veriler %100 kesin değil, ancak büyük olasılıkla doğru.',
+currentTP: 'HP',
+currentDEF: 'Savunma',
+currentMP: 'SP',
+isMeley: 'Meley/Nessie?',
+ageInDays: 'Yaş (Gün)',
+ageTooltip: '~100 günde +0,1%, 800+ günde maksimum +0,8%.<br>Sonuçlardaki Min/Maks/Ort farklı yuvarlama kullanır.',
+calculateBtn: 'Hesapla',
+resultsTitle: 'Tahmini Değerler',
+errorModalTitle: 'Hata',
+errorModalBtn: 'Tamam',
+legend: {
+title: 'Açıklama',        whiskers: 'Dikey çizgiler: Minimum ve maksimum değer',        p95: 'Açık alan: %95 olasılık',
+p50: 'Koyu alan: %50 olasılık',
+median: 'Orta çizgi: Beklenen değer (ortalama)',
+assumption: 'Varsayım: Tüm iyileştirme artışları eşit olasılıkla gerçekleşir.'
+},
+tooltips: {
+probability50: '%50 olasılık',
+probability95: '%95 olasılık',
+range: 'ile'
+},
+statLabels: {
+tp: 'HP',
+def: 'Savunma',
+mp: 'SP'
+},
+errorSelectAll: 'Lütfen tüm alanları doldurun!',
+errorLevelRange: 'Mevcut seviye 1 ile 104 arasında, hedef seviye 2 ile 105 arasında olmalıdır!',
+errorTargetHigher: 'Hedef seviye mevcut seviyeden yüksek olmalıdır!',
+errorStatsPositive: 'Tüm değerler 0\'dan büyük olmalıdır!',
+errorAgePositive: 'Yaş 0 veya daha yüksek olmalıdır!'
+}
+}
+};
