@@ -383,15 +383,15 @@ function updateKingContent(eventData) {
 
 // === King Helper Functions ===
 
-var KING_CARD_BACK = 'events/images/Schnapp_den_König_verdeckt.png';
+var KING_CARD_BACK = 'Events/images/Schnapp_den_König_verdeckt.png';
 
 const KING_CARD_IMAGES = {
-  '1': 'events/images/Schnapp_den_König_Karte_1.png',
-  '2': 'events/images/Schnapp_den_König_Karte_2.png',
-  '3': 'events/images/Schnapp_den_König_Karte_3.png',
-  '4': 'events/images/Schnapp_den_König_Karte_4.png',
-  '5': 'events/images/Schnapp_den_König_Karte_5.png',
-  'K': 'events/images/Schnapp_den_König_Karte_K.png'
+  '1': 'Events/images/Schnapp_den_König_Karte_1.png',
+  '2': 'Events/images/Schnapp_den_König_Karte_2.png',
+  '3': 'Events/images/Schnapp_den_König_Karte_3.png',
+  '4': 'Events/images/Schnapp_den_König_Karte_4.png',
+  '5': 'Events/images/Schnapp_den_König_Karte_5.png',
+  'K': 'Events/images/Schnapp_den_König_Karte_K.png'
 };
 
 // === Probability Calculation for Hidden 5s (Inclusion-Exclusion Formula) ===

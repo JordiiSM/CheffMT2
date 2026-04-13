@@ -179,7 +179,7 @@ function updateOkeyRewardsContent(eventData) {
           chestContent.className = 'ev-okey-chest-content';
 
           const img = document.createElement('img');
-          // Use remote URL: icon is e.g. "events/okey/Bronzene_Okey-Truhe.png"
+          // Use remote URL: icon is e.g. "Events/okey/Bronzene_Okey-Truhe.png"
           img.src = `https://m2-helper.com/resources/${chest.icon}`;
           img.alt = chest.name;
           img.className = 'ev-okey-chest-img';
