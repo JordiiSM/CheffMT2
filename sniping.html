@@ -1667,10 +1667,10 @@ async function scan() {
   saveSeen();
   saveMatchesLocal();
 
-  // Persistir matches nuevos en BD para usuarios logueados
+  // Persistir matches nuevos en BD para usuarios logueados (await para evitar race condition con el refresco de 60s)
   if (currentUser && newMatchCount > 0) {
     const newMatches = matches.slice(0, newMatchCount);
-    Promise.allSettled(newMatches.map(m =>
+    await Promise.allSettled(newMatches.map(m =>
       apiPost('/snipe-matches/client', {
         id:         m.id,
         alert_id:   m.alertId,
@@ -1762,8 +1762,8 @@ function renderMatches(hasNew) {
     if (item.wonPrice)  priceHtml += `<div>💜 ${item.wonPrice.toLocaleString()} Won</div>`;
     if (!priceHtml)     priceHtml  = '<div style="color:var(--text-muted)">Precio desconocido</div>';
 
-    const plus = item.set?.[0] ?? 0;
-    const plusStr = plus > 0 ? ` +${plus}` : '';
+    const plusMatch = /\+(\d+)/.exec(item.name || '');
+    const plusStr   = plusMatch ? ` +${plusMatch[1]}` : '';
 
     return `<div class="match-item ${isNew ? 'new-match' : ''}" style="cursor:pointer;" onclick="snipeOpenModal(${idx})" title="Ver detalles del item">
       <div class="match-icon">
