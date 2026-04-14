@@ -39,7 +39,7 @@
       </button>
       <div class="navbar-user-dropdown" id="authDropdown">
         <a href="${API_BASE}/perfil">👤 Mi perfil</a>
-        ${user.role === 'admin' ? `<a href="https://jordism.com/admin">⚙️ Panel admin</a>` : ''}
+        ${user.role === 'admin' ? `<a href="/cheffmt2/admin.html">⚙️ Panel admin</a>` : ''}
         <div class="dropdown-divider"></div>
         <button id="authLogoutBtn">🚪 Cerrar sesión</button>
       </div>`;
