@@ -114,8 +114,10 @@ function itemMatchesAlert(item, cfg) {
   if (cfg.fElem && getElemKey(item) !== cfg.fElem) return false;
 
   // Plus mínimo
-  if (cfg.fPlus != null && cfg.fPlus !== '') {
-    if ((item.set?.[0] ?? 0) < parseInt(cfg.fPlus)) return false;
+  if (cfg.fPlus !== '' && cfg.fPlus !== null && cfg.fPlus !== undefined) {
+    const minPlus  = parseInt(cfg.fPlus);
+    const itemPlus = Array.isArray(item.set) && item.set.length > 0 ? (item.set[0] ?? 0) : 0;
+    if (!isNaN(minPlus) && itemPlus < minPlus) return false;
   }
 
   // Precio Yang

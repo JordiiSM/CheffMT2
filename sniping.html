@@ -817,7 +817,6 @@
               <label>⬆️ Mejora mínima</label>
               <select class="form-select" id="fPlus">
                 <option value="">Cualquiera</option>
-                <option value="0">+0 o más</option>
                 <option value="1">+1 o más</option>
                 <option value="2">+2 o más</option>
                 <option value="3">+3 o más</option>
@@ -826,7 +825,13 @@
                 <option value="6">+6 o más</option>
                 <option value="7">+7 o más</option>
                 <option value="8">+8 o más</option>
-                <option value="9">+9</option>
+                <option value="9">+9 o más</option>
+                <option value="10">+10 o más</option>
+                <option value="11">+11 o más</option>
+                <option value="12">+12 o más</option>
+                <option value="13">+13 o más</option>
+                <option value="14">+14 o más</option>
+                <option value="15">+15</option>
               </select>
             </div>
           </div>
@@ -1589,9 +1594,10 @@ function itemMatchesAlert(item, a) {
   // Elemento
   if (a.fElem && getElemKey(item) !== a.fElem) return false;
   // Mejora mínima
-  if (a.fPlus !== '' && a.fPlus != null) {
-    const itemPlus = item.set?.[0] ?? 0;
-    if (itemPlus < parseInt(a.fPlus)) return false;
+  if (a.fPlus !== '' && a.fPlus !== null && a.fPlus !== undefined) {
+    const minPlus  = parseInt(a.fPlus);
+    const itemPlus = Array.isArray(item.set) && item.set.length > 0 ? (item.set[0] ?? 0) : 0;
+    if (!isNaN(minPlus) && itemPlus < minPlus) return false;
   }
   // Precio Yang
   if (a.fMinYang != null && (item.yangPrice == null || item.yangPrice < a.fMinYang)) return false;
