@@ -40,7 +40,6 @@ router.use(requireAuth, requirePremium);
 
 /* ─────────────────────────────────────
    GET /api/snipe-alerts
-   Devuelve todas las alertas del usuario
 ───────────────────────────────────── */
 router.get('/', async (req, res) => {
   try {
@@ -51,15 +50,12 @@ router.get('/', async (req, res) => {
        ORDER BY created_at ASC`,
       [req.user.id]
     );
-
-    // config es JSONB → ya viene como objeto, no hay que parsear
     const alerts = rows.map(row => ({
       id:      row.id,
       name:    row.name,
       enabled: row.enabled,
       ...row.config,
     }));
-
     res.json(alerts);
   } catch (err) {
     console.error('[snipeAlerts] GET error:', err);
@@ -79,8 +75,6 @@ function getAlertLimit(user) {
 
 /* ─────────────────────────────────────
    POST /api/snipe-alerts
-   Crea una nueva alerta
-   Body: { id, name, enabled, ...filtros }
 ───────────────────────────────────── */
 router.post('/', async (req, res) => {
   const { id, name, enabled = true, ...config } = req.body;
@@ -122,23 +116,15 @@ router.post('/', async (req, res) => {
 
 /* ─────────────────────────────────────
    PUT /api/snipe-alerts/:id
-   Actualiza nombre, enabled y/o filtros
-   Soporta actualizaciones parciales
 ───────────────────────────────────── */
 router.put('/:id', async (req, res) => {
   const alertId = req.params.id;
-
   try {
     const { rows } = await db.query(
-      `SELECT name, enabled, config
-       FROM snipe_alerts
-       WHERE id = $1 AND user_id = $2`,
+      `SELECT name, enabled, config FROM snipe_alerts WHERE id = $1 AND user_id = $2`,
       [alertId, req.user.id]
     );
-
-    if (!rows.length) {
-      return res.status(404).json({ error: 'Alerta no encontrada' });
-    }
+    if (!rows.length) return res.status(404).json({ error: 'Alerta no encontrada' });
 
     const current = rows[0];
     const { id, name, enabled, ...newConfigFields } = req.body;
@@ -150,12 +136,10 @@ router.put('/:id', async (req, res) => {
       : current.config;
 
     await db.query(
-      `UPDATE snipe_alerts
-       SET name = $1, enabled = $2, config = $3, updated_at = NOW()
+      `UPDATE snipe_alerts SET name = $1, enabled = $2, config = $3, updated_at = NOW()
        WHERE id = $4 AND user_id = $5`,
       [updatedName, updatedEnabled, JSON.stringify(updatedConfig), alertId, req.user.id]
     );
-
     res.json({ ok: true });
   } catch (err) {
     console.error('[snipeAlerts] PUT error:', err);
@@ -165,13 +149,11 @@ router.put('/:id', async (req, res) => {
 
 /* ─────────────────────────────────────
    DELETE /api/snipe-alerts/:id
-   Elimina una alerta del usuario
 ───────────────────────────────────── */
 router.delete('/:id', async (req, res) => {
   try {
     await db.query(
-      `DELETE FROM snipe_alerts
-       WHERE id = $1 AND user_id = $2`,
+      `DELETE FROM snipe_alerts WHERE id = $1 AND user_id = $2`,
       [req.params.id, req.user.id]
     );
     res.json({ ok: true });
