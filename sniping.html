@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sniping – CheffM2</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ═══════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════ */
+    .snipe-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 28px 24px 80px;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* ═══════════════════════════════════════
+       LEFT SIDEBAR – MIS ALERTAS
+    ═══════════════════════════════════════ */
+    .snipe-sidebar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: sticky;
+      top: 80px;
+    }
+    .snipe-sidebar-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(192,57,43,.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .snipe-sidebar-header h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .snipe-sidebar-header .badge-count {
+      background: var(--gradient-red);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 2px 8px;
+    }
+    .alerts-list {
+      max-height: 520px;
+      overflow-y: auto;
+    }
+    .alerts-empty {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .alerts-empty .empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+    .alert-card {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: background .15s;
+      position: relative;
+    }
+    .alert-card:hover { background: rgba(255,255,255,.03); }
+    .alert-card.active { background: rgba(192,57,43,.08); border-left: 3px solid var(--accent-red); }
+    .alert-card.has-match { border-left: 3px solid #58d68d; }
+    .alert-card-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .alert-toggle {
+      width: 32px;
+      height: 18px;
+      background: var(--border-color);
+      border-radius: 10px;
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background .2s;
+      border: none;
+    }
+    .alert-toggle::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: left .2s;
+    }
+    .alert-toggle.on { background: #27ae60; }
+    .alert-toggle.on::after { left: 17px; }
+    .alert-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .alert-delete-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 13px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: color .15s;
+    }
+    .alert-delete-btn:hover { color: #e74c3c; }
+    .alert-summary {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .alert-summary span {
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 1px 5px;
+      margin-right: 4px;
+      margin-bottom: 3px;
+      display: inline-block;
+    }
+    .alert-match-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(88,214,141,.12);
+      color: #58d68d;
+      border: 1px solid rgba(88,214,141,.25);
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      margin-top: 4px;
+    }
+
+    /* ═══════════════════════════════════════
+       RIGHT PANEL
+    ═══════════════════════════════════════ */
+    .snipe-main { display: flex; flex-direction: column; gap: 20px; }
+
+    /* --- Editor panel --- */
+    .snipe-editor {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .snipe-editor-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(192,57,43,.06);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .snipe-editor-header h3 {
+      font-size: 15px;
+      font-weight: 700;
+      flex: 1;
+    }
+    .snipe-editor-body { padding: 20px; }
+
+    .snipe-field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .snipe-field-row.three { grid-template-columns: 1fr 1fr 1fr; }
+    .snipe-field-row.full  { grid-template-columns: 1fr; }
+
+    .snipe-field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+    .snipe-field input,
+    .snipe-field select {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .price-row input { flex: 1; min-width: 0; }
+    .price-row span { color: var(--text-muted); font-size: 12px; flex-shrink: 0; }
+
+    .snipe-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* --- Polling status bar --- */
+    .poll-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .poll-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      flex-shrink: 0;
+      transition: background .3s;
+    }
+    .poll-dot.active { background: #27ae60; animation: pulse-green 1.5s infinite; }
+    .poll-dot.scanning { background: var(--accent-gold); animation: pulse-gold 0.6s infinite; }
+    @keyframes pulse-green {
+      0%,100% { box-shadow: 0 0 0 0 rgba(39,174,96,.4); }
+      50%      { box-shadow: 0 0 0 6px rgba(39,174,96,0); }
+    }
+    @keyframes pulse-gold {
+      0%,100% { box-shadow: 0 0 0 0 rgba(243,156,18,.4); }
+      50%      { box-shadow: 0 0 0 6px rgba(243,156,18,0); }
+    }
+    .poll-info { flex: 1; }
+    .poll-status { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .poll-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .poll-progress {
+      height: 3px;
+      background: var(--border-color);
+      border-radius: 2px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .poll-progress-bar {
+      height: 100%;
+      background: var(--gradient-red);
+      border-radius: 2px;
+      transition: width 1s linear;
+      width: 0%;
+    }
+    .notif-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      color: var(--text-secondary);
+      font-size: 12px;
+      padding: 6px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .notif-btn:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+    .notif-btn.granted { border-color: rgba(39,174,96,.4); color: #58d68d; }
+
+    /* --- Matches feed --- */
+    .matches-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .matches-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(88,214,141,.04);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .matches-header h3 {
+      font-size: 15px;
+      font-weight: 700;
+      flex: 1;
+    }
+    .matches-header .new-badge {
+      background: #27ae60;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 2px 8px;
+      display: none;
+    }
+    .matches-header .new-badge.show { display: inline; }
+    .matches-list { max-height: 500px; overflow-y: auto; }
+    .matches-empty {
+      padding: 50px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .matches-empty .empty-icon { font-size: 40px; margin-bottom: 12px; }
+
+    .match-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+      transition: background .15s;
+    }
+    .match-item:hover { background: rgba(192,57,43,.07); }
+    .match-item.new-match {
+      animation: highlight-new .8s ease-out;
+      border-left: 3px solid #58d68d;
+    }
+    @keyframes highlight-new {
+      from { background: rgba(88,214,141,.15); }
+      to   { background: transparent; }
+    }
+    .match-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .match-icon img { width: 40px; height: 40px; object-fit: contain; }
+    .match-body { flex: 1; min-width: 0; }
+    .match-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .match-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .match-meta span { margin-right: 10px; }
+    .match-alert-tag {
+      font-size: 10px;
+      background: rgba(192,57,43,.12);
+      color: var(--accent-red-bright);
+      border: 1px solid rgba(192,57,43,.2);
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-top: 4px;
+      display: inline-block;
+    }
+    .match-price {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .match-price .price-val {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+    .match-price .price-time {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ═══════════════════════════════════════
+       TOAST NOTIFICATION
+    ═══════════════════════════════════════ */
+    .snipe-toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .snipe-toast {
+      background: var(--bg-card);
+      border: 1px solid rgba(88,214,141,.4);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.4);
+      max-width: 340px;
+      pointer-events: all;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      animation: toast-in .3s ease-out;
+    }
+    @keyframes toast-in {
+      from { transform: translateX(60px); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+    .snipe-toast.hiding {
+      animation: toast-out .3s ease-in forwards;
+    }
+    @keyframes toast-out {
+      from { transform: translateX(0);    opacity: 1; }
+      to   { transform: translateX(60px); opacity: 0; }
+    }
+    .toast-icon { font-size: 24px; flex-shrink: 0; }
+    .toast-body { flex: 1; min-width: 0; }
+    .toast-title { font-size: 13px; font-weight: 700; color: #58d68d; margin-bottom: 2px; }
+    .toast-text  { font-size: 12px; color: var(--text-secondary); }
+    .toast-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════
+       MODAL (igual que comercio)
+    ═══════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 2000; display: none;
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      padding: 32px; max-width: 520px; width: 100%;
+      max-height: 90vh; overflow-y: auto; position: relative;
+    }
+    .modal-box::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; background: var(--gradient-gold);
+    }
+    .modal-close {
+      position: absolute; top: 14px; right: 18px;
+      background: none; border: none;
+      color: var(--text-muted); font-size: 22px; cursor: pointer; line-height: 1;
+    }
+    .modal-close:hover { color: var(--text-primary); }
+    .modal-item-header { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 24px; }
+    .modal-icon-wrap {
+      width: 80px; height: 80px; flex-shrink: 0;
+      background: var(--bg-secondary); border: 1px solid var(--border-color);
+      border-radius: var(--radius); display: flex; align-items: center; justify-content: center;
+    }
+    .modal-icon-wrap img { width: 72px; height: 72px; object-fit: contain; image-rendering: pixelated; }
+    .modal-icon-wrap .icon-placeholder { display: none; font-size: 40px; }
+    .modal-icon-wrap.broken img { display: none; }
+    .modal-icon-wrap.broken .icon-placeholder { display: flex; }
+    .modal-title { font-family: var(--font-title); font-size: 22px; margin-bottom: 6px; }
+    .modal-seller { font-size: 14px; color: var(--text-muted); }
+    .modal-seller strong { color: var(--accent-gold); }
+    .modal-section { margin-bottom: 20px; }
+    .modal-section h4 {
+      font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--text-muted); margin-bottom: 10px; padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .modal-row {
+      display: flex; justify-content: space-between;
+      font-size: 14px; padding: 7px 0; border-bottom: 1px solid var(--border-color);
+    }
+    .modal-row:last-child { border-bottom: none; }
+    .modal-row span:first-child { color: var(--text-muted); }
+    .modal-row span:last-child { font-weight: 700; color: var(--text-primary); }
+    .modal-attr-list { display: flex; flex-direction: column; gap: 6px; }
+    .modal-attr-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px;
+      background: rgba(192,57,43,0.06); border: 1px solid rgba(192,57,43,0.15);
+      border-radius: var(--radius); font-size: 14px;
+    }
+    .modal-attr-row .attr-icon { font-size: 16px; flex-shrink: 0; }
+    .modal-attr-row .attr-name { flex: 1; color: var(--text-secondary); }
+    .modal-attr-row .attr-val  { color: var(--accent-gold); font-weight: 700; }
+    .elem-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 10px;
+      font-size: 11px; font-weight: 700; border: 1px solid;
+    }
+    .elem-badge img { width: 14px; height: 14px; image-rendering: pixelated; }
+    .elem-lightning { color:#22c7e8; background:rgba(34,199,232,.12); border-color:rgba(34,199,232,.3); }
+    .elem-fire      { color:#dc583b; background:rgba(220,88,59,.12);  border-color:rgba(220,88,59,.3);  }
+    .elem-ice       { color:#3c6cdf; background:rgba(60,108,223,.12); border-color:rgba(60,108,223,.3); }
+    .elem-wind      { color:#36a321; background:rgba(54,163,33,.12);  border-color:rgba(54,163,33,.3);  }
+    .elem-earth     { color:#c9a800; background:rgba(201,168,0,.12);  border-color:rgba(201,168,0,.3);  }
+    .elem-dark      { color:#b64eec; background:rgba(182,78,236,.12); border-color:rgba(182,78,236,.3); }
+    .level-badge {
+      background: rgba(243,156,18,.15); color: var(--accent-gold);
+      border: 1px solid rgba(243,156,18,.3); border-radius: 6px;
+      font-size: 12px; font-weight: 700; padding: 2px 8px;
+    }
+    .cat-weapon    { background:rgba(231,76,60,.1);   color:var(--accent-red-bright); border:1px solid rgba(231,76,60,.2); }
+    .cat-armor     { background:rgba(41,128,185,.1);  color:#5dade2; border:1px solid rgba(41,128,185,.2); }
+    .cat-accessory { background:rgba(243,156,18,.1);  color:var(--accent-gold); border:1px solid rgba(243,156,18,.2); }
+    .cat-costume   { background:rgba(142,68,173,.1);  color:#bb8fce; border:1px solid rgba(142,68,173,.2); }
+    .cat-material  { background:rgba(39,174,96,.1);   color:#58d68d; border:1px solid rgba(39,174,96,.2); }
+    .cat-other     { background:rgba(100,100,120,.1); color:var(--text-muted); border:1px solid var(--border-color); }
+    .pet-info-box {
+      background: rgba(88,214,141,.05); border: 1px solid rgba(88,214,141,.2);
+      border-radius: var(--radius); padding: 14px;
+    }
+    .pet-stat-row {
+      display: flex; justify-content: space-between;
+      font-size: 13px; padding: 5px 0; border-bottom: 1px solid rgba(88,214,141,.1);
+    }
+    .pet-stat-row:last-child { border-bottom: none; }
+    .pet-stat-row span:first-child { color: var(--text-muted); }
+    .pet-level-badge {
+      background: rgba(88,214,141,.15); color: #58d68d;
+      border: 1px solid rgba(88,214,141,.3); border-radius: 6px;
+      font-size: 11px; font-weight: 700; padding: 2px 8px;
+    }
+    .pet-level-badge.evolved { background: rgba(243,156,18,.15); color: var(--accent-gold); border-color: rgba(243,156,18,.3); }
+    .pet-skill-chip {
+      background: rgba(155,89,182,.12); color: #bb8fce;
+      border: 1px solid rgba(155,89,182,.25); border-radius: 6px;
+      font-size: 11px; font-weight: 600; padding: 2px 8px;
+    }
+    .price-won-line  { color: #b39ddb; }
+    .price-yang-line { color: var(--accent-gold); }
+
+    /* ═══════════════════════════════════════
+       BONUS FILTER (igual que comercio)
+    ═══════════════════════════════════════ */
+    .bonus-filter-section {
+      flex: 1;
+      min-width: 0;
+    }
+    .bonus-filter-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .bonus-filter-header label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--text-muted);
+    }
+    .bonus-add-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: rgba(243,156,18,0.1);
+      border: 1px solid rgba(243,156,18,0.3);
+      border-radius: 20px;
+      color: var(--accent-gold);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: var(--font-body);
+    }
+    .bonus-add-btn:hover { background: rgba(243,156,18,0.22); border-color: var(--accent-gold); }
+    .bonus-add-btn:disabled { opacity: .3; cursor: not-allowed; }
+    .bonus-slot-wrap { display: flex; flex-direction: column; gap: 6px; }
+    .bonus-and-divider {
+      display: flex; align-items: center; gap: 8px; margin: 2px 0;
+    }
+    .bonus-and-divider::before, .bonus-and-divider::after {
+      content:''; flex:1; height:1px; background: rgba(243,156,18,0.15);
+    }
+    .bonus-and-divider span {
+      font-size: 10px; font-weight: 700;
+      color: rgba(243,156,18,0.5); letter-spacing: 2px; text-transform: uppercase;
+    }
+    .bonus-slot {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 4px 6px 4px 10px;
+      transition: border-color .2s;
+    }
+    .bonus-slot:focus-within {
+      border-color: rgba(243,156,18,0.4);
+      background: rgba(243,156,18,0.03);
+    }
+    .bonus-slot-icon { font-size: 14px; flex-shrink: 0; }
+    .bonus-slot .bonus-name-input {
+      flex: 1; min-width: 0; background: transparent; border: none; outline: none;
+      color: var(--text-primary); font-size: 13px; font-family: var(--font-body); padding: 4px 0;
+    }
+    .bonus-slot .bonus-name-input::placeholder { color: var(--text-muted); }
+    .bonus-min-sep { font-size: 12px; color: var(--accent-gold); font-weight: 700; flex-shrink: 0; opacity: .7; }
+    .bonus-slot .bonus-min-input {
+      width: 64px; flex-shrink: 0; background: transparent;
+      border: none; border-left: 1px solid var(--border-color); outline: none;
+      color: var(--accent-gold); font-size: 12px; font-weight: 700;
+      font-family: var(--font-body); padding: 4px 4px 4px 8px; -moz-appearance: textfield;
+    }
+    .bonus-slot .bonus-min-input::-webkit-inner-spin-button,
+    .bonus-slot .bonus-min-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .bonus-slot .bonus-min-input::placeholder { color: var(--text-muted); font-weight: 400; }
+    .bonus-remove-btn {
+      width: 20px; height: 20px; background: transparent;
+      border: 1px solid transparent; border-radius: 50%;
+      color: var(--text-muted); font-size: 15px; line-height: 1;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all .15s; padding: 0;
+    }
+    .bonus-remove-btn:hover {
+      background: rgba(192,57,43,0.15);
+      border-color: rgba(192,57,43,0.3);
+      color: var(--accent-red-bright);
+    }
+
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .snipe-wrapper { grid-template-columns: 1fr; }
+      .snipe-sidebar { position: static; }
+      .snipe-field-row { grid-template-columns: 1fr; }
+      .snipe-field-row.three { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ═══════════════════════════════════════
+       PREMIUM GATE
+    ═══════════════════════════════════════ */
+    .premium-gate {
+      display: none;
+      max-width: 560px;
+      margin: 60px auto 80px;
+      padding: 48px 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      text-align: center;
+    }
+    .premium-gate.visible { display: block; }
+    .premium-gate-icon { font-size: 56px; margin-bottom: 20px; }
+    .premium-gate h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .premium-gate p {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .premium-gate .gate-perks {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 28px;
+      text-align: left;
+      display: inline-block;
+    }
+    .premium-gate .gate-perks li {
+      font-size: 14px;
+      color: var(--text-secondary);
+      padding: 5px 0;
+    }
+    .premium-gate .gate-perks li::before { content: '✦  '; color: var(--accent-gold); }
+    .premium-gate .gate-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="navbar-logo">C</div>
+    <div class="navbar-title">Cheff<span>M2</span></div>
+  </div>
+  <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+  <ul class="navbar-nav" id="mainNav">
+    <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+    <li><a href="herramientas.html"><i class="fas fa-tools"></i> Herramientas</a></li>
+    <li><a href="wiki.html"><i class="fas fa-book"></i> Wiki</a></li>
+    <li><a href="guias.html"><i class="fas fa-scroll"></i> Guías</a></li>
+    <li><a href="comercio.html"><i class="fas fa-store"></i> Comercio</a></li>
+    <li><a href="foro.html"><i class="fas fa-comments"></i> Foro</a></li>
+    <li><a href="sniping.html" class="active"><i class="fas fa-crosshairs"></i> Sniping</a></li>
+    <li><a href="https://www.twitch.tv/" target="_blank" class="navbar-twitch"><i class="fab fa-twitch"></i> Twitch</a></li>
+  </ul>
+  <div id="navbar-auth"></div>
+</nav>
+
+<div class="page-wrapper">
+
+  <div class="page-header">
+    <div class="section-tag">CheffM2</div>
+    <h1 class="page-header-title">🎯 <span style="color:var(--accent-gold)">Sniping</span></h1>
+    <p class="page-header-subtitle">Crea alertas con tus filtros y recibe una notificación cuando aparezca el item perfecto</p>
+  </div>
+
+  <!-- PREMIUM GATE: visible si no es premium -->
+  <div class="premium-gate" id="premiumGate">
+    <div class="premium-gate-icon">🔒</div>
+    <h2>Función Premium</h2>
+    <p>Las <strong>Sniping Tools</strong> son exclusivas para miembros premium.<br>
+       Configura alertas y recibe notificaciones cuando aparezca el item perfecto en el mercado.</p>
+    <ul class="gate-perks">
+      <li>Alertas guardadas en la nube</li>
+      <li>Escaneo automático cada 2 minutos</li>
+      <li>Filtros por bonus, elemento, precio y más</li>
+      <li>Notificaciones push en el navegador</li>
+    </ul>
+    <div class="gate-btns" id="gateBtns">
+      <!-- Los botones se insertan dinámicamente según el estado del usuario -->
+    </div>
+  </div>
+
+  <div class="snipe-wrapper" id="snipeWrapper">
+
+    <!-- ══════ LEFT: MIS ALERTAS ══════ -->
+    <aside class="snipe-sidebar">
+      <div class="snipe-sidebar-header">
+        <h3><i class="fas fa-bell"></i> Mis Alertas</h3>
+        <span class="badge-count" id="alertCount">0</span>
+      </div>
+      <div class="alerts-list" id="alertsList">
+        <div class="alerts-empty">
+          <div class="empty-icon">🔔</div>
+          <p>Aún no tienes alertas guardadas.<br>Crea una con el formulario.</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ══════ RIGHT: EDITOR + MATCHES ══════ -->
+    <div class="snipe-main">
+
+      <!-- EDITOR -->
+      <div class="snipe-editor">
+        <div class="snipe-editor-header">
+          <span style="font-size:20px;">✏️</span>
+          <h3 id="editorTitle">Nueva Alerta</h3>
+          <button class="btn btn-outline" id="cancelEditBtn" style="display:none;font-size:12px;padding:6px 12px;" onclick="cancelEdit()">
+            Cancelar edición
+          </button>
+        </div>
+        <div class="snipe-editor-body">
+          <!-- Nombre de la alerta -->
+          <div class="snipe-field-row full">
+            <div class="snipe-field">
+              <label>📛 Nombre de la alerta</label>
+              <input type="text" class="form-input" id="alertName" placeholder="Ej: Espada de tigre barata, Armadura +9…" />
+            </div>
+          </div>
+
+          <!-- Nombre item + Vendedor -->
+          <div class="snipe-field-row">
+            <div class="snipe-field">
+              <label>🔍 Nombre del item</label>
+              <input type="text" class="form-input" id="fName" placeholder="Buscar por nombre…" />
+            </div>
+            <div class="snipe-field">
+              <label>🧑 Vendedor</label>
+              <input type="text" class="form-input" id="fSeller" placeholder="Nick del vendedor…" list="snipeSellerList" autocomplete="off" />
+              <datalist id="snipeSellerList"></datalist>
+            </div>
+          </div>
+
+          <!-- Categoría + Elemento + Mejora -->
+          <div class="snipe-field-row three">
+            <div class="snipe-field">
+              <label>📂 Categoría</label>
+              <input type="text" class="form-input" id="fCategory" placeholder="Ej: weapon, armor…" list="snipeCatList" autocomplete="off" />
+              <datalist id="snipeCatList"></datalist>
+            </div>
+            <div class="snipe-field">
+              <label>⚡ Elemento</label>
+              <select class="form-select" id="fElem">
+                <option value="">Cualquiera</option>
+                <option value="lightning">⚡ Relámpago</option>
+                <option value="fire">🔥 Fuego</option>
+                <option value="ice">❄️ Hielo</option>
+                <option value="wind">🌿 Viento</option>
+                <option value="earth">🌍 Tierra</option>
+                <option value="dark">🌑 Oscuridad</option>
+              </select>
+            </div>
+            <div class="snipe-field">
+              <label>⬆️ Mejora mínima</label>
+              <select class="form-select" id="fPlus">
+                <option value="">Cualquiera</option>
+                <option value="0">+0 o más</option>
+                <option value="1">+1 o más</option>
+                <option value="2">+2 o más</option>
+                <option value="3">+3 o más</option>
+                <option value="4">+4 o más</option>
+                <option value="5">+5 o más</option>
+                <option value="6">+6 o más</option>
+                <option value="7">+7 o más</option>
+                <option value="8">+8 o más</option>
+                <option value="9">+9</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Precio Yang -->
+          <div class="snipe-field-row">
+            <div class="snipe-field">
+              <label>💰 Precio Yang (máximo)</label>
+              <div class="price-row">
+                <input type="number" class="form-input" id="fMinYang" placeholder="Mín" min="0" />
+                <span>—</span>
+                <input type="number" class="form-input" id="fMaxYang" placeholder="Máx" min="0" />
+              </div>
+            </div>
+            <div class="snipe-field">
+              <label>💜 Precio Won (máximo)</label>
+              <div class="price-row">
+                <input type="number" class="form-input" id="fMinWon" placeholder="Mín" min="0" />
+                <span>—</span>
+                <input type="number" class="form-input" id="fMaxWon" placeholder="Máx" min="0" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Bonus filter -->
+          <div class="snipe-field-row full" style="margin-bottom:0;">
+            <div class="snipe-field">
+              <div class="bonus-filter-section">
+                <div class="bonus-filter-header">
+                  <label>✨ Bonus (todos deben coincidir)</label>
+                  <button class="bonus-add-btn" id="snipeBonusAddBtn" onclick="addSnipeBonusSlot()">+ Añadir</button>
+                </div>
+                <div class="bonus-slot-wrap" id="snipeBonusSlotsContainer"></div>
+                <datalist id="snipeBonusList"></datalist>
+              </div>
+            </div>
+          </div>
+
+          <div class="snipe-actions">
+            <button class="btn btn-primary" id="saveAlertBtn" onclick="saveAlert()">
+              <i class="fas fa-bell"></i> Guardar Alerta
+            </button>
+            <button class="btn btn-outline" onclick="clearForm()">
+              <i class="fas fa-times"></i> Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- POLLING STATUS BAR -->
+      <div class="poll-bar">
+        <div class="poll-dot" id="pollDot"></div>
+        <div class="poll-info">
+          <div class="poll-status" id="pollStatus">Sin alertas activas</div>
+          <div class="poll-sub" id="pollSub">Crea y activa una alerta para empezar a escuchar</div>
+          <div class="poll-progress">
+            <div class="poll-progress-bar" id="pollBar"></div>
+          </div>
+        </div>
+        <button class="notif-btn" id="notifBtn" onclick="requestNotifPermission()">
+          <i class="fas fa-bell"></i> <span id="notifLabel">Activar notificaciones</span>
+        </button>
+        <button class="btn btn-outline" id="scanNowBtn" style="font-size:12px;padding:7px 14px;" onclick="scanNow()">
+          <i class="fas fa-sync-alt"></i> Escanear ahora
+        </button>
+      </div>
+
+      <!-- MATCHES FEED -->
+      <div class="matches-panel">
+        <div class="matches-header">
+          <span style="font-size:18px;">✅</span>
+          <h3>Items encontrados</h3>
+          <span class="new-badge" id="newBadge">NUEVO</span>
+          <button class="btn btn-outline" style="font-size:11px;padding:5px 10px;margin-left:auto;" onclick="clearMatches()">
+            Limpiar
+          </button>
+        </div>
+        <div class="matches-list" id="matchesList">
+          <div class="matches-empty">
+            <div class="empty-icon">🎯</div>
+            <p>Aquí aparecerán los items que coincidan<br>con tus alertas al escanear el mercado.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /snipe-main -->
+  </div><!-- /snipe-wrapper -->
+
+</div><!-- /page-wrapper -->
+
+<!-- ITEM DETAIL MODAL -->
+<div class="modal-overlay" id="itemModal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('itemModal').classList.remove('open')">×</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="snipe-toast-container" id="toastContainer"></div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>Cheff<span>M2</span></h3>
+      <p>El portal definitivo de Metin2 creado por el streamer Cheff. Herramientas, wiki, guías y comunidad.</p>
+      <div class="footer-social">
+        <a href="https://www.twitch.tv/" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
+        <a href="https://www.youtube.com/" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://discord.gg/" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+        <a href="https://www.tiktok.com/" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://twitter.com/" target="_blank" title="Twitter/X"><i class="fab fa-x-twitter"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Herramientas</h4>
+      <ul>
+        <li><a href="herramientas.html">Calc. Biólogo</a></li>
+        <li><a href="herramientas.html">Calc. Caballo</a></li>
+        <li><a href="herramientas.html">Calc. Mascota</a></li>
+        <li><a href="herramientas.html">Calc. Mejoras</a></li>
+        <li><a href="herramientas.html">Guías de Eventos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Navegación</h4>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="wiki.html">Wiki</a></li>
+        <li><a href="guias.html">Guías</a></li>
+        <li><a href="foro.html">Foro</a></li>
+        <li><a href="comercio.html">Comercio</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Comunidad</h4>
+      <ul>
+        <li><a href="https://discord.gg/" target="_blank">Discord</a></li>
+        <li><a href="https://www.twitch.tv/" target="_blank">Twitch</a></li>
+        <li><a href="https://www.youtube.com/" target="_blank">YouTube</a></li>
+        <li><a href="https://www.tiktok.com/" target="_blank">TikTok</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CheffM2 · Portal no oficial de Metin2 · Todos los derechos reservados</p>
+    <p>Metin2 es propiedad de Gameforge. Este sitio no está afiliado oficialmente.</p>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════
+   CONSTANTS & STATE
+═══════════════════════════════════════════════ */
+const API_BASE    = 'https://jordism.com/api';
+const POLL_SECS   = 120; // escanear cada 2 minutos
+
+// Claves de localStorage — se actualizan al detectar el usuario
+let ALERTS_KEY  = 'cheffm2_snipe_alerts_guest';
+let SEEN_KEY    = 'cheffm2_snipe_seen_guest';
+let MATCHES_KEY = 'cheffm2_snipe_matches_guest';
+
+let currentUser = null;  // objeto user de /me
+
+let alerts  = [];        // AlertConfig[]
+let matches = [];        // Match[]
+let seenIds = new Set(); // item IDs ya notificados
+let itemNames = {};
+let itemIcons = {};
+let statMap   = {};
+let itemProto = {};
+let petSkills = {};
+
+const MAX_BONUS_SLOTS = 6;
+let snipeBonusSlotCount = 0;
+
+let editingId    = null; // ID de la alerta que se está editando
+let pollTimer    = null;
+let countdownTimer = null;
+let secondsLeft  = POLL_SECS;
+
+/* ═══════════════════════════════════════════════
+   ELEM MAP (mismo que comercio)
+═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   CATEGORY MAPS (igual que comercio)
+═══════════════════════════════════════════════ */
+const DETAIL_CAT_MAP = {
+  '1-1':'Baúl especial','1-2':'Mascota','1-3':'Huevo de Mascota',
+  '2-0':'Espada (1 mano)','2-1':'Daga / Puñal','2-2':'Arco','2-3':'Espada 2 manos',
+  '2-4':'Campana','2-5':'Garra','2-6':'Abanico','2-7':'Flecha','2-8':'Maza',
+  '3-0':'Armadura (cuerpo)','3-1':'Casco / Capucha','3-2':'Escudo','3-3':'Guantes','3-4':'Botas (armadura)',
+  '4-0':'Brazalete','4-1':'Botas','4-2':'Collar','4-3':'Pendientes','4-4':'Cinturón','4-5':'Talismán / Tótem',
+  '5-0':'Material General','5-1':'Piedra / Recurso','5-2':'Libro','5-3':'Runa / Mejora',
+  '6-0':'Capa','6-1':'Capa especial','6-2':'Capa de valor',
+  '7-0':'Caña de Pescar','7-1':'Pico','7-2':'Comida / Pez','7-3':'Mineral',
+  '8-0':'Diamante Dragón','8-1':'Rubí Dragón','8-2':'Jade Dragón','8-3':'Zafiro Dragón',
+  '8-4':'Granate Dragón','8-5':'Ónice Dragón','8-6':'Amatista Dragón','8-7':'Esencia Dragón',
+  '9-0':'Disfraz Arma','9-1':'Disfraz Armadura','9-2':'Disfraz Accesorio',
+  '9-3':'Disfraz Capa / Estola','9-4':'Transferencia Atuendo','9-5':'Aura',
+  '10-0':'Montura','10-1':'Montura especial','10-4':'Montura (aleatorio)',
+  '12-0':'Baúl / Cofre','12-1':'Anillo especial','12-2':'Disfraz Peinado',
+  '12-3':'Disfraz Hombro','12-4':'Libro de Habilidad','12-5':'Bola Polimorfa',
+  '12-6':'Item Especial','12-7':'Llave / Cofre llave',
+};
+const TYPE_META = {
+  '1' :{ label:'Baúl/Mascota', emoji:'📦', cls:'cat-other'     },
+  '2' :{ label:'Arma',         emoji:'⚔️',  cls:'cat-weapon'    },
+  '3' :{ label:'Armadura',     emoji:'🛡️',  cls:'cat-armor'     },
+  '4' :{ label:'Accesorio',    emoji:'💍',  cls:'cat-accessory' },
+  '5' :{ label:'Material',     emoji:'🧪',  cls:'cat-material'  },
+  '6' :{ label:'Capa',         emoji:'🧣',  cls:'cat-costume'   },
+  '7' :{ label:'Herramienta',  emoji:'🎣',  cls:'cat-other'     },
+  '8' :{ label:'Alma Dragón',  emoji:'💎',  cls:'cat-material'  },
+  '9' :{ label:'Cosmético',    emoji:'✨',  cls:'cat-costume'   },
+  '10':{ label:'Montura',      emoji:'🐎',  cls:'cat-costume'   },
+  '11':{ label:'Especial',     emoji:'🔮',  cls:'cat-other'     },
+  '12':{ label:'Especial',     emoji:'🔮',  cls:'cat-other'     },
+};
+
+function getCat(category) {
+  if (!category) return { label:'Otro', cls:'cat-other', emoji:'📦', name:'Otro' };
+  const parts = category.split('-');
+  const key   = `${parts[0]}-${parts[1]||'0'}`;
+  const meta  = TYPE_META[parts[0]] || { label:'Otro', cls:'cat-other', emoji:'📦' };
+  const name  = DETAIL_CAT_MAP[key] || meta.label;
+  return { ...meta, name };
+}
+
+// Mapa inverso: "emoji nombre" → código raw (para matching)
+const catLabelToCode = {};
+function getCatLabel(code) {
+  if (!code) return { label:'Otro', emoji:'📦', display:'📦 Otro' };
+  const parts = code.split('-');
+  const meta  = TYPE_META[parts[0]] || { label:'Otro', emoji:'📦' };
+  const name  = DETAIL_CAT_MAP[code] || meta.label;
+  const display = `${meta.emoji} ${name}`;
+  catLabelToCode[display.toLowerCase()] = code;
+  return { label: name, emoji: meta.emoji, display };
+}
+
+const ELEM_MAP = {
+  99:{'key':'lightning'}, 100:{'key':'fire'}, 101:{'key':'ice'},
+  102:{'key':'wind'}, 103:{'key':'earth'}, 104:{'key':'dark'},
+  251:{'key':'lightning'}, 252:{'key':'fire'}, 253:{'key':'ice'},
+  254:{'key':'wind'}, 255:{'key':'earth'}, 256:{'key':'dark'},
+};
+
+const ICON_LOCAL  = './data/icons/';
+const ICON_CDN    = 'https://metin2alerts.com/m2_data/icons/';
+const WON_TO_YANG = 100_000_000;
+
+function getElemInfo(item) {
+  if (!item.elem || !Array.isArray(item.elem) || item.elem.length < 2) return null;
+  const statID = item.elem[0];
+  const meta   = ELEM_MAP[statID];
+  if (!meta) return null;
+  const values = item.elem[1];
+  const total  = Array.isArray(values) ? values.reduce((a, b) => a + b, 0) : 0;
+  if (total <= 0) return null;
+  return { ...meta, total };
+}
+
+function getElemKey(item) {
+  if (!item.elem || !item.elem[0]) return '';
+  return (ELEM_MAP[item.elem[0]] || {}).key || '';
+}
+
+function getPlus(item) {
+  if (!item.attrs) return 0;
+  const plusAttr = item.attrs.find(a => a[0] === 54); // APPLY_BOW_DISTANCE or similar
+  // Mejora del item suele estar en el set[0] o en attrs
+  // Usamos item.set si existe
+  if (item.set && item.set.length) return item.set[0] || 0;
+  return 0;
+}
+
+/* ═══════════════════════════════════════════════
+   LOAD DATA
+═══════════════════════════════════════════════ */
+async function loadData() {
+  try {
+    const [names, icons, stats, proto, pets] = await Promise.all([
+      fetch('./data/item_names.json').then(r => r.json()).catch(() => ({})),
+      fetch('./data/item_icon.json').then(r => r.json()).catch(() => ({})),
+      fetch('./data/stat_map.json').then(r => r.json()).catch(() => ({})),
+      fetch('./data/item_proto.json').then(r => r.json()).catch(() => ({})),
+      fetch('./data/pet_skills.json').then(r => r.json()).catch(() => ({})),
+    ]);
+    itemNames = names;
+    itemIcons = icons;
+    statMap   = stats;
+    itemProto = proto;
+    petSkills = pets;
+  } catch(e) {
+    console.warn('Error cargando datos auxiliares:', e);
+  }
+
+  // Populate seller, category & bonus datalists from 531.json
+  try {
+    const items = await fetch('./data/531.json').then(r => r.json());
+    const sellers = [...new Set(items.map(i => i.seller).filter(Boolean))].sort();
+    const rawCats = [...new Set(items.map(i => i.category).filter(Boolean))];
+
+    const sellerDl = document.getElementById('snipeSellerList');
+    sellers.forEach(s => { const o = document.createElement('option'); o.value = s; sellerDl.appendChild(o); });
+
+    // Categorías: mostrar nombres mapeados, guardar código en data-code
+    const catDl = document.getElementById('snipeCatList');
+    const seenLabels = new Set();
+    rawCats.forEach(code => {
+      const { display } = getCatLabel(code);
+      if (seenLabels.has(display)) return;
+      seenLabels.add(display);
+      const o = document.createElement('option');
+      o.value = display;         // lo que ve el usuario
+      o.dataset.code = code;     // el código real
+      catDl.appendChild(o);
+    });
+  } catch(e) {}
+
+  // Populate bonus datalist from stat_map names
+  fillBonusDatalist();
+
+  // Init the first bonus slot
+  addSnipeBonusSlot();
+}
+
+function fillBonusDatalist() {
+  const dl = document.getElementById('snipeBonusList');
+  if (!dl) return;
+  const names = Object.values(statMap)
+    .map(tpl => tpl.replace('%d','').replace('%%','%').trim())
+    .filter(Boolean);
+  const unique = [...new Set(names)].sort();
+  dl.innerHTML = unique.map(n => `<option value="${n}">`).join('');
+}
+
+/* ═══════════════════════════════════════════════
+   API HELPERS
+═══════════════════════════════════════════════ */
+async function apiFetch(path, opts = {}) {
+  const r = await fetch(API_BASE + path, {
+    credentials: 'include',
+    mode: 'cors',
+    headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) },
+    ...opts,
+  });
+  if (!r.ok) throw new Error(`API ${r.status}: ${await r.text()}`);
+  return r.json();
+}
+const apiGet    = (path)       => apiFetch(path);
+const apiPost   = (path, data) => apiFetch(path, { method: 'POST',   body: JSON.stringify(data) });
+const apiPut    = (path, data) => apiFetch(path, { method: 'PUT',    body: JSON.stringify(data) });
+const apiDelete = (path)       => apiFetch(path, { method: 'DELETE' });
+
+/* ═══════════════════════════════════════════════
+   STORAGE HELPERS
+═══════════════════════════════════════════════ */
+async function loadAlerts() {
+  if (currentUser) {
+    try {
+      alerts = await apiGet('/snipe-alerts');
+      return;
+    } catch (e) {
+      console.warn('Error cargando alertas desde API, usando localStorage:', e);
+    }
+  }
+  try { alerts = JSON.parse(localStorage.getItem(ALERTS_KEY)) || []; } catch { alerts = []; }
+}
+
+// Solo se usa en modo invitado
+function saveAlertsLocal() {
+  if (!currentUser) localStorage.setItem(ALERTS_KEY, JSON.stringify(alerts));
+}
+function loadMatches() {
+  try { matches = JSON.parse(localStorage.getItem(MATCHES_KEY)) || []; } catch { matches = []; }
+}
+function saveMatches() {
+  // Guardar solo los últimos 100 matches
+  matches = matches.slice(-100);
+  localStorage.setItem(MATCHES_KEY, JSON.stringify(matches));
+}
+function loadSeen() {
+  try { seenIds = new Set(JSON.parse(localStorage.getItem(SEEN_KEY)) || []); } catch { seenIds = new Set(); }
+}
+function saveSeen() {
+  localStorage.setItem(SEEN_KEY, JSON.stringify([...seenIds]));
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+/* ═══════════════════════════════════════════════
+   BONUS SLOTS
+═══════════════════════════════════════════════ */
+function addSnipeBonusSlot() {
+  if (snipeBonusSlotCount >= MAX_BONUS_SLOTS) return;
+  snipeBonusSlotCount++;
+  const idx = snipeBonusSlotCount;
+  const container = document.getElementById('snipeBonusSlotsContainer');
+  const wrap = document.createElement('div');
+  wrap.dataset.slotIdx = idx;
+  if (idx > 1) {
+    wrap.innerHTML = `<div class="bonus-and-divider"><span>Y</span></div>`;
+  }
+  wrap.innerHTML += `
+    <div class="bonus-slot">
+      <span class="bonus-slot-icon">⚡</span>
+      <input type="text" class="bonus-name-input" id="snipeBonus${idx}"
+             placeholder="Nombre del bonus…" list="snipeBonusList" autocomplete="off" />
+      <span class="bonus-min-sep">≥</span>
+      <input type="number" class="bonus-min-input" id="snipeBonusMin${idx}"
+             placeholder="min" min="0" title="Valor mínimo" />
+      ${idx > 1
+        ? `<button class="bonus-remove-btn" onclick="removeSnipeBonusSlot(${idx})" title="Quitar">×</button>`
+        : `<div style="width:20px;flex-shrink:0;"></div>`}
+    </div>`;
+  container.appendChild(wrap);
+  updateSnipeBonusUI();
+}
+
+function removeSnipeBonusSlot(idx) {
+  const container = document.getElementById('snipeBonusSlotsContainer');
+  const slot = container.querySelector(`[data-slot-idx="${idx}"]`);
+  if (slot) container.removeChild(slot);
+  snipeBonusSlotCount--;
+  updateSnipeBonusUI();
+}
+
+function updateSnipeBonusUI() {
+  const btn = document.getElementById('snipeBonusAddBtn');
+  if (btn) btn.disabled = snipeBonusSlotCount >= MAX_BONUS_SLOTS;
+}
+
+function getSnipeBonusSlots() {
+  const queries = [];
+  const container = document.getElementById('snipeBonusSlotsContainer');
+  if (!container) return queries;
+  container.querySelectorAll('[data-slot-idx]').forEach(slot => {
+    const idx  = slot.dataset.slotIdx;
+    const name = document.getElementById(`snipeBonus${idx}`)?.value.toLowerCase().trim();
+    const min  = parseFloat(document.getElementById(`snipeBonusMin${idx}`)?.value) || 0;
+    if (name) queries.push({ text: name, minVal: min });
+  });
+  return queries;
+}
+
+function clearSnipeBonusSlots() {
+  const container = document.getElementById('snipeBonusSlotsContainer');
+  if (container) container.innerHTML = '';
+  snipeBonusSlotCount = 0;
+  addSnipeBonusSlot();
+}
+
+function restoreSnipeBonusSlots(bonusFilters) {
+  clearSnipeBonusSlots();
+  if (!bonusFilters || !bonusFilters.length) return;
+  // El primer slot ya está creado por clearSnipeBonusSlots
+  bonusFilters.forEach((b, i) => {
+    if (i > 0) addSnipeBonusSlot();
+    const idx = i + 1;
+    const nameEl = document.getElementById(`snipeBonus${idx}`);
+    const minEl  = document.getElementById(`snipeBonusMin${idx}`);
+    if (nameEl) nameEl.value = b.text || '';
+    if (minEl)  minEl.value  = b.minVal > 0 ? b.minVal : '';
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   ALERT FORM
+═══════════════════════════════════════════════ */
+function getFormValues() {
+  return {
+    name:    document.getElementById('alertName').value.trim(),
+    fName:   document.getElementById('fName').value.trim(),
+    fSeller: document.getElementById('fSeller').value.trim(),
+    fCat:    document.getElementById('fCategory').value.trim(),
+    fElem:   document.getElementById('fElem').value,
+    fPlus:   document.getElementById('fPlus').value,
+    fMinYang: parseFloat(document.getElementById('fMinYang').value) || null,
+    fMaxYang: parseFloat(document.getElementById('fMaxYang').value) || null,
+    fMinWon:  parseFloat(document.getElementById('fMinWon').value) || null,
+    fMaxWon:  parseFloat(document.getElementById('fMaxWon').value) || null,
+    fBonus:   getSnipeBonusSlots(),
+  };
+}
+
+function setFormValues(a) {
+  document.getElementById('alertName').value  = a.name    || '';
+  document.getElementById('fName').value      = a.fName   || '';
+  document.getElementById('fSeller').value    = a.fSeller || '';
+  document.getElementById('fCategory').value  = a.fCat    || '';
+  document.getElementById('fElem').value      = a.fElem   || '';
+  document.getElementById('fPlus').value      = a.fPlus   || '';
+  document.getElementById('fMinYang').value   = a.fMinYang != null ? a.fMinYang : '';
+  document.getElementById('fMaxYang').value   = a.fMaxYang != null ? a.fMaxYang : '';
+  document.getElementById('fMinWon').value    = a.fMinWon  != null ? a.fMinWon  : '';
+  document.getElementById('fMaxWon').value    = a.fMaxWon  != null ? a.fMaxWon  : '';
+  restoreSnipeBonusSlots(a.fBonus || []);
+}
+
+function clearForm() {
+  editingId = null;
+  document.getElementById('alertName').value = '';
+  document.getElementById('fName').value = '';
+  document.getElementById('fSeller').value = '';
+  document.getElementById('fCategory').value = '';
+  document.getElementById('fElem').value = '';
+  document.getElementById('fPlus').value = '';
+  document.getElementById('fMinYang').value = '';
+  document.getElementById('fMaxYang').value = '';
+  document.getElementById('fMinWon').value = '';
+  document.getElementById('fMaxWon').value = '';
+  clearSnipeBonusSlots();
+  document.getElementById('editorTitle').textContent = 'Nueva Alerta';
+  document.getElementById('saveAlertBtn').innerHTML = '<i class="fas fa-bell"></i> Guardar Alerta';
+  document.getElementById('cancelEditBtn').style.display = 'none';
+  renderAlerts();
+}
+
+function cancelEdit() { clearForm(); }
+
+async function saveAlert() {
+  const v = getFormValues();
+
+  // Requiere al menos un filtro activo
+  const hasFilter = v.fName || v.fSeller || v.fCat || v.fElem || v.fPlus ||
+                    v.fMinYang != null || v.fMaxYang != null ||
+                    v.fMinWon  != null || v.fMaxWon  != null ||
+                    (v.fBonus && v.fBonus.length > 0);
+  if (!hasFilter) {
+    showToast('⚠️', 'Sin filtros', 'Define al menos un filtro para la alerta.', '#e74c3c');
+    return;
+  }
+
+  const alertName = v.name || buildAutoName(v);
+
+  const btn = document.getElementById('saveAlertBtn');
+  btn.disabled = true;
+
+  try {
+    if (editingId) {
+      const idx = alerts.findIndex(a => a.id === editingId);
+      if (idx >= 0) {
+        const updated = { ...alerts[idx], ...v, name: alertName, updatedAt: Date.now() };
+        if (currentUser) await apiPut(`/snipe-alerts/${editingId}`, updated);
+        alerts[idx] = updated;
+      }
+    } else {
+      const newAlert = { id: uid(), name: alertName, enabled: true, createdAt: Date.now(), ...v };
+      if (currentUser) await apiPost('/snipe-alerts', newAlert);
+      alerts.push(newAlert);
+    }
+  } catch (e) {
+    showToast('❌', 'Error', 'No se pudo guardar la alerta en el servidor.', '#e74c3c');
+    btn.disabled = false;
+    return;
+  }
+
+  saveAlertsLocal();
+  clearForm();
+  renderAlerts();
+  restartPolling();
+  showToast('🔔', 'Alerta guardada', `"${alertName}" está activa.`, '#27ae60');
+  btn.disabled = false;
+}
+
+function buildAutoName(v) {
+  const parts = [];
+  if (v.fName)   parts.push(v.fName);
+  if (v.fCat)    parts.push(v.fCat);
+  if (v.fElem)   parts.push(v.fElem);
+  if (v.fPlus)   parts.push('+'+v.fPlus+'+');
+  if (v.fMaxYang != null) parts.push('≤'+v.fMaxYang.toLocaleString()+'Y');
+  if (v.fMaxWon  != null) parts.push('≤'+v.fMaxWon.toLocaleString()+'W');
+  if (v.fBonus && v.fBonus.length) parts.push(v.fBonus.map(b => b.text).join('+'));
+  return parts.join(' · ') || 'Alerta #' + (alerts.length + 1);
+}
+
+function editAlert(id) {
+  const a = alerts.find(x => x.id === id);
+  if (!a) return;
+  editingId = id;
+  setFormValues(a);
+  document.getElementById('editorTitle').textContent = 'Editar Alerta';
+  document.getElementById('saveAlertBtn').innerHTML = '<i class="fas fa-save"></i> Actualizar Alerta';
+  document.getElementById('cancelEditBtn').style.display = '';
+  document.querySelector('.snipe-editor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  renderAlerts();
+}
+
+async function deleteAlert(id) {
+  if (currentUser) {
+    try {
+      await apiDelete(`/snipe-alerts/${id}`);
+    } catch (e) {
+      showToast('❌', 'Error', 'No se pudo eliminar la alerta.', '#e74c3c');
+      return;
+    }
+  }
+  alerts = alerts.filter(a => a.id !== id);
+  saveAlertsLocal();
+  if (editingId === id) clearForm();
+  renderAlerts();
+  restartPolling();
+}
+
+async function toggleAlert(id) {
+  const a = alerts.find(x => x.id === id);
+  if (!a) return;
+  const prev = a.enabled;
+  a.enabled = !a.enabled;
+  if (currentUser) {
+    try {
+      await apiPut(`/snipe-alerts/${id}`, { enabled: a.enabled });
+    } catch (e) {
+      a.enabled = prev; // revertir
+      showToast('❌', 'Error', 'No se pudo actualizar la alerta.', '#e74c3c');
+      renderAlerts();
+      return;
+    }
+  }
+  saveAlertsLocal();
+  renderAlerts();
+  restartPolling();
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER ALERTS LIST
+═══════════════════════════════════════════════ */
+function renderAlerts() {
+  const container = document.getElementById('alertsList');
+  const count     = document.getElementById('alertCount');
+
+  count.textContent = alerts.length;
+
+  if (!alerts.length) {
+    container.innerHTML = `<div class="alerts-empty">
+      <div class="empty-icon">🔔</div>
+      <p>Aún no tienes alertas guardadas.<br>Crea una con el formulario.</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = alerts.map(a => {
+    const isEditing = editingId === a.id;
+    const matchCount = matches.filter(m => m.alertId === a.id).length;
+    const tags = buildSummaryTags(a);
+
+    return `<div class="alert-card ${isEditing ? 'active' : ''} ${matchCount > 0 ? 'has-match' : ''}" onclick="editAlert('${a.id}')">
+      <div class="alert-card-top">
+        <button class="alert-toggle ${a.enabled ? 'on' : ''}" title="${a.enabled ? 'Desactivar' : 'Activar'}"
+          onclick="event.stopPropagation(); toggleAlert('${a.id}')"></button>
+        <span class="alert-name">${escHtml(a.name)}</span>
+        <button class="alert-delete-btn" title="Eliminar" onclick="event.stopPropagation(); deleteAlert('${a.id}')">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+      <div class="alert-summary">${tags}</div>
+      ${matchCount > 0 ? `<div class="alert-match-badge"><i class="fas fa-check-circle"></i> ${matchCount} match${matchCount>1?'es':''}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function buildSummaryTags(a) {
+  const parts = [];
+  if (a.fName)   parts.push(`🔍 ${escHtml(a.fName)}`);
+  if (a.fSeller) parts.push(`🧑 ${escHtml(a.fSeller)}`);
+  if (a.fCat) {
+    // Si ya viene como label mapeado (ej: "⚔️ Espada (1 mano)"), usarlo tal cual
+    // Si viene como código raw (ej: "2-0"), convertirlo
+    const { display } = getCatLabel(a.fCat);
+    const catShow = a.fCat.includes(' ') ? a.fCat : display;
+    parts.push(`📂 ${escHtml(catShow)}`);
+  }
+  if (a.fElem)   parts.push(`⚡ ${a.fElem}`);
+  if (a.fPlus)   parts.push(`⬆️ +${a.fPlus}+`);
+  if (a.fMinYang != null || a.fMaxYang != null) {
+    const lo = a.fMinYang != null ? a.fMinYang.toLocaleString() : '0';
+    const hi = a.fMaxYang != null ? a.fMaxYang.toLocaleString() : '∞';
+    parts.push(`💰 ${lo}–${hi}Y`);
+  }
+  if (a.fMinWon != null || a.fMaxWon != null) {
+    const lo = a.fMinWon != null ? a.fMinWon.toLocaleString() : '0';
+    const hi = a.fMaxWon != null ? a.fMaxWon.toLocaleString() : '∞';
+    parts.push(`💜 ${lo}–${hi}W`);
+  }
+  if (a.fBonus && a.fBonus.length > 0) {
+    a.fBonus.forEach(b => {
+      const label = b.minVal > 0 ? `✨ ${b.text} ≥${b.minVal}` : `✨ ${b.text}`;
+      parts.push(label);
+    });
+  }
+  if (!parts.length) parts.push('Sin filtros');
+  return parts.map(p => `<span>${p}</span>`).join('');
+}
+
+/* ═══════════════════════════════════════════════
+   ITEM MATCHING
+═══════════════════════════════════════════════ */
+function buildEnchList(item) {
+  const allBonuses = [...(item.attrs || []), ...(item.rand || [])];
+  return allBonuses.map(([id, val]) => {
+    if (!id) return null;
+    const tpl = statMap[String(id)];
+    if (!tpl) return null;
+    return {
+      text: tpl.replace('%d', '').replace('%%', '%').toLowerCase().replace(/\s+/g, ' ').trim(),
+      val:  Math.abs(val)
+    };
+  }).filter(Boolean);
+}
+
+function itemMatchesAlert(item, a) {
+  // Nombre — usar item_names.json igual que comercio
+  const itemName = (itemNames[String(item.vnum)] || item.name || '').toLowerCase();
+  if (a.fName && !itemName.includes(a.fName.toLowerCase())) return false;
+  // Vendedor
+  if (a.fSeller && !item.seller?.toLowerCase().includes(a.fSeller.toLowerCase())) return false;
+  // Categoría: buscar por label mapeado o por código raw
+  if (a.fCat) {
+    const fCatLower = a.fCat.toLowerCase();
+    const resolvedCode = catLabelToCode[fCatLower]; // si el usuario eligió del datalist
+    if (resolvedCode) {
+      if (item.category !== resolvedCode) return false;
+    } else {
+      // fallback: buscar en el label generado del item o en el código raw
+      const { display } = getCatLabel(item.category);
+      const matchLabel = display.toLowerCase().includes(fCatLower);
+      const matchCode  = (item.category || '').toLowerCase().includes(fCatLower);
+      if (!matchLabel && !matchCode) return false;
+    }
+  }
+  // Elemento
+  if (a.fElem && getElemKey(item) !== a.fElem) return false;
+  // Mejora mínima
+  if (a.fPlus !== '' && a.fPlus != null) {
+    const itemPlus = item.set?.[0] ?? 0;
+    if (itemPlus < parseInt(a.fPlus)) return false;
+  }
+  // Precio Yang
+  if (a.fMinYang != null && (item.yangPrice == null || item.yangPrice < a.fMinYang)) return false;
+  if (a.fMaxYang != null && (item.yangPrice == null || item.yangPrice > a.fMaxYang)) return false;
+  // Precio Won
+  if (a.fMinWon  != null && (item.wonPrice  == null || item.wonPrice  < a.fMinWon))  return false;
+  if (a.fMaxWon  != null && (item.wonPrice  == null || item.wonPrice  > a.fMaxWon))  return false;
+  // Bonus (todos deben coincidir)
+  if (a.fBonus && a.fBonus.length > 0) {
+    const enchList = buildEnchList(item);
+    for (const { text, minVal } of a.fBonus) {
+      const match = enchList.some(e =>
+        e.text.includes(text) && (minVal <= 0 || e.val >= minVal)
+      );
+      if (!match) return false;
+    }
+  }
+
+  return true;
+}
+
+/* ═══════════════════════════════════════════════
+   SCANNING (POLLING)
+═══════════════════════════════════════════════ */
+async function scan() {
+  const activeAlerts = alerts.filter(a => a.enabled);
+  if (!activeAlerts.length) return;
+
+  setPollState('scanning', 'Escaneando el mercado…', '');
+
+  let items;
+  try {
+    // Añadir timestamp para evitar caché del navegador
+    items = await fetch(`./data/531.json?t=${Date.now()}`).then(r => r.json());
+  } catch(e) {
+    setPollState('active', 'Error al obtener datos', 'Reintentando en el próximo ciclo…');
+    return;
+  }
+
+  let newMatchCount = 0;
+
+  for (const alert of activeAlerts) {
+    for (const item of items) {
+      // Clave única por alerta+item para no repetir notificaciones
+      const seenKey = `${alert.id}::${item.vnum ?? item.id}`;
+      if (seenIds.has(seenKey)) continue;
+
+      if (itemMatchesAlert(item, alert)) {
+        seenIds.add(seenKey);
+        newMatchCount++;
+
+        const match = {
+          id:        uid(),
+          alertId:   alert.id,
+          alertName: alert.name,
+          item,
+          foundAt:   Date.now(),
+        };
+        matches.unshift(match);
+        notifyMatch(match);
+      }
+    }
+  }
+
+  saveSeen();
+  saveMatches();
+  renderMatches(newMatchCount > 0);
+
+  const now = new Date().toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
+  setPollState('active',
+    `Último escaneo: ${now}`,
+    newMatchCount > 0
+      ? `✅ ${newMatchCount} item${newMatchCount>1?'s':''} nuevo${newMatchCount>1?'s':''} encontrado${newMatchCount>1?'s':''}`
+      : 'Sin nuevos items que coincidan'
+  );
+}
+
+function restartPolling() {
+  clearInterval(pollTimer);
+  clearInterval(countdownTimer);
+
+  const active = alerts.filter(a => a.enabled);
+  if (!active.length) {
+    setPollState('off', 'Sin alertas activas', 'Crea y activa una alerta para empezar');
+    document.getElementById('pollBar').style.width = '0%';
+    return;
+  }
+
+  scan(); // escaneo inmediato
+
+  secondsLeft = POLL_SECS;
+  pollTimer = setInterval(scan, POLL_SECS * 1000);
+
+  countdownTimer = setInterval(() => {
+    secondsLeft = Math.max(0, secondsLeft - 1);
+    const pct = ((POLL_SECS - secondsLeft) / POLL_SECS * 100).toFixed(1);
+    document.getElementById('pollBar').style.width = pct + '%';
+    if (secondsLeft === 0) secondsLeft = POLL_SECS;
+  }, 1000);
+}
+
+async function scanNow() {
+  secondsLeft = POLL_SECS;
+  document.getElementById('pollBar').style.width = '0%';
+  await scan();
+}
+
+function setPollState(state, status, sub) {
+  const dot = document.getElementById('pollDot');
+  dot.className = 'poll-dot';
+  if (state === 'active')   dot.classList.add('active');
+  if (state === 'scanning') dot.classList.add('scanning');
+  if (status) document.getElementById('pollStatus').textContent = status;
+  if (sub !== undefined) document.getElementById('pollSub').textContent = sub;
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER MATCHES
+═══════════════════════════════════════════════ */
+function renderMatches(hasNew) {
+  const container = document.getElementById('matchesList');
+  const newBadge  = document.getElementById('newBadge');
+
+  if (hasNew) newBadge.classList.add('show');
+
+  if (!matches.length) {
+    container.innerHTML = `<div class="matches-empty">
+      <div class="empty-icon">🎯</div>
+      <p>Aquí aparecerán los items que coincidan<br>con tus alertas al escanear el mercado.</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = matches.map((m, idx) => {
+    const item   = m.item;
+    const isNew  = idx === 0 && hasNew;
+    const icon   = itemIcons[String(item.vnum)] || itemIcons[String(item.id)];
+    const time   = new Date(m.foundAt).toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
+    const date   = new Date(m.foundAt).toLocaleDateString('es-ES', { day:'2-digit', month:'2-digit' });
+
+    let priceHtml = '';
+    if (item.yangPrice) priceHtml += `<div>💰 ${item.yangPrice.toLocaleString()} Yang</div>`;
+    if (item.wonPrice)  priceHtml += `<div>💜 ${item.wonPrice.toLocaleString()} Won</div>`;
+    if (!priceHtml)     priceHtml  = '<div style="color:var(--text-muted)">Precio desconocido</div>';
+
+    const plus = item.set?.[0] ?? 0;
+    const plusStr = plus > 0 ? ` +${plus}` : '';
+
+    return `<div class="match-item ${isNew ? 'new-match' : ''}" style="cursor:pointer;" onclick="snipeOpenModal(${idx})" title="Ver detalles del item">
+      <div class="match-icon">
+        ${icon ? `<img src="data/icons/${icon}" onerror="this.style.display='none'" alt="">` : '📦'}
+      </div>
+      <div class="match-body">
+        <div class="match-name">${escHtml(itemNames[String(item.vnum)] || item.name || 'Item #'+item.vnum)}${plusStr}</div>
+        <div class="match-meta">
+          ${item.seller ? `<span>🧑 ${escHtml(item.seller)}</span>` : ''}
+          ${item.quantity > 1 ? `<span>×${item.quantity}</span>` : ''}
+        </div>
+        <div class="match-alert-tag">🎯 ${escHtml(m.alertName)}</div>
+      </div>
+      <div class="match-price">
+        <div class="price-val">${priceHtml}</div>
+        <div class="price-time">${date} ${time}</div>
+        <div style="font-size:11px;color:var(--accent-red);margin-top:4px;">Ver detalle →</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Actualizar badge en alertas
+  renderAlerts();
+}
+
+function snipeOpenModal(idx) {
+  const m = matches[idx];
+  if (m) openModal(m.item);
+}
+
+function clearMatches() {
+  matches = [];
+  seenIds.clear();
+  saveMatches();
+  saveSeen();
+  document.getElementById('newBadge').classList.remove('show');
+  renderMatches(false);
+  renderAlerts();
+}
+
+/* ═══════════════════════════════════════════════
+   NOTIFICATIONS
+═══════════════════════════════════════════════ */
+function updateNotifBtn() {
+  const btn   = document.getElementById('notifBtn');
+  const label = document.getElementById('notifLabel');
+  if (!('Notification' in window)) {
+    btn.style.display = 'none';
+    return;
+  }
+  if (Notification.permission === 'granted') {
+    btn.classList.add('granted');
+    label.textContent = 'Notificaciones activas ✓';
+  } else if (Notification.permission === 'denied') {
+    label.textContent = 'Notificaciones bloqueadas';
+    btn.style.opacity = '.5';
+    btn.style.cursor = 'not-allowed';
+  } else {
+    label.textContent = 'Activar notificaciones';
+  }
+}
+
+async function requestNotifPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'denied') return;
+  const perm = await Notification.requestPermission();
+  updateNotifBtn();
+  if (perm === 'granted') {
+    showToast('🔔', '¡Listo!', 'Recibirás notificaciones cuando encuentre un item.', '#27ae60');
+  }
+}
+
+function notifyMatch(match) {
+  const item = match.item;
+  const title = `🎯 Item encontrado: ${item.name || 'Item'}`;
+  const body  = `Vendedor: ${item.seller || '?'}\nAlerta: "${match.alertName}"`;
+
+  // Browser notification
+  if ('Notification' in window && Notification.permission === 'granted') {
+    new Notification(title, { body, icon: './data/elements/fire.png' });
+  }
+
+  // In-page toast
+  showToast('🎯', title, body, '#58d68d');
+}
+
+function showToast(icon, title, text, color) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'snipe-toast';
+  toast.innerHTML = `
+    <div class="toast-icon">${icon}</div>
+    <div class="toast-body">
+      <div class="toast-title" style="color:${color}">${title}</div>
+      <div class="toast-text">${text.replace(/\n/g,'<br>')}</div>
+    </div>
+    <button class="toast-close" onclick="dismissToast(this.parentElement)">✕</button>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => dismissToast(toast), 6000);
+}
+
+function dismissToast(el) {
+  if (!el || el.classList.contains('hiding')) return;
+  el.classList.add('hiding');
+  setTimeout(() => el.remove(), 300);
+}
+
+/* ═══════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════ */
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   MODAL (idéntico a comercio)
+═══════════════════════════════════════════════ */
+function openModal(item) {
+  const vnum  = item.vnum || item.id;
+  const name  = itemNames[String(vnum)] || item.name || '???';
+  const icon  = itemIcons[String(vnum)];
+  const cat   = getCat(item.category);
+
+  const modalWrapBroken = icon ? '' : ' broken';
+  const imgTag = icon
+    ? `<img src="${ICON_LOCAL}${icon}" alt="${name}" loading="lazy"
+           onerror="this.onerror=null;this.src='${ICON_CDN}${icon}';">`
+    : '';
+
+  const won  = item.wonPrice  || 0;
+  const yang = item.yangPrice || 0;
+  let priceRows = '';
+  if (won > 0)  priceRows += `<div class="modal-row"><span>Precio Won</span><span class="price-won-line">💜 ${won.toLocaleString()} Won</span></div>`;
+  if (yang > 0) priceRows += `<div class="modal-row"><span>Precio Yang</span><span class="price-yang-line">💰 ${yang.toLocaleString()} Yang</span></div>`;
+  if (!won && !yang) priceRows = `<div class="modal-row"><span>Precio</span><span style="color:#58d68d;">🎁 Gratis</span></div>`;
+  if (won > 0 && yang > 0)
+    priceRows += `<div class="modal-row"><span>Equiv. Yang total</span><span style="color:var(--text-muted);font-size:12px;">${(won*WON_TO_YANG+yang).toLocaleString()} Yang</span></div>`;
+
+  // Bonus: rand primero (azul), luego attrs (verde/dorado)
+  const randAttrs = item.rand || [];
+  const attrs     = item.attrs || [];
+  const allBonusRows = [];
+
+  randAttrs.forEach(([id, val]) => {
+    const tpl  = statMap[id] || ('Bonus '+id);
+    const text = tpl.replace('%d', val).replace('%%','%');
+    const sign = val < 0 ? '' : '+';
+    allBonusRows.push(`<div class="modal-attr-row" style="background:rgba(80,160,220,.07);border-color:rgba(80,160,220,.2);">
+      <span class="attr-icon" style="font-size:13px;opacity:.7;">🎲</span>
+      <span class="attr-name" style="color:#7bb8e8;">${text}</span>
+      <span class="attr-val" style="color:#7bb8e8;">${sign}${val}</span>
+    </div>`);
+  });
+
+  let processedAttrs = [...attrs];
+  const has72 = processedAttrs.some(a => a[0] === 72);
+  const has71 = processedAttrs.some(a => a[0] === 71);
+  if (has72 && !has71) processedAttrs.unshift([71,0]);
+  else if (has71 && !has72) processedAttrs.unshift([72,0]);
+
+  processedAttrs.forEach(([id, val], idx) => {
+    if ((id===71||id===72) && val===0) return;
+    const tpl  = statMap[id] || ('Bonus '+id);
+    const text = tpl.replace('%d', Math.abs(val)).replace('%%','%');
+    const sign = val < 0 ? '−' : '+';
+    const isRare = idx >= 5, isNeg = val < 0;
+    const color  = isNeg ? '#e74c3c' : isRare ? '#f5c518' : '#58d68d';
+    const bg     = isNeg ? 'rgba(231,76,60,.07)' : isRare ? 'rgba(245,197,24,.07)' : 'rgba(88,214,141,.07)';
+    const border = isNeg ? 'rgba(231,76,60,.2)'  : isRare ? 'rgba(245,197,24,.2)'  : 'rgba(88,214,141,.18)';
+    const ico    = isNeg ? '⬇️' : isRare ? '⭐' : '⚡';
+    allBonusRows.push(`<div class="modal-attr-row" style="background:${bg};border-color:${border};">
+      <span class="attr-icon" style="font-size:13px;">${ico}</span>
+      <span class="attr-name" style="color:${color};">${text}</span>
+      <span class="attr-val" style="color:${color};">${sign}${Math.abs(val)}</span>
+    </div>`);
+  });
+
+  const bonusHtml = allBonusRows.length
+    ? `<div class="modal-section"><h4>✨ Bonus</h4><div class="modal-attr-list">${allBonusRows.join('')}</div></div>`
+    : '';
+
+  // Elemento
+  const elemInfo = getElemInfo(item);
+  const elemHtml = elemInfo
+    ? `<div class="modal-section"><h4>🔮 Elemento</h4>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,0,0,.1);border-radius:var(--radius);">
+          <img src="${elemInfo.icon}" style="width:28px;height:28px;image-rendering:pixelated;">
+          <span style="font-size:16px;font-weight:700;color:${elemInfo.color};">${elemInfo.name} +${elemInfo.total}%</span>
+        </div></div>`
+    : '';
+
+  // Sockets
+  const filledSockets = (item.sockets||[])
+    .map(s => ({ vnum:s, name:itemNames[String(s)], icon:itemIcons[String(s)] }))
+    .filter(s => s.name && s.vnum > 0);
+  const socketsHtml = filledSockets.length
+    ? `<div class="modal-section"><h4>💎 Ranuras (Sockets)</h4>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          ${filledSockets.map(s => {
+            const img = s.icon
+              ? `<img src="${ICON_LOCAL}${s.icon}" alt="${s.name}" style="width:20px;height:20px;object-fit:contain;image-rendering:pixelated;" onerror="this.src='${ICON_CDN}${s.icon}';this.onerror=null;">`
+              : '<span style="font-size:16px;">💠</span>';
+            return `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:rgba(92,164,255,.07);border:1px solid rgba(92,164,255,.18);border-radius:var(--radius);font-size:13px;">
+              ${img}<span style="color:#5ca4ff;font-weight:600;">${s.name}</span></div>`;
+          }).join('')}
+        </div></div>`
+    : '';
+
+  // Nivel requerido
+  const proto    = itemProto[String(vnum)];
+  const levelReq = proto && ((proto.LimitType0==='LEVEL' && parseInt(proto.LimitValue0)>0)
+    ? parseInt(proto.LimitValue0)
+    : (proto?.LimitType1==='LEVEL' && parseInt(proto.LimitValue1)>0)
+    ? parseInt(proto.LimitValue1) : 0) || 0;
+
+  // Pet info
+  let petHtml = '';
+  if (item.petInfo && Array.isArray(item.petInfo) && item.petInfo.length >= 3) {
+    const [,, getPet, petSkill, petPotential] = item.petInfo;
+    if (Array.isArray(getPet)) {
+      const baseLevel=getPet[0]||0, evolvedLevel=getPet[1]||0;
+      const ownerName=getPet[4]||'—';
+      const statHP=parseFloat(getPet[5]||0).toFixed(1);
+      const statDef=parseFloat(getPet[6]||0).toFixed(1);
+      const statSP=parseFloat(getPet[7]||0).toFixed(1);
+      let effectiveTs=getPet[3]||0;
+      if (Array.isArray(item.sockets)&&item.sockets[1]) {
+        const st=Number(item.sockets[1]);
+        if (!isNaN(st)&&st>0) { const nowSec=Math.floor(Date.now()/1000); effectiveTs=(getPet[3]||0)-(st-nowSec); }
+      }
+      const diffDays=Math.max(1,Math.floor((Date.now()-effectiveTs*1000)/86400000));
+      const shownLevel=evolvedLevel>0?evolvedLevel:baseLevel;
+      const isEvolved=evolvedLevel>0;
+      let skillsHtml='';
+      if (Array.isArray(petSkill)&&petSkill.length>=3) {
+        const rows=[];
+        for (let i=0;i+2<petSkill.length;i+=3) {
+          const sId=petSkill[i+1],sLv=petSkill[i+2];
+          if (!sId||!sLv) continue;
+          rows.push(`<span class="pet-skill-chip">✨ ${petSkills[String(sId)]||'#'+sId} Nv.${sLv}</span>`);
+        }
+        if (rows.length) skillsHtml=`<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:5px;">${rows.join('')}</div>`;
+      }
+      petHtml=`<div class="modal-section"><h4>🐾 Info de Mascota</h4>
+        <div class="pet-info-box">
+          <div class="pet-stat-row"><span>Propietario</span><span>${ownerName}</span></div>
+          <div class="pet-stat-row"><span>Nivel</span><span><span class="pet-level-badge${isEvolved?' evolved':''}">
+            ${isEvolved?'⭐ Evolucionado ':''} Nv.${shownLevel}</span></span></div>
+          <div class="pet-stat-row"><span>Días de vida</span><span>${diffDays} días</span></div>
+          <div class="pet-stat-row"><span>HP</span><span style="color:#e74c3c;">+${statHP}%</span></div>
+          <div class="pet-stat-row"><span>Defensa</span><span style="color:#3498db;">+${statDef}%</span></div>
+          <div class="pet-stat-row"><span>SP</span><span style="color:#9b59b6;">+${statSP}%</span></div>
+          ${skillsHtml}
+        </div></div>`;
+    }
+  }
+
+  // Clase
+  const CLASS_ANTI={'ANTI_MUSA':'Guerrero','ANTI_ASSASSIN':'Ninja','ANTI_SURA':'Sura','ANTI_MUDANG':'Chamán','ANTI_WOLFMAN':'Licano'};
+  let classHtml='';
+  if (proto) {
+    const wearTypes=['ITEM_WEAPON','ITEM_ARMOR','ITEM_COSTUME','ITEM_RING','ITEM_BELT'];
+    if (wearTypes.includes(proto.Type)) {
+      const anti=proto.AntiFlags||'';
+      const wearable=Object.entries(CLASS_ANTI).filter(([f])=>!anti.includes(f)).map(([,n])=>n);
+      if (wearable.length>0&&wearable.length<5)
+        classHtml=`<div class="modal-section"><h4>⚔️ Equipable por</h4>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            ${wearable.map(c=>`<span class="badge cat-other" style="font-size:12px;">👤 ${c}</span>`).join('')}
+          </div></div>`;
+    }
+  }
+
+  const levelRow = levelReq>0
+    ? `<div class="modal-row"><span>Nivel requerido</span><span class="level-badge">Nv.${levelReq}</span></div>`
+    : '';
+
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-item-header">
+      <div class="modal-icon-wrap${modalWrapBroken}">
+        ${imgTag}<span class="icon-placeholder">${cat.emoji}</span>
+      </div>
+      <div>
+        <div class="modal-title">${name}</div>
+        <div class="modal-seller">Vendedor: <strong>${item.seller||'—'}</strong></div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge ${cat.cls}">${cat.emoji} ${cat.label}</span>
+          ${elemInfo?`<span class="elem-badge elem-${elemInfo.key}"><img src="${elemInfo.icon}" alt="${elemInfo.name}"> ${elemInfo.name} +${elemInfo.total}%</span>`:''}
+          ${levelReq>0?`<span class="level-badge">Nv.${levelReq}</span>`:''}
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <h4>📋 Detalles</h4>
+      <div class="modal-row"><span>VNUM</span><span>#${vnum}</span></div>
+      <div class="modal-row"><span>Categoría</span><span>${cat.emoji} ${cat.name}</span></div>
+      <div class="modal-row"><span>Cantidad</span><span>×${item.quantity||1}</span></div>
+      ${levelRow}
+      ${priceRows}
+    </div>
+    ${elemHtml}${bonusHtml}${classHtml}${socketsHtml}${petHtml}
+    <div style="text-align:center;margin-top:8px;">
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('itemModal').classList.remove('open')">Cerrar</button>
+    </div>`;
+
+  document.getElementById('itemModal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target.id === 'itemModal')
+    document.getElementById('itemModal').classList.remove('open');
+}
+
+async function getCurrentUser() {
+  try {
+    const r = await fetch(API_BASE + '/me', { credentials: 'include', mode: 'cors' });
+    if (r.ok) return await r.json();
+  } catch {}
+  return null;
+}
+
+function setStorageKeys(user) {
+  if (user) {
+    // Usamos el id o el nombre para aislar las alertas por cuenta
+    const uid = (user.id || user.name || 'user').toString().replace(/\s+/g, '_');
+    ALERTS_KEY  = `cheffm2_snipe_alerts_${uid}`;
+    SEEN_KEY    = `cheffm2_snipe_seen_${uid}`;
+    MATCHES_KEY = `cheffm2_snipe_matches_${uid}`;
+  } else {
+    ALERTS_KEY  = 'cheffm2_snipe_alerts_guest';
+    SEEN_KEY    = 'cheffm2_snipe_seen_guest';
+    MATCHES_KEY = 'cheffm2_snipe_matches_guest';
+  }
+}
+
+function renderUserBanner(user) {
+  const existing = document.getElementById('userBanner');
+  if (existing) existing.remove();
+
+  const banner = document.createElement('div');
+  banner.id = 'userBanner';
+
+  if (user) {
+    banner.style.cssText = `
+      background: rgba(88,214,141,.07);
+      border: 1px solid rgba(88,214,141,.2);
+      border-radius: var(--radius-lg);
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 0;
+    `;
+    const avatar = user.avatar
+      ? `<img src="${user.avatar}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none'">`
+      : '';
+    banner.innerHTML = `${avatar}<span>✅ Alertas guardadas en la cuenta de <strong style="color:var(--text-primary)">${user.name}</strong></span>`;
+  } else {
+    banner.style.cssText = `
+      background: rgba(243,156,18,.07);
+      border: 1px solid rgba(243,156,18,.2);
+      border-radius: var(--radius-lg);
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 0;
+    `;
+    banner.innerHTML = `
+      <span>⚠️ Estás como <strong style="color:var(--accent-gold)">invitado</strong> — las alertas se guardan solo en este navegador.</span>
+      <a href="${API_BASE}/auth/google" class="btn btn-outline" style="font-size:12px;padding:6px 12px;white-space:nowrap;">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;" fill="none">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Iniciar sesión
+      </a>
+    `;
+  }
+
+  // Insertar antes del snipe-wrapper
+  document.getElementById('snipeWrapper').before(banner);
+  banner.style.maxWidth = '1400px';
+  banner.style.margin = '0 auto 16px';
+  banner.style.boxSizing = 'border-box';
+  banner.style.padding = '10px 24px 10px 16px';
+}
+
+function isPremium(user) {
+  if (!user) return false;
+  // Admins y editores tienen acceso completo
+  if (user.role === 'admin' || user.role === 'editor') return true;
+  return user.premium_tier && user.premium_tier !== 'none';
+}
+
+function showPremiumGate(user) {
+  const gate    = document.getElementById('premiumGate');
+  const wrapper = document.getElementById('snipeWrapper');
+  const btns    = document.getElementById('gateBtns');
+  gate.classList.add('visible');
+  wrapper.style.display = 'none';
+
+  if (!user) {
+    btns.innerHTML = `
+      <a href="https://jordism.com/api/auth/google" class="btn btn-primary">
+        <i class="fab fa-google"></i> Iniciar sesión
+      </a>`;
+  } else {
+    btns.innerHTML = `
+      <a href="https://jordism.com/premium" class="btn btn-primary">
+        ✦ Hazte Premium
+      </a>`;
+  }
+}
+
+async function init() {
+  currentUser = await getCurrentUser();
+  setStorageKeys(currentUser);
+  renderUserBanner(currentUser);
+
+  if (!isPremium(currentUser)) {
+    showPremiumGate(currentUser);
+    return; // no cargar nada más
+  }
+
+  await loadAlerts();
+  loadMatches();
+  loadSeen();
+  await loadData();
+  renderAlerts();
+  renderMatches(false);
+  updateNotifBtn();
+  restartPolling();
+}
+
+document.getElementById('menuToggle').addEventListener('click', () =>
+  document.getElementById('mainNav').classList.toggle('open'));
+
+init();
+</script>
+<script src="js/auth.js"></script>
+</body>
+</html>
