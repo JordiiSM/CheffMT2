@@ -1217,7 +1217,10 @@ async function loadMatches() {
         seen:      r.seen,
       }));
       // Rellenar seenIds con los matches ya guardados para evitar duplicados
-      seenIds = new Set(matches.map(m => `${m.alertId}::${m.item?.vnum ?? m.item?.id}`));
+      seenIds = new Set(matches.map(m => {
+        const it = m.item || {};
+        return `${m.alertId}::${it.vnum ?? it.id}::${it.seller || ''}::${it.yangPrice ?? it.wonPrice ?? 0}`;
+      }));
       return;
     } catch (e) {
       console.warn('[matches] Error cargando desde API:', e);
@@ -1633,7 +1636,7 @@ async function scan() {
   for (const alert of activeAlerts) {
     for (const item of items) {
       // Clave única por alerta+item para no repetir notificaciones
-      const seenKey = `${alert.id}::${item.vnum ?? item.id}`;
+      const seenKey = `${alert.id}::${item.vnum ?? item.id}::${item.seller || ''}::${item.yangPrice ?? item.wonPrice ?? 0}`;
       if (seenIds.has(seenKey)) continue;
 
       if (itemMatchesAlert(item, alert)) {
