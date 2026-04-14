@@ -1203,13 +1203,31 @@ async function loadAlerts() {
 function saveAlertsLocal() {
   if (!currentUser) localStorage.setItem(ALERTS_KEY, JSON.stringify(alerts));
 }
-function loadMatches() {
+async function loadMatches() {
+  if (currentUser) {
+    try {
+      const rows = await apiGet('/snipe-matches');
+      // Adaptar formato BD → formato interno { id, alertId, alertName, item, foundAt }
+      matches = rows.map(r => ({
+        id:        r.id,
+        alertId:   r.alert_id,
+        alertName: r.alert_name,
+        item:      r.item,
+        foundAt:   new Date(r.found_at).getTime(),
+        seen:      r.seen,
+      }));
+      return;
+    } catch (e) {
+      console.warn('[matches] Error cargando desde API:', e);
+    }
+  }
   try { matches = JSON.parse(localStorage.getItem(MATCHES_KEY)) || []; } catch { matches = []; }
 }
-function saveMatches() {
-  // Guardar solo los últimos 100 matches
-  matches = matches.slice(-100);
-  localStorage.setItem(MATCHES_KEY, JSON.stringify(matches));
+function saveMatchesLocal() {
+  if (!currentUser) {
+    matches = matches.slice(-100);
+    localStorage.setItem(MATCHES_KEY, JSON.stringify(matches));
+  }
 }
 function loadSeen() {
   try { seenIds = new Set(JSON.parse(localStorage.getItem(SEEN_KEY)) || []); } catch { seenIds = new Set(); }
@@ -1634,7 +1652,7 @@ async function scan() {
   }
 
   saveSeen();
-  saveMatches();
+  saveMatchesLocal();
   renderMatches(newMatchCount > 0);
 
   const now = new Date().toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
@@ -1671,6 +1689,12 @@ function restartPolling() {
 }
 
 async function scanNow() {
+  // Escaneo manual: siempre fresco, como si fuera la primera vez
+  seenIds.clear();
+  matches = [];
+  saveSeen();
+  saveMatches();
+  document.getElementById('newBadge').classList.remove('show');
   secondsLeft = POLL_SECS;
   document.getElementById('pollBar').style.width = '0%';
   await scan();
@@ -1746,10 +1770,16 @@ function snipeOpenModal(idx) {
   if (m) openModal(m.item);
 }
 
-function clearMatches() {
+async function clearMatches() {
+  if (currentUser) {
+    try { await apiDelete('/snipe-matches'); } catch (e) {
+      showToast('❌', 'Error', 'No se pudieron borrar los matches.', '#e74c3c');
+      return;
+    }
+  }
   matches = [];
   seenIds.clear();
-  saveMatches();
+  saveMatchesLocal();
   saveSeen();
   document.getElementById('newBadge').classList.remove('show');
   renderMatches(false);
@@ -1762,7 +1792,7 @@ function clearMatches() {
 function updateNotifBtn() {
   const btn   = document.getElementById('notifBtn');
   const label = document.getElementById('notifLabel');
-  if (!('Notification' in window)) {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
     btn.style.display = 'none';
     return;
   }
@@ -1778,13 +1808,40 @@ function updateNotifBtn() {
   }
 }
 
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64  = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw     = atob(base64);
+  return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+}
+
 async function requestNotifPermission() {
-  if (!('Notification' in window)) return;
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
   if (Notification.permission === 'denied') return;
-  const perm = await Notification.requestPermission();
-  updateNotifBtn();
-  if (perm === 'granted') {
-    showToast('🔔', '¡Listo!', 'Recibirás notificaciones cuando encuentre un item.', '#27ae60');
+
+  try {
+    // 1. Registrar service worker
+    const reg = await navigator.serviceWorker.register('/sw.js');
+
+    // 2. Obtener clave pública VAPID
+    const { key: vapidKey } = await apiGet('/push/vapid-public-key');
+
+    // 3. Suscribirse a Web Push
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly:      true,
+      applicationServerKey: urlBase64ToUint8Array(vapidKey),
+    });
+
+    // 4. Enviar suscripción al servidor
+    if (currentUser) {
+      await apiPost('/push/subscribe', sub.toJSON());
+    }
+
+    updateNotifBtn();
+    showToast('🔔', '¡Listo!', 'Recibirás notificaciones aunque el navegador esté en segundo plano.', '#27ae60');
+  } catch (e) {
+    console.error('[push] Error al suscribirse:', e);
+    showToast('❌', 'Error', 'No se pudieron activar las notificaciones.', '#e74c3c');
   }
 }
 
@@ -2153,13 +2210,22 @@ async function init() {
   }
 
   await loadAlerts();
-  loadMatches();
+  await loadMatches();
   loadSeen();
   await loadData();
   renderAlerts();
   renderMatches(false);
   updateNotifBtn();
   restartPolling();
+  // Si el usuario está logueado, refrescar matches desde BD cada minuto
+  if (currentUser) {
+    setInterval(async () => {
+      const prev = matches.length;
+      await loadMatches();
+      if (matches.length > prev) renderMatches(true);
+      else renderMatches(false);
+    }, 60 * 1000);
+  }
 }
 
 document.getElementById('menuToggle').addEventListener('click', () =>
