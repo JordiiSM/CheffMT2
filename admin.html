@@ -567,11 +567,12 @@ function tierBadge(tier) {
 
 function effectiveLimitText(user) {
   const hasCustom = user.snipe_alert_limit !== null && user.snipe_alert_limit !== undefined;
-  if (user.role === 'admin' || user.role === 'editor') {
-    return `<span class="effective-limit">∞ (ilimitado)</span>`;
-  }
+  // Límite manual siempre manda, sin importar el rol
   if (hasCustom) {
     return `<span class="effective-limit custom">⚡ Límite manual: ${user.snipe_alert_limit}</span>`;
+  }
+  if (user.role === 'admin' || user.role === 'editor') {
+    return `<span class="effective-limit">∞ (ilimitado por rol)</span>`;
   }
   const def = TIER_LIMITS[user.premium_tier] ?? 0;
   return `<span class="effective-limit">Tier por defecto: ${def}</span>`;
