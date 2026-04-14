@@ -16,10 +16,10 @@ self.addEventListener('push', event => {
 
   const options = {
     body:    data.body  || '',
-    icon:    '/favicon.ico',
-    badge:   '/favicon.ico',
+    icon:    data.icon  || 'https://jordism.com/favicon.ico',
+    badge:   'https://jordism.com/favicon.ico',
     vibrate: [200, 100, 200],
-    data:    { url: data.url || 'https://jordism.com/sniping.html' },
+    data:    { url: data.url || 'https://jordism.com/cheffmt2/sniping.html' },
     actions: [
       { action: 'open', title: 'Ver items' },
       { action: 'close', title: 'Cerrar' },

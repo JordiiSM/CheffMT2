@@ -22,13 +22,13 @@ webpush.setVapidDetails(
  * Envía una notificación push a todas las suscripciones de un usuario.
  * Limpia automáticamente suscripciones inválidas (410 Gone).
  */
-async function sendToUser(userId, { title, body, url }) {
+async function sendToUser(userId, { title, body, url, icon }) {
   const { rows } = await db.query(
     'SELECT id, endpoint, p256dh, auth FROM push_subscriptions WHERE user_id = $1',
     [userId]
   );
 
-  const payload = JSON.stringify({ title, body, url });
+  const payload = JSON.stringify({ title, body, url, icon });
 
   await Promise.allSettled(rows.map(async row => {
     const subscription = {

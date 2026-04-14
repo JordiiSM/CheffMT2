@@ -26,14 +26,18 @@ function readJson(filename) {
 
 // ── Caché de datos auxiliares (se recarga cada hora) ──────────
 let itemNames  = {};
+let itemIcons  = {};
 let statMap    = {};
 let auxLoadedAt = 0;
+
+const ICON_BASE = 'https://jordism.com/cheffmt2/data/';
 
 function loadAuxData() {
   const now = Date.now();
   if (now - auxLoadedAt < 60 * 60 * 1000) return;
   try {
     itemNames  = readJson('item_names.json');
+    itemIcons  = readJson('item_icon.json');
     statMap    = readJson('stat_map.json');
     auxLoadedAt = now;
     console.log('[scanner] Datos auxiliares cargados');
@@ -219,10 +223,17 @@ async function runScan() {
 
     // 6. Enviar push al usuario
     try {
+      const firstItem  = newItems[0];
+      const firstName  = itemNames[String(firstItem.vnum ?? firstItem.id)] || firstItem.name || 'Item';
+      const iconFile   = itemIcons[String(firstItem.vnum ?? firstItem.id)];
+      const iconUrl    = iconFile ? ICON_BASE + iconFile : 'https://jordism.com/favicon.ico';
+      const extraCount = newItems.length > 1 ? ` (+${newItems.length - 1} más)` : '';
+
       await pushService.sendToUser(alert.user_id, {
         title: `🎯 ${alert.name}`,
-        body:  `${newItems.length} item${newItems.length > 1 ? 's' : ''} encontrado${newItems.length > 1 ? 's' : ''} en el mercado`,
-        url:   'https://jordism.com/sniping.html',
+        body:  `${firstName}${extraCount} — ${firstItem.seller || 'Vendedor desconocido'}`,
+        url:   'https://jordism.com/cheffmt2/sniping.html',
+        icon:  iconUrl,
       });
     } catch (e) {
       console.warn(`[scanner] Error enviando push a user ${alert.user_id}:`, e.message);
