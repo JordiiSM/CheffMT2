@@ -46,10 +46,22 @@ router.get('/', async (req, res) => {
 router.post('/client', async (req, res) => {
   const { id, alert_id, alert_name, item } = req.body;
   if (!id || !alert_id || !item) return res.status(400).json({ error: 'Faltan campos' });
+  const vnum = String(item.vnum ?? item.id ?? '');
   try {
+    // Evitar duplicados: mismo item+alerta en las últimas 2 horas
+    const { rows } = await db.query(
+      `SELECT 1 FROM snipe_matches
+       WHERE user_id = $1 AND alert_id = $2
+         AND (item->>'vnum') = $3
+         AND found_at > NOW() - INTERVAL '2 hours'
+       LIMIT 1`,
+      [req.user.id, alert_id, vnum]
+    );
+    if (rows.length) return res.json({ ok: true, skipped: true });
+
     await db.query(
       `INSERT INTO snipe_matches (id, user_id, alert_id, alert_name, item)
-       VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO NOTHING`,
+       VALUES ($1, $2, $3, $4, $5)`,
       [id, req.user.id, alert_id, alert_name || '', JSON.stringify(item)]
     );
     res.json({ ok: true });

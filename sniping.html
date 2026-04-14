@@ -1216,6 +1216,8 @@ async function loadMatches() {
         foundAt:   new Date(r.found_at).getTime(),
         seen:      r.seen,
       }));
+      // Rellenar seenIds con los matches ya guardados para evitar duplicados
+      seenIds = new Set(matches.map(m => `${m.alertId}::${m.item?.vnum ?? m.item?.id}`));
       return;
     } catch (e) {
       console.warn('[matches] Error cargando desde API:', e);
@@ -1703,12 +1705,9 @@ function restartPolling() {
 }
 
 async function scanNow() {
-  // Escaneo manual: siempre fresco, como si fuera la primera vez
-  seenIds.clear();
-  matches = [];
-  saveSeen();
-  saveMatches();
-  document.getElementById('newBadge').classList.remove('show');
+  // Recargar matches de BD para que seenIds esté actualizado antes de escanear
+  await loadMatches();
+  renderMatches(false);
   secondsLeft = POLL_SECS;
   document.getElementById('pollBar').style.width = '0%';
   await scan();
