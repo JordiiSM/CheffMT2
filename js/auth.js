@@ -4,7 +4,7 @@
  * y renderiza el botón de login o el avatar con dropdown.
  */
 (function () {
-  const API_BASE = 'https://jordism.com/cheffmt2';
+  const API_BASE = 'https://jordism.com/api';
   const ROLE_LABELS = { admin: 'Admin', editor: 'Editor', moderador: 'Mod', user: '' };
 
   // ── Render: usuario no logueado ───────────────────
@@ -66,7 +66,7 @@
     const container = document.getElementById('navbar-auth');
     if (!container) return;
 
-    fetch(API_BASE + '/me', { credentials: 'include' })
+    fetch(API_BASE + '/me', { credentials: 'include', mode: 'cors' })
       .then(r => r.ok ? r.json() : null)
       .then(user => {
         if (user) {
