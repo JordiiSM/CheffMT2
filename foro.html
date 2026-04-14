@@ -6,133 +6,10 @@
   <title>Foro – CheffM2</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <style>
-    .forum-stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-    .forum-stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      text-align: center;
-    }
-    .forum-stat-number {
-      font-family: var(--font-title);
-      font-size: 32px;
-      color: var(--accent-gold);
-      display: block;
-    }
-    .forum-stat-label {
-      font-size: 13px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .new-thread-btn {
-      position: fixed;
-      bottom: 32px;
-      right: 32px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: var(--gradient-red);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      color: #fff;
-      cursor: pointer;
-      box-shadow: var(--shadow-glow-red);
-      border: none;
-      transition: all 0.3s;
-      z-index: 100;
-    }
-    .new-thread-btn:hover {
-      transform: scale(1.1) rotate(45deg);
-      box-shadow: 0 8px 30px rgba(231,76,60,0.6);
-    }
-
-    .thread-tag {
-      display: inline-block;
-      padding: 2px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .online-indicator {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 16px 20px;
-      margin-bottom: 24px;
-    }
-
-    .forum-pinned {
-      background: rgba(243, 156, 18, 0.05);
-      border-color: rgba(243, 156, 18, 0.2) !important;
-    }
-    .forum-pinned .forum-thread-info h4::before {
-      content: '📌 ';
-    }
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-overlay.open {
-      display: flex;
-    }
-    .modal {
-      background: var(--bg-card);
-      border: 1px solid var(--border-accent);
-      border-radius: var(--radius-lg);
-      padding: 32px;
-      width: 100%;
-      max-width: 600px;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-    .modal h3 { font-size: 22px; margin-bottom: 24px; }
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 20px;
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 24px;
-      cursor: pointer;
-    }
-    .modal-close:hover { color: var(--text-primary); }
-    textarea.form-input {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    @media (max-width: 768px) {
-      .forum-stats-row { grid-template-columns: repeat(2, 1fr); }
-    }
-  </style>
 </head>
 <body>
 
+<!-- NAVBAR -->
 <nav class="navbar">
   <div class="navbar-brand">
     <div class="navbar-logo">C</div>
@@ -144,458 +21,125 @@
     <li><a href="herramientas.html"><i class="fas fa-tools"></i> Herramientas</a></li>
     <li><a href="wiki.html"><i class="fas fa-book"></i> Wiki</a></li>
     <li><a href="guias.html"><i class="fas fa-scroll"></i> Guías</a></li>
-    <li><a href="foro.html" class="active"><i class="fas fa-comments"></i> Foro</a></li>
     <li><a href="comercio.html"><i class="fas fa-store"></i> Comercio</a></li>
-    <li><a href="https://www.twitch.tv/" target="_blank" class="navbar-twitch"><i class="fab fa-twitch"></i> Ver en Twitch</a></li>
+    <li><a href="foro.html" class="active"><i class="fas fa-comments"></i> Foro</a></li>
+    <li><a href="https://www.twitch.tv/" target="_blank" class="navbar-twitch"><i class="fab fa-twitch"></i> Twitch</a></li>
   </ul>
+  <div id="navbar-auth"></div>
 </nav>
 
 <div class="page-wrapper">
 
   <div class="page-header">
-    <div class="section-tag">Portal CheffM2</div>
-    <h1 class="page-header-title">💬 <span style="color: var(--accent-gold);">Foro</span></h1>
-    <p class="page-header-subtitle">La comunidad de Metin2 de Cheff. Comparte, pregunta y conecta.</p>
+    <div class="section-tag">CheffM2</div>
+    <h1 class="page-header-title">💬 <span style="color:var(--accent-gold)">Foro</span></h1>
+    <p class="page-header-subtitle">La comunidad de Metin2 de Cheff</p>
   </div>
 
-  <section class="section">
-    <div class="container">
+  <div class="container" style="padding-bottom: 80px;">
+    <div style="
+      text-align: center;
+      padding: 80px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+    ">
+      <!-- Línea superior decorativa -->
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-gold);"></div>
 
-      <!-- ONLINE STATUS -->
-      <div class="online-indicator">
-        <div class="live-dot"></div>
-        <span style="font-size: 14px; color: var(--text-secondary);">
-          <strong style="color: var(--accent-gold);">47 usuarios</strong> online ahora mismo
-        </span>
-        <div style="margin-left: auto;">
-          <a href="https://discord.gg/" target="_blank" class="btn btn-outline btn-sm">
-            <i class="fab fa-discord"></i> Discord del servidor
-          </a>
+      <div style="font-size: 80px; margin-bottom: 24px; line-height: 1;">🚧</div>
+
+      <h2 style="font-family: var(--font-title); font-size: 32px; margin-bottom: 16px;">
+        En <span style="color: var(--accent-gold);">Construcción</span>
+      </h2>
+
+      <p style="font-size: 16px; color: var(--text-secondary); max-width: 520px; margin: 0 auto 32px; line-height: 1.7;">
+        Estamos construyendo el foro de la comunidad. Pronto podrás compartir estrategias,
+        pedir ayuda, vender items y conectar con el resto de jugadores. ¡Vuelve pronto!
+      </p>
+
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom: 40px;">
+        <div style="
+          background: rgba(243,156,18,.08);
+          border: 1px solid rgba(243,156,18,.2);
+          border-radius: var(--radius-lg);
+          padding: 20px 32px;
+          min-width: 140px;
+        ">
+          <div style="font-size: 28px; font-weight: 800; color: var(--accent-gold);">💬</div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Foro general</div>
+        </div>
+        <div style="
+          background: rgba(243,156,18,.08);
+          border: 1px solid rgba(243,156,18,.2);
+          border-radius: var(--radius-lg);
+          padding: 20px 32px;
+          min-width: 140px;
+        ">
+          <div style="font-size: 28px; font-weight: 800; color: var(--accent-gold);">🤝</div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Tablón de comercio</div>
+        </div>
+        <div style="
+          background: rgba(243,156,18,.08);
+          border: 1px solid rgba(243,156,18,.2);
+          border-radius: var(--radius-lg);
+          padding: 20px 32px;
+          min-width: 140px;
+        ">
+          <div style="font-size: 28px; font-weight: 800; color: var(--accent-gold);">❓</div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Ayuda y dudas</div>
         </div>
       </div>
 
-      <!-- STATS -->
-      <div class="forum-stats-row">
-        <div class="forum-stat-card">
-          <span class="forum-stat-number">1.247</span>
-          <span class="forum-stat-label">Publicaciones</span>
-        </div>
-        <div class="forum-stat-card">
-          <span class="forum-stat-number">384</span>
-          <span class="forum-stat-label">Hilos</span>
-        </div>
-        <div class="forum-stat-card">
-          <span class="forum-stat-number">892</span>
-          <span class="forum-stat-label">Miembros</span>
-        </div>
-        <div class="forum-stat-card">
-          <span class="forum-stat-number" style="color: var(--accent-red-bright);">47</span>
-          <span class="forum-stat-label">Online Ahora</span>
-        </div>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <a href="index.html" class="btn btn-outline">
+          <i class="fas fa-home"></i> Volver al Inicio
+        </a>
+        <a href="herramientas.html" class="btn btn-primary">
+          <i class="fas fa-tools"></i> Ver Herramientas
+        </a>
+        <a href="comercio.html" class="btn btn-outline">
+          <i class="fas fa-store"></i> Ir al Comercio
+        </a>
       </div>
-
-      <!-- SEARCH & NEW -->
-      <div style="display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;">
-        <div style="flex: 1; min-width: 200px;">
-          <input type="text" class="search-input" style="margin: 0; width: 100%;" placeholder="Buscar en el foro..." />
-        </div>
-        <button class="btn btn-primary" onclick="openNewThread()">
-          <i class="fas fa-plus"></i> Nuevo hilo
-        </button>
-        <select class="form-select" style="width: auto;" onchange="filterCategory(this.value)">
-          <option value="all">Todas las categorías</option>
-          <option value="general">General</option>
-          <option value="builds">Builds</option>
-          <option value="market">Mercado</option>
-          <option value="events">Eventos</option>
-          <option value="help">Ayuda</option>
-        </select>
-      </div>
-
-      <!-- ===== NOTICIAS OFICIALES ===== -->
-      <div class="forum-category" data-cat="official">
-        <div class="forum-category-header">
-          <div style="font-size: 24px;">📣</div>
-          <div>
-            <h3>Anuncios Oficiales</h3>
-            <p>Noticias y anuncios importantes de Cheff y el portal</p>
-          </div>
-          <span class="badge badge-red" style="margin-left: auto;">OFICIAL</span>
-        </div>
-
-        <div class="forum-thread forum-pinned">
-          <div class="forum-thread-avatar">C</div>
-          <div class="forum-thread-info">
-            <h4>Bienvenidos al portal CheffM2 — Lee esto primero</h4>
-            <p>por <strong style="color:var(--accent-gold)">Cheff</strong> · hace 2 días</p>
-          </div>
-          <div class="forum-thread-stats">
-            <span style="color: var(--accent-gold);">📌 FIJO</span>
-            <span>245 vistas · 18 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread forum-pinned">
-          <div class="forum-thread-avatar">C</div>
-          <div class="forum-thread-info">
-            <h4>Normas del Foro — Léelas antes de publicar</h4>
-            <p>por <strong style="color:var(--accent-gold)">Cheff</strong> · hace 3 días</p>
-          </div>
-          <div class="forum-thread-stats">
-            <span style="color: var(--accent-gold);">📌 FIJO</span>
-            <span>189 vistas · 3 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg, #9146ff, #7d2ff5);">M</div>
-          <div class="forum-thread-info">
-            <h4>Nuevo evento de primavera — ¡Gana items exclusivos!</h4>
-            <p>por <strong style="color:var(--accent-gold)">Cheff</strong> · hace 1 hora</p>
-          </div>
-          <div class="forum-thread-stats">
-            <span class="badge badge-green">NUEVO</span>
-            <span>67 vistas · 12 respuestas</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== GENERAL ===== -->
-      <div class="forum-category" data-cat="general">
-        <div class="forum-category-header">
-          <div style="font-size: 24px;">💬</div>
-          <div>
-            <h3>General</h3>
-            <p>Habla de Metin2, el servidor de Cheff y cualquier tema del juego</p>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#e74c3c,#c0392b);">A</div>
-          <div class="forum-thread-info">
-            <h4>¿Cuál es vuestra clase favorita y por qué?</h4>
-            <p>por <strong>AceWarrior99</strong> · hace 30 min · <span class="thread-tag badge badge-blue">General</span></p>
-          </div>
-          <div class="forum-thread-stats">
-            <span class="badge badge-green">ACTIVO</span>
-            <span>43 vistas · 28 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#27ae60,#2ecc71);">S</div>
-          <div class="forum-thread-info">
-            <h4>Tips para nuevos jugadores que acaban de llegar al servidor</h4>
-            <p>por <strong>ShadowNinja</strong> · hace 2h · <span class="thread-tag badge badge-green">Ayuda</span></p>
-          </div>
-          <div class="forum-thread-stats">
-            <span>128 vistas · 45 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#f39c12,#e67e22);">D</div>
-          <div class="forum-thread-info">
-            <h4>¿Alguien más vio el directo de Cheff ayer? ¡Estuvo increíble!</h4>
-            <p>por <strong>DragonKing</strong> · hace 4h</p>
-          </div>
-          <div class="forum-thread-stats">
-            <span>89 vistas · 34 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#8e44ad,#6c3483);">M</div>
-          <div class="forum-thread-info">
-            <h4>Predicciones para el próximo parche — ¿Qué esperáis?</h4>
-            <p>por <strong>MysticSura</strong> · hace 5h</p>
-          </div>
-          <div class="forum-thread-stats">
-            <span>76 vistas · 21 respuestas</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== BUILDS & ESTRATEGIA ===== -->
-      <div class="forum-category" data-cat="builds">
-        <div class="forum-category-header">
-          <div style="font-size: 24px;">⚔️</div>
-          <div>
-            <h3>Builds & Estrategia</h3>
-            <p>Comparte y discute builds, combos y estrategias para cada clase</p>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: var(--gradient-red);">R</div>
-          <div class="forum-thread-info">
-            <h4>Build definitiva Guerrero de Fuego PvP — [ACTUALIZADA 2026]</h4>
-            <p>por <strong>RedWarrior</strong> · hace 1h · <span class="thread-tag badge badge-red">Guerrero</span></p>
-          </div>
-          <div class="forum-thread-stats">
-            <span class="badge badge-gold">HOT</span>
-            <span>342 vistas · 67 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#2c3e50,#3d5a73);">N</div>
-          <div class="forum-thread-info">
-            <h4>Ninja Arquero: ¿sigue siendo viable en el meta actual?</h4>
-            <p>por <strong>NightArrow</strong> · hace 3h · <span class="thread-tag badge badge-blue">Ninja</span></p>
-          </div>
-          <div class="forum-thread-stats">
-            <span>198 vistas · 41 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#8e44ad,#6c3483);">Z</div>
-          <div class="forum-thread-info">
-            <h4>Sura Hechicero — Guía completa de stats y equipo para endgame</h4>
-            <p>por <strong>ZenMage</strong> · hace 6h · <span class="thread-tag badge badge-purple">Sura</span></p>
-          </div>
-          <div class="forum-thread-stats">
-            <span>267 vistas · 58 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#27ae60,#1e8449);">H</div>
-          <div class="forum-thread-info">
-            <h4>Chamán soporte: las mejores piedras de dragón para maximizar curaciones</h4>
-            <p>por <strong>HealerGod</strong> · hace 8h · <span class="thread-tag badge badge-green">Chamán</span></p>
-          </div>
-          <div class="forum-thread-stats">
-            <span>156 vistas · 29 respuestas</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== MERCADO ===== -->
-      <div class="forum-category" data-cat="market">
-        <div class="forum-category-header">
-          <div style="font-size: 24px;">🏪</div>
-          <div>
-            <h3>Mercado de Jugadores</h3>
-            <p>Compra, vende e intercambia items con otros jugadores</p>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#f39c12,#d35400);">T</div>
-          <div class="forum-thread-info">
-            <h4>[VENDO] Espada de Tigre +8 — Precio: 150M Yang — NEGOCIABLE</h4>
-            <p>por <strong>TigerBlade</strong> · hace 20 min · <span class="thread-tag badge badge-gold">Venta</span></p>
-          </div>
-          <div class="forum-thread-stats">
-            <span class="badge badge-green">NUEVO</span>
-            <span>34 vistas · 5 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#2980b9,#1a5276);">B</div>
-          <div class="forum-thread-info">
-            <h4>[BUSCO] Armadura de Dragón +6 o superior — Pago bien</h4>
-            <p>por <strong>BlueDragon</strong> · hace 1h · <span class="thread-tag badge badge-blue">Compra</span></p>
-          </div>
-          <div class="forum-thread-stats">
-            <span>28 vistas · 7 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#27ae60,#145a32);">G</div>
-          <div class="forum-thread-info">
-            <h4>[INTERCAMBIO] Collar del Señor por Anillo de Rubí +4 + Yang</h4>
-            <p>por <strong>GreenMage</strong> · hace 2h · <span class="thread-tag badge badge-green">Intercambio</span></p>
-          </div>
-          <div class="forum-thread-stats">
-            <span>45 vistas · 12 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: var(--gradient-red);">F</div>
-          <div class="forum-thread-info">
-            <h4>[VENDO] Pack de 500 pociones grandes — 2.000.000 Yang</h4>
-            <p>por <strong>FarmKing</strong> · hace 3h · <span class="thread-tag badge badge-gold">Venta</span></p>
-          </div>
-          <div class="forum-thread-stats">
-            <span>67 vistas · 3 respuestas</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== EVENTOS ===== -->
-      <div class="forum-category" data-cat="events">
-        <div class="forum-category-header">
-          <div style="font-size: 24px;">🎉</div>
-          <div>
-            <h3>Eventos & Torneos</h3>
-            <p>Torneos PvP, eventos del servidor y drops especiales</p>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg, #9146ff, #7d2ff5);">C</div>
-          <div class="forum-thread-info">
-            <h4>🏆 Torneo PvP Semanal — Inscripciones abiertas (Viernes 20:00)</h4>
-            <p>por <strong style="color:var(--accent-gold)">Cheff</strong> · hace 2h · <span class="thread-tag badge badge-purple">Torneo</span></p>
-          </div>
-          <div class="forum-thread-stats">
-            <span class="badge badge-red">INSCRÍBETE</span>
-            <span>234 vistas · 89 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#f39c12,#e67e22);">E</div>
-          <div class="forum-thread-info">
-            <h4>Evento de Primavera — Flores acumuladas por jugador (Clasificación)</h4>
-            <p>por <strong>EventMaster</strong> · hace 4h · <span class="thread-tag badge badge-gold">Evento</span></p>
-          </div>
-          <div class="forum-thread-stats">
-            <span class="badge badge-green">ACTIVO</span>
-            <span>312 vistas · 134 respuestas</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== AYUDA ===== -->
-      <div class="forum-category" data-cat="help">
-        <div class="forum-category-header">
-          <div style="font-size: 24px;">🆘</div>
-          <div>
-            <h3>Centro de Ayuda</h3>
-            <p>¿Tienes preguntas? La comunidad está aquí para ayudarte</p>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#e74c3c,#a93226);">N</div>
-          <div class="forum-thread-info">
-            <h4>Soy nuevo en Metin2, ¿por qué clase empiezo?</h4>
-            <p>por <strong>NewPlayer2026</strong> · hace 45 min</p>
-          </div>
-          <div class="forum-thread-stats">
-            <span class="badge badge-green">NUEVO</span>
-            <span>23 vistas · 15 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#2980b9,#1f618d);">Q</div>
-          <div class="forum-thread-info">
-            <h4>¿Cómo funciona el sistema de piedras de dragón? Guía básica</h4>
-            <p>por <strong>QuestionMark</strong> · hace 5h</p>
-          </div>
-          <div class="forum-thread-stats">
-            <span>187 vistas · 33 respuestas</span>
-          </div>
-        </div>
-
-        <div class="forum-thread">
-          <div class="forum-thread-avatar" style="background: linear-gradient(135deg,#27ae60,#1e8449);">P</div>
-          <div class="forum-thread-info">
-            <h4>¿Cuál es el mejor lugar para farmear a nivel 60-70?</h4>
-            <p>por <strong>ProFarmer</strong> · hace 6h</p>
-          </div>
-          <div class="forum-thread-stats">
-            <span>145 vistas · 27 respuestas</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-</div>
-
-<!-- FLOATING NEW THREAD BUTTON -->
-<button class="new-thread-btn" onclick="openNewThread()" title="Nuevo hilo">
-  <i class="fas fa-plus"></i>
-</button>
-
-<!-- NEW THREAD MODAL -->
-<div class="modal-overlay" id="newThreadModal" onclick="closeModal(event)">
-  <div class="modal" style="position: relative;">
-    <button class="modal-close" onclick="document.getElementById('newThreadModal').classList.remove('open')">×</button>
-    <h3>✍️ Crear nuevo hilo</h3>
-
-    <div class="form-group">
-      <label class="form-label">Tu nombre de usuario</label>
-      <input type="text" class="form-input" placeholder="Ej: Cheff_Fan123" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Categoría</label>
-      <select class="form-select">
-        <option>General</option>
-        <option>Builds & Estrategia</option>
-        <option>Mercado de Jugadores</option>
-        <option>Eventos & Torneos</option>
-        <option>Centro de Ayuda</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Título del hilo</label>
-      <input type="text" class="form-input" placeholder="Escribe un título descriptivo..." />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Contenido</label>
-      <textarea class="form-input" placeholder="Escribe el contenido de tu hilo aquí..."></textarea>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Etiqueta</label>
-      <select class="form-select">
-        <option>Sin etiqueta</option>
-        <option>Pregunta</option>
-        <option>Guía</option>
-        <option>Venta</option>
-        <option>Compra</option>
-        <option>Intercambio</option>
-        <option>Bug</option>
-        <option>Sugerencia</option>
-      </select>
-    </div>
-
-    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px;">
-      <button class="btn btn-outline" onclick="document.getElementById('newThreadModal').classList.remove('open')">Cancelar</button>
-      <button class="btn btn-primary" onclick="submitThread()">
-        <i class="fas fa-paper-plane"></i> Publicar hilo
-      </button>
     </div>
   </div>
-</div>
 
+</div>
+<!-- FOOTER -->
 <footer class="footer">
   <div class="footer-grid">
     <div class="footer-brand">
       <h3>Cheff<span>M2</span></h3>
-      <p>El portal definitivo de Metin2 creado por el streamer Cheff.</p>
+      <p>El portal definitivo de Metin2 creado por el streamer Cheff. Herramientas, wiki, guías y comunidad.</p>
       <div class="footer-social">
-        <a href="https://www.twitch.tv/" target="_blank"><i class="fab fa-twitch"></i></a>
-        <a href="https://www.youtube.com/" target="_blank"><i class="fab fa-youtube"></i></a>
-        <a href="https://discord.gg/" target="_blank"><i class="fab fa-discord"></i></a>
+        <a href="https://www.twitch.tv/" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
+        <a href="https://www.youtube.com/" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://discord.gg/" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+        <a href="https://www.tiktok.com/" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://twitter.com/" target="_blank" title="Twitter/X"><i class="fab fa-x-twitter"></i></a>
       </div>
     </div>
     <div class="footer-col">
-      <h4>Categorías</h4>
+      <h4>Herramientas</h4>
       <ul>
-        <li><a href="#">General</a></li>
-        <li><a href="#">Builds</a></li>
-        <li><a href="#">Mercado</a></li>
-        <li><a href="#">Eventos</a></li>
-        <li><a href="#">Ayuda</a></li>
+        <li><a href="herramientas.html">Calc. Biólogo</a></li>
+        <li><a href="herramientas.html">Calc. Caballo</a></li>
+        <li><a href="herramientas.html">Calc. Mascota</a></li>
+        <li><a href="herramientas.html">Calc. Mejoras</a></li>
+        <li><a href="herramientas.html">Guías de Eventos</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h4>Navegación</h4>
       <ul>
         <li><a href="index.html">Inicio</a></li>
-        <li><a href="herramientas.html">Herramientas</a></li>
         <li><a href="wiki.html">Wiki</a></li>
         <li><a href="guias.html">Guías</a></li>
+        <li><a href="foro.html">Foro</a></li>
+        <li><a href="comercio.html">Comercio</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -603,52 +147,20 @@
       <ul>
         <li><a href="https://discord.gg/" target="_blank">Discord</a></li>
         <li><a href="https://www.twitch.tv/" target="_blank">Twitch</a></li>
+        <li><a href="https://www.youtube.com/" target="_blank">YouTube</a></li>
+        <li><a href="https://www.tiktok.com/" target="_blank">TikTok</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2026 CheffM2 · Portal no oficial de Metin2</p>
+    <p>© 2026 CheffM2 · Portal no oficial de Metin2 · Todos los derechos reservados</p>
+    <p>Metin2 es propiedad de Gameforge. Este sitio no está afiliado oficialmente.</p>
   </div>
 </footer>
 
 <script>
-// Mobile menu
-const menuToggle = document.getElementById('menuToggle');
-const mainNav = document.getElementById('mainNav');
-menuToggle.addEventListener('click', () => mainNav.classList.toggle('open'));
-
-function openNewThread() {
-  document.getElementById('newThreadModal').classList.add('open');
-}
-
-function closeModal(e) {
-  if (e.target === document.getElementById('newThreadModal')) {
-    document.getElementById('newThreadModal').classList.remove('open');
-  }
-}
-
-function submitThread() {
-  alert('¡Hilo enviado con éxito! (Nota: Esta es una demo estática. Integra un backend para funcionalidad real)');
-  document.getElementById('newThreadModal').classList.remove('open');
-}
-
-function filterCategory(cat) {
-  if (cat === 'all') {
-    document.querySelectorAll('.forum-category').forEach(c => c.style.display = 'block');
-  } else {
-    document.querySelectorAll('.forum-category').forEach(c => {
-      c.style.display = c.dataset.cat === cat ? 'block' : 'none';
-    });
-  }
-}
-
-// Thread click simulation
-document.querySelectorAll('.forum-thread').forEach(thread => {
-  thread.addEventListener('click', () => {
-    const title = thread.querySelector('h4').textContent.replace('📌 ', '');
-    alert(`Abriendo hilo: "${title}"\n\n(Funcionalidad completa con backend)`);
-  });
-});
+document.getElementById('menuToggle').addEventListener('click', () =>
+  document.getElementById('mainNav').classList.toggle('open'));
 </script>
 <script src="js/auth.js"></script>
 </body>

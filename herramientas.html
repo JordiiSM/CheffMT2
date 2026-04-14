@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Guía de Eventos – CheffM2</title>
-  <meta name="description" content="Guía completa de eventos de Metin2: Búsqueda del Tesoro, Okey, Caza al Rey, Tómbola, Mundo Subterráneo, Yutnori y más."/>
+  <title>Herramientas – CheffM2</title>
+  <meta name="description" content="Herramientas para Metin2: calculadoras de biólogo, caballo, mascota y mejoras. Guías completas de eventos: Búsqueda del Tesoro, Okey, Caza al Rey, Tómbola, Mundo Subterráneo y más."/>
   <link rel="stylesheet" href="styles.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link rel="stylesheet" href="Events/css/fonts.css"/>
@@ -454,10 +454,11 @@
     <li><a href="herramientas.html" class="active"><i class="fas fa-tools"></i> Herramientas</a></li>
     <li><a href="wiki.html"><i class="fas fa-book"></i> Wiki</a></li>
     <li><a href="guias.html"><i class="fas fa-scroll"></i> Guías</a></li>
-    <li><a href="foro.html"><i class="fas fa-comments"></i> Foro</a></li>
     <li><a href="comercio.html"><i class="fas fa-store"></i> Comercio</a></li>
-    <li><a href="https://www.twitch.tv/" target="_blank" class="navbar-twitch"><i class="fab fa-twitch"></i> Ver en Twitch</a></li>
+    <li><a href="foro.html"><i class="fas fa-comments"></i> Foro</a></li>
+    <li><a href="https://www.twitch.tv/" target="_blank" class="navbar-twitch"><i class="fab fa-twitch"></i> Twitch</a></li>
   </ul>
+  <div id="navbar-auth"></div>
 </nav>
 
 <!-- Hidden required by events-core.js -->
@@ -477,8 +478,8 @@
 <div class="page-wrapper">
   <div class="page-header">
     <div class="section-tag">Portal CheffM2</div>
-    <h1 class="page-header-title">🎉 <span style="color:var(--accent-gold)">Guía de Eventos</span></h1>
-    <p class="page-header-subtitle">Guías, herramientas y estrategias para todos los eventos de Metin2</p>
+    <h1 class="page-header-title">⚙️ <span style="color:var(--accent-gold)">Herramientas</span></h1>
+    <p class="page-header-subtitle">Calculadoras y guías de eventos para Metin2</p>
   </div>
 
   <div class="tool-layout">
@@ -486,7 +487,7 @@
     <!-- ════ SIDEBAR ════ -->
     <aside class="tool-sidebar">
       <h4><i class="fas fa-calendar-alt"></i>&nbsp; Eventos</h4>
-      <div class="sidebar-section-label">Guía de Eventos</div>
+      <div class="sidebar-section-label">🎉 Eventos</div>
       <div class="tool-nav-item active" id="nav-treasure-hunt" onclick="showPanel('treasure-hunt',this)">
         <span class="nav-icon">🎁</span> Búsqueda del Tesoro
       </div>
@@ -2515,6 +2516,55 @@ window.sortEventCards = function() {}; // no-op
   });
 })();
 </script>
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>Cheff<span>M2</span></h3>
+      <p>El portal definitivo de Metin2 creado por el streamer Cheff. Herramientas, wiki, guías y comunidad.</p>
+      <div class="footer-social">
+        <a href="https://www.twitch.tv/" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
+        <a href="https://www.youtube.com/" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://discord.gg/" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+        <a href="https://www.tiktok.com/" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://twitter.com/" target="_blank" title="Twitter/X"><i class="fab fa-x-twitter"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Herramientas</h4>
+      <ul>
+        <li><a href="herramientas.html">Calc. Biólogo</a></li>
+        <li><a href="herramientas.html">Calc. Caballo</a></li>
+        <li><a href="herramientas.html">Calc. Mascota</a></li>
+        <li><a href="herramientas.html">Calc. Mejoras</a></li>
+        <li><a href="herramientas.html">Guías de Eventos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Navegación</h4>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="wiki.html">Wiki</a></li>
+        <li><a href="guias.html">Guías</a></li>
+        <li><a href="foro.html">Foro</a></li>
+        <li><a href="comercio.html">Comercio</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Comunidad</h4>
+      <ul>
+        <li><a href="https://discord.gg/" target="_blank">Discord</a></li>
+        <li><a href="https://www.twitch.tv/" target="_blank">Twitch</a></li>
+        <li><a href="https://www.youtube.com/" target="_blank">YouTube</a></li>
+        <li><a href="https://www.tiktok.com/" target="_blank">TikTok</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CheffM2 · Portal no oficial de Metin2 · Todos los derechos reservados</p>
+    <p>Metin2 es propiedad de Gameforge. Este sitio no está afiliado oficialmente.</p>
+  </div>
+</footer>
 <script src="js/auth.js"></script>
 </body>
 </html>

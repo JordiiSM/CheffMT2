@@ -501,6 +501,65 @@
     .cat-option:hover, .cat-option.highlighted { background: rgba(243,156,18,0.08); color: var(--text-primary); }
     .cat-option.selected { color: var(--accent-gold); font-weight: 600; }
 
+    /* ===== ELEMENT BADGE ===== */
+    .elem-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px; font-weight: 700;
+      border: 1px solid;
+    }
+    .elem-badge img { width: 14px; height: 14px; image-rendering: pixelated; }
+    .elem-lightning { color: #22c7e8; background: rgba(34,199,232,.12); border-color: rgba(34,199,232,.3); }
+    .elem-fire      { color: #dc583b; background: rgba(220,88,59,.12);  border-color: rgba(220,88,59,.3);  }
+    .elem-ice       { color: #3c6cdf; background: rgba(60,108,223,.12); border-color: rgba(60,108,223,.3); }
+    .elem-wind      { color: #36a321; background: rgba(54,163,33,.12);  border-color: rgba(54,163,33,.3);  }
+    .elem-earth     { color: #c9a800; background: rgba(201,168,0,.12);  border-color: rgba(201,168,0,.3);  }
+    .elem-dark      { color: #b64eec; background: rgba(182,78,236,.12); border-color: rgba(182,78,236,.3); }
+
+    /* ===== RAND BONUS ===== */
+    .modal-attr-row.rand-bonus {
+      background: rgba(54,163,33,0.06);
+      border-color: rgba(54,163,33,0.2);
+    }
+    .modal-attr-row.rand-bonus .attr-name { color: #58d68d; }
+    .modal-attr-row.rand-bonus .attr-val  { color: #58d68d; }
+
+    /* ===== PET INFO ===== */
+    .pet-info-box {
+      background: rgba(88,214,141,.05);
+      border: 1px solid rgba(88,214,141,.2);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .pet-stat-row { display: flex; justify-content: space-between; font-size: 13px; }
+    .pet-stat-row span:first-child { color: var(--text-muted); }
+    .pet-stat-row span:last-child  { font-weight: 700; }
+    .pet-skill-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px; font-size: 11px;
+      background: rgba(88,214,141,.1);
+      border: 1px solid rgba(88,214,141,.25);
+      border-radius: 10px; color: #58d68d;
+    }
+    .pet-level-badge {
+      display: inline-block; padding: 2px 8px;
+      background: rgba(88,214,141,.15);
+      border: 1px solid rgba(88,214,141,.3);
+      border-radius: 10px; font-weight: 700;
+      color: #58d68d; font-size: 12px;
+    }
+    .pet-level-badge.evolved { color: #f5c518; background: rgba(245,197,24,.12); border-color: rgba(245,197,24,.3); }
+
+    /* ===== LEVEL BADGE on cards ===== */
+    .level-badge {
+      font-size: 10px; padding: 1px 6px;
+      background: rgba(92,164,255,.12);
+      border: 1px solid rgba(92,164,255,.25);
+      border-radius: 8px; color: #5ca4ff;
+    }
+
     @media (max-width: 600px) {
       #itemsGrid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
     }
@@ -524,6 +583,7 @@
     <li><a href="foro.html"><i class="fas fa-comments"></i> Foro</a></li>
     <li><a href="https://www.twitch.tv/" target="_blank" class="navbar-twitch"><i class="fab fa-twitch"></i> Twitch</a></li>
   </ul>
+  <div id="navbar-auth"></div>
 </nav>
 
 <div class="page-wrapper">
@@ -550,6 +610,16 @@
                placeholder="📂  Categoría…" autocomplete="off" />
         <div class="cat-dropdown" id="catDropdown"></div>
       </div>
+
+      <select class="form-select" id="filterElem" style="min-width:130px;">
+        <option value="">⚡ Elemento…</option>
+        <option value="lightning">⚡ Relámpago</option>
+        <option value="fire">🔥 Fuego</option>
+        <option value="ice">❄️ Hielo</option>
+        <option value="wind">🌿 Viento</option>
+        <option value="earth">🌍 Tierra</option>
+        <option value="dark">🌑 Oscuridad</option>
+      </select>
 
       <select class="form-select" id="sortBy">
         <option value="">Ordenar por…</option>
@@ -652,21 +722,33 @@
   <div class="footer-grid">
     <div class="footer-brand">
       <h3>Cheff<span>M2</span></h3>
-      <p>El portal definitivo de Metin2 creado por el streamer Cheff.</p>
+      <p>El portal definitivo de Metin2 creado por el streamer Cheff. Herramientas, wiki, guías y comunidad.</p>
       <div class="footer-social">
-        <a href="https://www.twitch.tv/" target="_blank"><i class="fab fa-twitch"></i></a>
-        <a href="https://www.youtube.com/" target="_blank"><i class="fab fa-youtube"></i></a>
-        <a href="https://discord.gg/" target="_blank"><i class="fab fa-discord"></i></a>
+        <a href="https://www.twitch.tv/" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
+        <a href="https://www.youtube.com/" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://discord.gg/" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+        <a href="https://www.tiktok.com/" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://twitter.com/" target="_blank" title="Twitter/X"><i class="fab fa-x-twitter"></i></a>
       </div>
+    </div>
+    <div class="footer-col">
+      <h4>Herramientas</h4>
+      <ul>
+        <li><a href="herramientas.html">Calc. Biólogo</a></li>
+        <li><a href="herramientas.html">Calc. Caballo</a></li>
+        <li><a href="herramientas.html">Calc. Mascota</a></li>
+        <li><a href="herramientas.html">Calc. Mejoras</a></li>
+        <li><a href="herramientas.html">Guías de Eventos</a></li>
+      </ul>
     </div>
     <div class="footer-col">
       <h4>Navegación</h4>
       <ul>
         <li><a href="index.html">Inicio</a></li>
-        <li><a href="herramientas.html">Herramientas</a></li>
         <li><a href="wiki.html">Wiki</a></li>
         <li><a href="guias.html">Guías</a></li>
         <li><a href="foro.html">Foro</a></li>
+        <li><a href="comercio.html">Comercio</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -674,18 +756,14 @@
       <ul>
         <li><a href="https://discord.gg/" target="_blank">Discord</a></li>
         <li><a href="https://www.twitch.tv/" target="_blank">Twitch</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Datos</h4>
-      <ul>
-        <li><a href="#">Actualizar items</a></li>
-        <li><a href="herramientas.html">Herramientas</a></li>
+        <li><a href="https://www.youtube.com/" target="_blank">YouTube</a></li>
+        <li><a href="https://www.tiktok.com/" target="_blank">TikTok</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2026 CheffM2 · Portal no oficial de Metin2</p>
+    <p>© 2026 CheffM2 · Portal no oficial de Metin2 · Todos los derechos reservados</p>
+    <p>Metin2 es propiedad de Gameforge. Este sitio no está afiliado oficialmente.</p>
   </div>
 </footer>
 
@@ -698,6 +776,35 @@ const ICON_CDN   = 'https://metin2alerts.com/m2_data/icons/';
 
 /* 1 Won = 100.000.000 Yang (usado para ordenar precios mixtos) */
 const WON_TO_YANG = 100_000_000;
+
+/* ============================================================
+   ELEMENT SYSTEM
+   ============================================================ */
+const ELEM_MAP = {
+  99:  { name:'Relámpago', key:'lightning', icon:'data/elements/lightning.png', color:'#22c7e8' },
+  100: { name:'Fuego',     key:'fire',      icon:'data/elements/fire.png',      color:'#dc583b' },
+  101: { name:'Hielo',     key:'ice',       icon:'data/elements/ice.png',       color:'#3c6cdf' },
+  102: { name:'Viento',    key:'wind',      icon:'data/elements/wind.png',      color:'#36a321' },
+  103: { name:'Tierra',    key:'earth',     icon:'data/elements/earth.png',     color:'#c9a800' },
+  104: { name:'Oscuridad', key:'dark',      icon:'data/elements/dark.png',      color:'#b64eec' },
+  251: { name:'Relámpago', key:'lightning', icon:'data/elements/lightning.png', color:'#22c7e8' },
+  252: { name:'Fuego',     key:'fire',      icon:'data/elements/fire.png',      color:'#dc583b' },
+  253: { name:'Hielo',     key:'ice',       icon:'data/elements/ice.png',       color:'#3c6cdf' },
+  254: { name:'Viento',    key:'wind',      icon:'data/elements/wind.png',      color:'#36a321' },
+  255: { name:'Tierra',    key:'earth',     icon:'data/elements/earth.png',     color:'#c9a800' },
+  256: { name:'Oscuridad', key:'dark',      icon:'data/elements/dark.png',      color:'#b64eec' },
+};
+
+function getElemInfo(item) {
+  if (!item.elem || !Array.isArray(item.elem) || item.elem.length < 2) return null;
+  const statID = item.elem[0];
+  const meta   = ELEM_MAP[statID];
+  if (!meta) return null;
+  const values = item.elem[1];
+  const total  = Array.isArray(values) ? values.reduce((a, b) => a + b, 0) : 0;
+  if (total <= 0) return null;
+  return { ...meta, total };
+}
 
 /* ============================================================
    CATEGORY SYSTEM
@@ -866,11 +973,14 @@ let itemsGlobal    = [];
 let itemNames      = {};
 let itemIcons      = {};
 let statMap        = {};
+let itemProto      = {};
+let petSkills      = {};
 let filteredItems  = [];
 let currentPage    = 1;
 const PER_PAGE     = 48;
 let currentView    = 'grid';
 let activeCatGroup = '';
+let activeElemFilter = '';  // key like 'fire', 'ice', etc.
 
 // Estado del dropdown de categoría
 let catAllOptions  = [];   // [{code, label}]
@@ -1077,15 +1187,29 @@ function renderCards(items) {
       : '';
 
     const plus     = item.__plus || 0;
-    const attrHtml = attrs.length
-      ? `<div class="item-attrs">${attrs.map(([id, val]) => {
+    // Tarjeta: attrs primero (bonuses fijos del item), luego rand, máx 3
+    // Color igual que metin2alerts: idx≥5 dorado, resto normal
+    const cardAttrs = [...(item.attrs || [])].slice(0, 3);
+    const attrHtml = cardAttrs.length
+      ? `<div class="item-attrs">${cardAttrs.map(([id, val], idx) => {
           const tpl    = statMap[id] || ('Bonus '+id);
-          const text   = tpl.replace('%d', val).replace('%%','%');
-          const rarity = getBonusRarity(id, Math.abs(val));
-          const cls    = rarity === 'epic' ? 'bonus-epic' : rarity === 'rare' ? 'bonus-rare' : '';
-          return `<span class="attr-chip${cls ? ' '+cls : ''}">${text}</span>`;
+          const text   = tpl.replace('%d', Math.abs(val)).replace('%%','%');
+          const isRare = idx >= 5;
+          const cls    = isRare ? 'bonus-epic' : val < 0 ? '' : 'bonus-normal';
+          return `<span class="attr-chip${isRare ? ' bonus-epic' : ''}">${text}</span>`;
         }).join('')}</div>`
       : '';
+
+    const elemInfo   = getElemInfo(item);
+    const elemBadge  = elemInfo
+      ? `<span class="elem-badge elem-${elemInfo.key}"><img src="${elemInfo.icon}" alt="${elemInfo.name}"> ${elemInfo.total}%</span>`
+      : '';
+    const proto      = itemProto[String(vnum)];
+    const levelReq   = proto && ((proto.LimitType0 === 'LEVEL' && parseInt(proto.LimitValue0) > 0)
+                         ? parseInt(proto.LimitValue0)
+                         : (proto.LimitType1 === 'LEVEL' && parseInt(proto.LimitValue1) > 0)
+                         ? parseInt(proto.LimitValue1) : 0);
+    const levelBadge = levelReq > 0 ? `<span class="level-badge">Nv.${levelReq}</span>` : '';
 
     const catName   = cat.name || cat.label;
     const plusBadge = plus > 0 ? `<span class="badge badge-gold" style="font-size:11px;">+${plus}</span>` : '';
@@ -1100,7 +1224,7 @@ function renderCards(items) {
          <div class="item-seller">Vendedor: <span>${item.seller || '—'}</span></div>
          ${attrHtml}`;
 
-    return `<div class="item-card" onclick="openModal(${item.id || item.__idx}, ${vnum})" data-id="${item.__idx}">
+    return `<div class="item-card" onclick="openModal(${item.__idx}, ${vnum})" data-id="${item.__idx}">
       <div class="item-icon-wrap${wrapBroken}">
         ${imgTag}
         <span class="icon-placeholder">${cat.emoji}</span>
@@ -1109,6 +1233,8 @@ function renderCards(items) {
       <div style="margin-top:auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;">
         <span class="badge ${cat.cls}" style="font-size:10px;" title="${catName}">${cat.emoji} ${catName.length > 14 ? catName.slice(0,13)+'…' : catName}</span>
         ${plusBadge}
+        ${elemBadge}
+        ${levelBadge}
         ${item.quantity > 1 ? `<span class="badge badge-blue" style="font-size:10px;">×${item.quantity}</span>` : ''}
       </div>
       <span class="item-price ${price.cls}">${price.html}</span>
@@ -1156,6 +1282,7 @@ function applyFilters() {
   const catText = document.getElementById('filterCategory').value.toLowerCase().trim();
   const sortVal = document.getElementById('sortBy').value;
   const plusVal   = document.getElementById('filterPlus').value;
+  const elemVal   = document.getElementById('filterElem').value;
   const bonusQs   = getBonusQueries();   // array de términos (todos deben cumplirse)
 
   // Rango de precios
@@ -1189,6 +1316,9 @@ function applyFilters() {
 
     // Mejora
     if (plusVal !== '' && (item.__plus || 0) !== parseInt(plusVal)) return false;
+
+    // Elemento
+    if (elemVal && item.__elemKey !== elemVal) return false;
 
     // Multi-bonus (AND): el item debe satisfacer TODOS los filtros de bonus
     // Cada filtro = { text, minVal }
@@ -1242,8 +1372,9 @@ function resetFilters() {
   ['searchName','filterSeller','filterCategory','minYang','maxYang','minWon','maxWon'].forEach(id => {
     document.getElementById(id).value = '';
   });
-  document.getElementById('sortBy').value    = '';
+  document.getElementById('sortBy').value     = '';
   document.getElementById('filterPlus').value = '';
+  document.getElementById('filterElem').value = '';
   selectedCatCode = '';
   activeCatGroup  = '';
   clearBonusSlots();
@@ -1303,34 +1434,237 @@ function openModal(idx, vnum) {
   if (yang > 0 && item.quantity > 1)
     priceRows += `<div class="modal-row"><span>Total Yang (×${item.quantity})</span><span class="price-yang-line">${(yang * item.quantity).toLocaleString()} Yang</span></div>`;
 
-  const attrsHtml = attrs.length
+  // ── Bonus unificados: rand primero (ranuras del proto), luego attrs ──
+  // Igual que metin2alerts: rand en azul, attrs[0-4] en verde, attrs[5+] en dorado
+  const randAttrs = item.rand || [];
+  const allBonusRows = [];
+
+  // 1. Ranuras aleatorias del proto (rand[])
+  randAttrs.forEach(([id, val]) => {
+    const tpl  = statMap[id] || ('Bonus ' + id);
+    const text = tpl.replace('%d', val).replace('%%','%');
+    const sign = val < 0 ? '' : '+';
+    allBonusRows.push(`<div class="modal-attr-row" style="background:rgba(80,160,220,.07);border-color:rgba(80,160,220,.2);">
+      <span class="attr-icon" style="font-size:13px;opacity:.7;">🎲</span>
+      <span class="attr-name" style="color:#7bb8e8;">${text}</span>
+      <span class="attr-val" style="color:#7bb8e8;">${sign}${val}</span>
+    </div>`);
+  });
+
+  // 2. Bonus fijos del item (attrs[]) — con lógica 71/72 de metin2alerts
+  let processedAttrs = [...attrs];
+  const has72 = processedAttrs.some(a => a[0] === 72);
+  const has71 = processedAttrs.some(a => a[0] === 71);
+  if (has72 && !has71) processedAttrs.unshift([71, 0]);
+  else if (has71 && !has72) processedAttrs.unshift([72, 0]);
+
+  processedAttrs.forEach(([id, val], idx) => {
+    if ((id === 71 || id === 72) && val === 0) return; // saltar placeholder
+    const tpl  = statMap[id] || ('Bonus ' + id);
+    const text = tpl.replace('%d', Math.abs(val)).replace('%%','%');
+    const sign = val < 0 ? '−' : '+';
+    // Color: igual que metin2alerts — índice ≥ 5 = dorado (ranura rara), resto verde
+    const isRare   = idx >= 5;
+    const isNeg    = val < 0;
+    const color    = isNeg ? '#e74c3c' : isRare ? '#f5c518' : '#58d68d';
+    const bg       = isNeg
+      ? 'rgba(231,76,60,.07)' : isRare
+      ? 'rgba(245,197,24,.07)' : 'rgba(88,214,141,.07)';
+    const border   = isNeg
+      ? 'rgba(231,76,60,.2)' : isRare
+      ? 'rgba(245,197,24,.2)' : 'rgba(88,214,141,.18)';
+    const icon     = isNeg ? '⬇️' : isRare ? '⭐' : '⚡';
+    allBonusRows.push(`<div class="modal-attr-row" style="background:${bg};border-color:${border};">
+      <span class="attr-icon" style="font-size:13px;">${icon}</span>
+      <span class="attr-name" style="color:${color};">${text}</span>
+      <span class="attr-val" style="color:${color};">${sign}${Math.abs(val)}</span>
+    </div>`);
+  });
+
+  const bonusHtml = allBonusRows.length
     ? `<div class="modal-section">
-        <h4>✨ Bonus del item</h4>
-        <div class="modal-attr-list">
-          ${attrs.map(([id, val]) => {
-            const tpl    = statMap[id] || ('Bonus ID ' + id);
-            const text   = tpl.replace('%d', val).replace('%%','%');
-            const rarity = getBonusRarity(id, Math.abs(val));
-            const color  = rarity === 'epic' ? 'var(--accent-gold)' : rarity === 'rare' ? '#bb8fce' : 'var(--text-secondary)';
-            return `<div class="modal-attr-row">
-              <span class="attr-icon">${rarity === 'epic' ? '⭐' : rarity === 'rare' ? '🔮' : '⚡'}</span>
-              <span class="attr-name" style="color:${color}">${text}</span>
-              <span class="attr-val" style="color:${color}">+${val}</span>
+        <h4>✨ Bonus</h4>
+        <div class="modal-attr-list">${allBonusRows.join('')}</div>
+      </div>`
+    : '';
+
+  // ── Elemento ─────────────────────────────────────────────
+  const elemInfo = getElemInfo(item);
+  const elemHtml = elemInfo
+    ? `<div class="modal-section">
+        <h4>🔮 Elemento</h4>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(${
+          elemInfo.key==='fire'?'220,88,59':elemInfo.key==='ice'?'60,108,223':
+          elemInfo.key==='lightning'?'34,199,232':elemInfo.key==='wind'?'54,163,33':
+          elemInfo.key==='earth'?'201,168,0':'182,78,236'},.08);border-radius:var(--radius);">
+          <img src="${elemInfo.icon}" style="width:28px;height:28px;image-rendering:pixelated;">
+          <span style="font-size:16px;font-weight:700;color:${elemInfo.color};">${elemInfo.name} +${elemInfo.total}%</span>
+        </div>
+      </div>`
+    : '';
+
+  // ── Sockets ───────────────────────────────────────────────
+  // Solo mostrar sockets que tienen nombre en item_names (piedras reales)
+  const filledSockets = (item.sockets || [])
+    .map(s => ({ vnum: s, name: itemNames[String(s)], icon: itemIcons[String(s)] }))
+    .filter(s => s.name && s.vnum > 0);
+  const socketsHtml = filledSockets.length
+    ? `<div class="modal-section">
+        <h4>💎 Ranuras (Sockets)</h4>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          ${filledSockets.map(s => {
+            const imgHtml = s.icon
+              ? `<img src="${ICON_LOCAL}${s.icon}" alt="${s.name}" style="width:20px;height:20px;object-fit:contain;image-rendering:pixelated;"
+                      onerror="this.src='${ICON_CDN}${s.icon}';this.onerror=null;">`
+              : '<span style="font-size:16px;">💠</span>';
+            return `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;
+                         background:rgba(92,164,255,.07);border:1px solid rgba(92,164,255,.18);
+                         border-radius:var(--radius);font-size:13px;">
+              ${imgHtml}
+              <span style="color:#5ca4ff;font-weight:600;">${s.name}</span>
             </div>`;
           }).join('')}
         </div>
       </div>`
     : '';
 
-  const socketsHtml = item.sockets && item.sockets.filter(s => s > 0).length
-    ? `<div class="modal-section">
-        <h4>💎 Ranuras (Sockets)</h4>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          ${item.sockets.filter(s => s > 0).map(s =>
-            `<span class="badge badge-blue" style="font-size:12px;">⬡ ${s}</span>`
-          ).join('')}
+  // ── Nivel requerido ───────────────────────────────────────
+  const proto    = itemProto[String(vnum)];
+  const levelReq = proto && ((proto.LimitType0 === 'LEVEL' && parseInt(proto.LimitValue0) > 0)
+                     ? parseInt(proto.LimitValue0)
+                     : (proto.LimitType1 === 'LEVEL' && parseInt(proto.LimitValue1) > 0)
+                     ? parseInt(proto.LimitValue1) : 0);
+
+  // ── Info de Mascota (petInfo) ─────────────────────────────
+  let petHtml = '';
+  if (item.petInfo && Array.isArray(item.petInfo) && item.petInfo.length >= 3) {
+    const [petVnum, petType, getPet, petSkill, petPotential] = item.petInfo;
+    if (Array.isArray(getPet)) {
+      const baseLevel    = getPet[0] || 0;
+      const evolvedLevel = getPet[1] || 0;
+      const createdTs    = getPet[3] || 0;
+      const ownerName    = getPet[4] || '—';
+      const statHP       = parseFloat(getPet[5] || 0).toFixed(1);
+      const statDef      = parseFloat(getPet[6] || 0).toFixed(1);
+      const statSP       = parseFloat(getPet[7] || 0).toFixed(1);
+
+      // Días de vida
+      let effectiveTs = createdTs;
+      if (Array.isArray(item.sockets) && item.sockets[1]) {
+        const socketTime = Number(item.sockets[1]);
+        if (!isNaN(socketTime) && socketTime > 0) {
+          const nowSec   = Math.floor(Date.now() / 1000);
+          const diff     = socketTime - nowSec;
+          effectiveTs    = createdTs - diff;
+        }
+      }
+      const diffDays = Math.max(1, Math.floor((Date.now() - effectiveTs * 1000) / 86400000));
+      const shownLevel = evolvedLevel > 0 ? evolvedLevel : baseLevel;
+      const isEvolved  = evolvedLevel > 0;
+
+      // Skills activos
+      let skillsHtml = '';
+      if (Array.isArray(petSkill) && petSkill.length >= 3) {
+        const champF = parseFloat(getPet[9] || 0);
+        const champS = parseFloat(getPet[10] || 0);
+        const champT = parseFloat(getPet[11] || 0);
+        const fmtC   = v => Number.isInteger(v) ? String(v) : v.toFixed(1);
+        const champRows = [
+          champF > 0 ? `<span class="pet-skill-chip">⚡ SungMa +${fmtC(champF)}%</span>` : '',
+          champS > 0 ? `<span class="pet-skill-chip">🛡️ Penetración +${fmtC(champS)}%</span>` : '',
+          champT > 0 ? `<span class="pet-skill-chip">🎯 Precisión +${fmtC(champT)}%</span>` : '',
+        ].filter(Boolean).join('');
+
+        const skillRows = [];
+        for (let i = 0; i + 2 < petSkill.length; i += 3) {
+          const skillId = petSkill[i + 1];
+          const skillLv = petSkill[i + 2];
+          if (!skillId || !skillLv) continue;
+          const sName = petSkills[String(skillId)] || `Habilidad #${skillId}`;
+          skillRows.push(`<span class="pet-skill-chip">✨ ${sName} Nv.${skillLv}</span>`);
+        }
+        const allSkills = champRows + skillRows.join('');
+        if (allSkills) {
+          skillsHtml = `<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:5px;">${allSkills}</div>`;
+        }
+      }
+
+      // Potencial
+      let potentialHtml = '';
+      if (Array.isArray(petPotential) && petPotential.length > 0) {
+        const rows = petPotential
+          .filter(r => Array.isArray(r) && r.length >= 2)
+          .map(r => {
+            const sName = petSkills[String(r[1])] || `#${r[1]}`;
+            return `<span class="pet-skill-chip" style="opacity:.7;">🔮 ${sName} Nv.${r[2] || '?'}</span>`;
+          }).join('');
+        if (rows) potentialHtml = `
+          <div style="margin-top:4px;font-size:11px;color:var(--text-muted);margin-bottom:3px;">Potencial:</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;">${rows}</div>`;
+      }
+
+      petHtml = `<div class="modal-section">
+        <h4>🐾 Info de Mascota</h4>
+        <div class="pet-info-box">
+          <div class="pet-stat-row">
+            <span>Propietario</span>
+            <span>${ownerName}</span>
+          </div>
+          <div class="pet-stat-row">
+            <span>Nivel</span>
+            <span><span class="pet-level-badge${isEvolved?' evolved':''}">
+              ${isEvolved ? '⭐ Evolucionado' : ''} Nv.${shownLevel}
+            </span></span>
+          </div>
+          <div class="pet-stat-row">
+            <span>Días de vida</span>
+            <span>${diffDays} días</span>
+          </div>
+          <div class="pet-stat-row">
+            <span>HP</span><span style="color:#e74c3c;">+${statHP}%</span>
+          </div>
+          <div class="pet-stat-row">
+            <span>Defensa</span><span style="color:#3498db;">+${statDef}%</span>
+          </div>
+          <div class="pet-stat-row">
+            <span>SP</span><span style="color:#9b59b6;">+${statSP}%</span>
+          </div>
+          ${skillsHtml}
+          ${potentialHtml}
         </div>
-      </div>`
+      </div>`;
+    }
+  }
+
+  // ── Restricción de clase ─────────────────────────────────
+  const CLASS_ANTI = {
+    'ANTI_MUSA':     'Guerrero',
+    'ANTI_ASSASSIN': 'Ninja',
+    'ANTI_SURA':     'Sura',
+    'ANTI_MUDANG':   'Chamán',
+    'ANTI_WOLFMAN':  'Licano',
+  };
+  let classHtml = '';
+  if (proto) {
+    const wearTypes = ['ITEM_WEAPON','ITEM_ARMOR','ITEM_COSTUME','ITEM_RING','ITEM_BELT'];
+    if (wearTypes.includes(proto.Type)) {
+      const anti = proto.AntiFlags || '';
+      const wearable = Object.entries(CLASS_ANTI)
+        .filter(([flag]) => !anti.includes(flag))
+        .map(([, name]) => name);
+      if (wearable.length > 0 && wearable.length < 5) {
+        classHtml = `<div class="modal-section">
+          <h4>⚔️ Equipable por</h4>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            ${wearable.map(c => `<span class="badge cat-other" style="font-size:12px;">👤 ${c}</span>`).join('')}
+          </div>
+        </div>`;
+      }
+    }
+  }
+
+  const levelRow = levelReq > 0
+    ? `<div class="modal-row"><span>Nivel requerido</span><span class="level-badge">Nv.${levelReq}</span></div>`
     : '';
 
   document.getElementById('modalContent').innerHTML = `
@@ -1344,6 +1678,8 @@ function openModal(idx, vnum) {
         <div class="modal-seller">Vendedor: <strong>${item.seller || '—'}</strong></div>
         <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
           <span class="badge ${cat.cls}">${cat.emoji} ${cat.label}</span>
+          ${elemInfo ? `<span class="elem-badge elem-${elemInfo.key}"><img src="${elemInfo.icon}" alt="${elemInfo.name}"> ${elemInfo.name} +${elemInfo.total}%</span>` : ''}
+          ${levelReq > 0 ? `<span class="level-badge">Nv.${levelReq}</span>` : ''}
         </div>
       </div>
     </div>
@@ -1353,11 +1689,15 @@ function openModal(idx, vnum) {
       <div class="modal-row"><span>VNUM</span><span>#${vnum}</span></div>
       <div class="modal-row"><span>Categoría</span><span>${cat.emoji} ${cat.name} <span style="color:var(--text-muted);font-size:11px;">(${item.category})</span></span></div>
       <div class="modal-row"><span>Cantidad</span><span>×${item.quantity}</span></div>
+      ${levelRow}
       ${priceRows}
     </div>
 
-    ${attrsHtml}
+    ${elemHtml}
+    ${bonusHtml}
+    ${classHtml}
     ${socketsHtml}
+    ${petHtml}
 
     <div style="text-align:center;margin-top:8px;">
       <button class="btn btn-outline btn-sm"
@@ -1388,10 +1728,9 @@ function preprocessItems() {
     item.__catName      = `${catObj.emoji} ${catObj.name}`;
     item.__group        = catObj.group;
     item.__priceYang    = priceToYang(item);
-    // __enchList: array de { text, val } por attr
-    // text = template SIN el valor (para matching, igual que la datalist)
-    // val  = valor numérico del bonus (para comparar con el mínimo)
-    item.__enchList = (item.attrs || []).map(([id, val]) => {
+    // __enchList: attrs + rand bonus for filtering
+    const allBonuses = [...(item.attrs || []), ...(item.rand || [])];
+    item.__enchList = allBonuses.map(([id, val]) => {
       if (!id) return null;
       const tpl = statMap[String(id)];
       if (!tpl) return null;
@@ -1400,8 +1739,10 @@ function preprocessItems() {
         val:  Math.abs(val)
       };
     }).filter(Boolean);
-    // __enchTexts: solo los strings (compatibilidad con otras partes del código)
     item.__enchTexts = item.__enchList.map(e => e.text);
+    // __elemKey: element key for filter
+    const ei = getElemInfo(item);
+    item.__elemKey = ei ? ei.key : '';
   });
 }
 
@@ -1433,17 +1774,21 @@ function fillBonusDatalist() {
   const loadingEl = document.getElementById('loadingState');
   const gridEl    = document.getElementById('itemsGrid');
   try {
-    const [items, names, icons, stats] = await Promise.all([
+    const [items, names, icons, stats, proto, pets] = await Promise.all([
       fetch('./data/531.json').then(r => r.json()),
       fetch('./data/item_names.json').then(r => r.json()),
       fetch('./data/item_icon.json').then(r => r.json()),
       fetch('./data/stat_map.json').then(r => r.json()),
+      fetch('./data/item_proto.json').then(r => r.json()).catch(() => ({})),
+      fetch('./data/pet_skills.json').then(r => r.json()).catch(() => ({})),
     ]);
 
     itemsGlobal = items;
     itemNames   = names;
     itemIcons   = icons;
     statMap     = stats;
+    itemProto   = proto;
+    petSkills   = pets;
 
     preprocessItems();
 
@@ -1460,7 +1805,7 @@ function fillBonusDatalist() {
     addBonusSlot();
 
     // Listeners de filtros estáticos
-    ['searchName','filterSeller','sortBy','filterPlus',
+    ['searchName','filterSeller','sortBy','filterPlus','filterElem',
      'minYang','maxYang','minWon','maxWon'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;

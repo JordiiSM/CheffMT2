@@ -498,12 +498,13 @@ a:hover { color: var(--accent-gold-bright); }
 
 /* ===== SECTIONS ===== */
 .section {
-  padding: 80px 24px;
+  padding: 64px 0;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
+  padding: 0 24px;
 }
 
 .section-header {
@@ -1109,7 +1110,7 @@ a:hover { color: var(--accent-gold-bright); }
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 48px;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto 40px;
 }
 
@@ -1165,7 +1166,7 @@ a:hover { color: var(--accent-gold-bright); }
 .footer-col a:hover { color: var(--accent-gold); }
 
 .footer-bottom {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding-top: 24px;
   border-top: 1px solid var(--border-color);
