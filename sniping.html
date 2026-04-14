@@ -1653,6 +1653,20 @@ async function scan() {
 
   saveSeen();
   saveMatchesLocal();
+
+  // Persistir matches nuevos en BD para usuarios logueados
+  if (currentUser && newMatchCount > 0) {
+    const newMatches = matches.slice(0, newMatchCount);
+    Promise.allSettled(newMatches.map(m =>
+      apiPost('/snipe-matches/client', {
+        id:         m.id,
+        alert_id:   m.alertId,
+        alert_name: m.alertName,
+        item:       m.item,
+      })
+    )).catch(() => {});
+  }
+
   renderMatches(newMatchCount > 0);
 
   const now = new Date().toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });

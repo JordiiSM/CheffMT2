@@ -12,29 +12,29 @@
  *  5. Envía notificación push al usuario
  */
 
+const fs          = require('fs');
+const path        = require('path');
 const db          = require('./db');
 const pushService = require('./pushService');
 
-const SCAN_INTERVAL_MS = 2 * 60 * 1000; // 2 minutos
-const DATA_URL         = 'https://jordism.com/data/531.json';
-const NAMES_URL        = 'https://jordism.com/data/item_names.json';
-const STATS_URL        = 'https://jordism.com/data/stat_map.json';
+const DATA_DIR = '/var/www/cheffmt2/data';
+
+// Lee un JSON del disco directamente (mismo servidor)
+function readJson(filename) {
+  return JSON.parse(fs.readFileSync(path.join(DATA_DIR, filename), 'utf8'));
+}
 
 // ── Caché de datos auxiliares (se recarga cada hora) ──────────
 let itemNames  = {};
 let statMap    = {};
 let auxLoadedAt = 0;
 
-async function loadAuxData() {
+function loadAuxData() {
   const now = Date.now();
-  if (now - auxLoadedAt < 60 * 60 * 1000) return; // recarga cada hora
+  if (now - auxLoadedAt < 60 * 60 * 1000) return;
   try {
-    const [names, stats] = await Promise.all([
-      fetch(NAMES_URL).then(r => r.json()).catch(() => ({})),
-      fetch(STATS_URL).then(r => r.json()).catch(() => ({})),
-    ]);
-    itemNames  = names;
-    statMap    = stats;
+    itemNames  = readJson('item_names.json');
+    statMap    = readJson('stat_map.json');
     auxLoadedAt = now;
     console.log('[scanner] Datos auxiliares cargados');
   } catch (e) {
@@ -143,15 +143,14 @@ function uid() {
 async function runScan() {
   console.log('[scanner] Iniciando escaneo…');
 
-  await loadAuxData();
+  loadAuxData();
 
-  // 1. Descargar items del mercado
+  // 1. Leer items del mercado desde disco
   let items;
   try {
-    const res = await fetch(`${DATA_URL}?t=${Date.now()}`);
-    items = await res.json();
+    items = readJson('531.json');
   } catch (e) {
-    console.error('[scanner] Error descargando 531.json:', e.message);
+    console.error('[scanner] Error leyendo 531.json:', e.message);
     return;
   }
 
@@ -228,11 +227,22 @@ async function runScan() {
   console.log(`[scanner] Escaneo completado. ${totalNew} nuevos matches.`);
 }
 
-// ── Arrancar el loop ──────────────────────────────────────────
+// ── Arrancar: escanear cuando 531.json cambia en disco ────────
 function start() {
-  console.log(`[scanner] Arrancando (intervalo: ${SCAN_INTERVAL_MS / 1000}s)`);
-  runScan(); // primer escaneo inmediato al arrancar
-  setInterval(runScan, SCAN_INTERVAL_MS);
+  console.log('[scanner] Arrancando — vigilando cambios en 531.json…');
+
+  // Escaneo inmediato al arrancar el servidor
+  runScan();
+
+  // Detectar cambios en el archivo (el cron lo actualiza cada hora)
+  let scanning = false;
+  fs.watchFile(path.join(DATA_DIR, '531.json'), { interval: 10_000 }, async (curr, prev) => {
+    if (curr.mtimeMs === prev.mtimeMs) return; // sin cambios reales
+    if (scanning) return; // evitar solapamiento si el escaneo tarda
+    scanning = true;
+    console.log('[scanner] 531.json actualizado — lanzando escaneo…');
+    try { await runScan(); } finally { scanning = false; }
+  });
 }
 
 module.exports = { start };

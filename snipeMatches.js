@@ -42,6 +42,23 @@ router.get('/', async (req, res) => {
   }
 });
 
+/* POST /snipe-matches/client — guardar match encontrado por el escáner del cliente */
+router.post('/client', async (req, res) => {
+  const { id, alert_id, alert_name, item } = req.body;
+  if (!id || !alert_id || !item) return res.status(400).json({ error: 'Faltan campos' });
+  try {
+    await db.query(
+      `INSERT INTO snipe_matches (id, user_id, alert_id, alert_name, item)
+       VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO NOTHING`,
+      [id, req.user.id, alert_id, alert_name || '', JSON.stringify(item)]
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[snipeMatches] POST client error:', err);
+    res.status(500).json({ error: 'Error' });
+  }
+});
+
 /* PATCH /snipe-matches/seen — marcar todos como vistos */
 router.patch('/seen', async (req, res) => {
   try {
