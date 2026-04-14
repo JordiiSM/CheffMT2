@@ -114,9 +114,12 @@ function itemMatchesAlert(item, cfg) {
   if (cfg.fElem && getElemKey(item) !== cfg.fElem) return false;
 
   // Plus mínimo
+  // Mejora mínima (el plus viene en el nombre del item, ej: "Espada+7")
   if (cfg.fPlus !== '' && cfg.fPlus !== null && cfg.fPlus !== undefined) {
-    const minPlus  = parseInt(cfg.fPlus);
-    const itemPlus = Array.isArray(item.set) && item.set.length > 0 ? (item.set[0] ?? 0) : 0;
+    const minPlus   = parseInt(cfg.fPlus);
+    const nameRaw   = item.name || '';
+    const plusMatch = /\+(\d+)/.exec(nameRaw);
+    const itemPlus  = plusMatch ? parseInt(plusMatch[1]) : 0;
     if (!isNaN(minPlus) && itemPlus < minPlus) return false;
   }
 

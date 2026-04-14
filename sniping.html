@@ -1593,10 +1593,12 @@ function itemMatchesAlert(item, a) {
   }
   // Elemento
   if (a.fElem && getElemKey(item) !== a.fElem) return false;
-  // Mejora mínima
+  // Mejora mínima (el plus viene en el nombre del item, ej: "Espada+7")
   if (a.fPlus !== '' && a.fPlus !== null && a.fPlus !== undefined) {
-    const minPlus  = parseInt(a.fPlus);
-    const itemPlus = Array.isArray(item.set) && item.set.length > 0 ? (item.set[0] ?? 0) : 0;
+    const minPlus = parseInt(a.fPlus);
+    const nameRaw = item.name || '';
+    const plusMatch = /\+(\d+)/.exec(nameRaw);
+    const itemPlus = plusMatch ? parseInt(plusMatch[1]) : 0;
     if (!isNaN(minPlus) && itemPlus < minPlus) return false;
   }
   // Precio Yang
