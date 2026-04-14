@@ -424,7 +424,7 @@
                 <th>Tier Premium</th>
                 <th>Límite Alertas Sniping</th>
                 <th>Registrado</th>
-                <th>Guardar</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody id="usersBody"></tbody>
@@ -640,6 +640,11 @@ function buildRow(u) {
     `<option value="${r}" ${u.role === r ? 'selected' : ''}>${r}</option>`
   ).join('');
 
+  const tierLabels = { none: 'Sin premium', basico: 'Básico', avanzado: 'Avanzado', ultimate: 'Ultimate' };
+  const tierOptions = TIER_ORDER.map(t =>
+    `<option value="${t}" ${(u.premium_tier || 'none') === t ? 'selected' : ''}>${tierLabels[t]}</option>`
+  ).join('');
+
   return `
   <tr data-id="${u.id}" data-name="${(u.name||'').toLowerCase()}" data-email="${(u.email||'').toLowerCase()}" data-role="${u.role||'user'}" data-tier="${u.premium_tier||'none'}">
     <td>
@@ -656,7 +661,11 @@ function buildRow(u) {
         ${roleOptions}
       </select>
     </td>
-    <td>${tierBadge(u.premium_tier || 'none')}</td>
+    <td>
+      <select class="admin-select tier-select" data-uid="${u.id}" onchange="onTierChange(this)">
+        ${tierOptions}
+      </select>
+    </td>
     <td>
       <div class="limit-input-wrap">
         <input type="number" class="limit-input snipe-limit-input" data-uid="${u.id}"
@@ -726,6 +735,23 @@ function onRoleChange(select) {
   markDirty(uid);
 }
 
+function onTierChange(select) {
+  const uid  = select.dataset.uid;
+  const user = allUsers.find(u => String(u.id) === String(uid));
+  if (user) {
+    const fakeUser = {
+      ...user,
+      role: document.querySelector(`.role-select[data-uid="${uid}"]`).value,
+      premium_tier: select.value,
+    };
+    document.getElementById(`effectiveLimit-${uid}`).innerHTML = effectiveLimitText(fakeUser);
+    // actualiza data-tier para que el filtro funcione
+    const row = select.closest('tr');
+    if (row) row.dataset.tier = select.value;
+  }
+  markDirty(uid);
+}
+
 function onLimitChange(input) {
   const uid  = input.dataset.uid;
   const user = allUsers.find(u => String(u.id) === String(uid));
@@ -754,13 +780,15 @@ function markDirty(uid) {
    SAVE USER
 ═══════════════════════════════════════════════ */
 async function saveUser(uid) {
-  const btn   = document.getElementById(`saveBtn-${uid}`);
+  const btn     = document.getElementById(`saveBtn-${uid}`);
   const roleEl  = document.querySelector(`.role-select[data-uid="${uid}"]`);
+  const tierEl  = document.querySelector(`.tier-select[data-uid="${uid}"]`);
   const limitEl = document.querySelector(`.snipe-limit-input[data-uid="${uid}"]`);
 
-  if (!btn || !roleEl || !limitEl) return;
+  if (!btn || !roleEl || !tierEl || !limitEl) return;
 
   const newRole  = roleEl.value;
+  const newTier  = tierEl.value;
   const rawLimit = limitEl.value.trim();
   const newLimit = rawLimit === '' ? null : parseInt(rawLimit);
 
@@ -776,19 +804,26 @@ async function saveUser(uid) {
   const errors = [];
 
   try {
-    // Only patch role if changed
     if (user && user.role !== newRole) {
       await apiPatch(`/users/${uid}/role`, { role: newRole });
-      user.role = newRole;  // update cache
+      user.role = newRole;
     }
   } catch (e) {
     errors.push('rol: ' + e.message);
   }
 
   try {
-    // Always patch limit (server will decide if it changed)
+    if (user && (user.premium_tier || 'none') !== newTier) {
+      await apiPatch(`/users/${uid}/premium`, { tier: newTier, expires_at: null });
+      user.premium_tier = newTier;
+    }
+  } catch (e) {
+    errors.push('tier: ' + e.message);
+  }
+
+  try {
     await apiPatch(`/users/${uid}/snipe-limit`, { limit: newLimit });
-    if (user) user.snipe_alert_limit = newLimit; // update cache
+    if (user) user.snipe_alert_limit = newLimit;
   } catch (e) {
     errors.push('límite: ' + e.message);
   }
