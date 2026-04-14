@@ -20,13 +20,19 @@ function requireAuth(req, res, next) {
   next();
 }
 
-function requirePremium(req, res, next) {
+async function requirePremium(req, res, next) {
   const { role, premium_tier } = req.user;
-  // Admins y editores tienen acceso completo
   if (role === 'admin' || role === 'editor') return next();
   if (!premium_tier || premium_tier === 'none') {
     return res.status(403).json({ error: 'Se requiere cuenta Premium para usar las Sniping Tools' });
   }
+  // Cargar snipe_alert_limit del usuario desde la BD
+  try {
+    const { rows } = await db.query(
+      'SELECT snipe_alert_limit FROM users WHERE id = $1', [req.user.id]
+    );
+    if (rows.length) req.user.snipe_alert_limit = rows[0].snipe_alert_limit;
+  } catch {}
   next();
 }
 
@@ -61,6 +67,16 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Límites por defecto según tier
+const TIER_LIMITS = { none: 0, basico: 5, avanzado: 10, ultimate: 20 };
+
+function getAlertLimit(user) {
+  if (user.role === 'admin' || user.role === 'editor') return Infinity;
+  if (user.snipe_alert_limit !== null && user.snipe_alert_limit !== undefined)
+    return user.snipe_alert_limit;
+  return TIER_LIMITS[user.premium_tier] ?? 0;
+}
+
 /* ─────────────────────────────────────
    POST /api/snipe-alerts
    Crea una nueva alerta
@@ -74,6 +90,21 @@ router.post('/', async (req, res) => {
   }
 
   try {
+    // Comprobar límite de alertas
+    const limit = getAlertLimit(req.user);
+    if (isFinite(limit)) {
+      const { rows } = await db.query(
+        'SELECT COUNT(*) AS cnt FROM snipe_alerts WHERE user_id = $1',
+        [req.user.id]
+      );
+      if (parseInt(rows[0].cnt) >= limit) {
+        return res.status(403).json({
+          error: `Has alcanzado el límite de ${limit} alerta${limit !== 1 ? 's' : ''} para tu plan.`,
+          limitReached: true,
+        });
+      }
+    }
+
     await db.query(
       `INSERT INTO snipe_alerts (id, user_id, name, enabled, config)
        VALUES ($1, $2, $3, $4, $5)`,

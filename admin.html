@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Admin – CheffM2</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ═══════════════════════════════════════
+       ADMIN LAYOUT
+    ═══════════════════════════════════════ */
+    .admin-wrapper {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 28px 24px 80px;
+    }
+
+    /* ═══════════════════════════════════════
+       STATS BAR
+    ═══════════════════════════════════════ */
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stat-card .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-muted);
+    }
+    .stat-card .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .stat-card .stat-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    /* ═══════════════════════════════════════
+       TOOLBAR
+    ═══════════════════════════════════════ */
+    .admin-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .admin-toolbar .search-box {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+    .admin-toolbar .search-box input {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 8px 12px 8px 36px;
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+    .admin-toolbar .search-box i {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .filter-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      color: var(--text-primary);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* ═══════════════════════════════════════
+       TABLE
+    ═══════════════════════════════════════ */
+    .admin-table-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .admin-table thead {
+      background: rgba(192,57,43,.07);
+    }
+    .admin-table th {
+      padding: 12px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-muted);
+      white-space: nowrap;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .admin-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      vertical-align: middle;
+      color: var(--text-primary);
+    }
+    .admin-table tbody tr:last-child td { border-bottom: none; }
+    .admin-table tbody tr:hover td { background: rgba(255,255,255,.02); }
+
+    /* User cell */
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .user-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--border-color);
+    }
+    .user-avatar-placeholder {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--gradient-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .user-name { font-weight: 600; color: var(--text-primary); }
+    .user-email { font-size: 11px; color: var(--text-muted); }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-admin    { background: rgba(192,57,43,.25); color: #e74c3c; }
+    .badge-editor   { background: rgba(155,89,182,.25); color: #9b59b6; }
+    .badge-mod      { background: rgba(41,128,185,.25); color: #3498db; }
+    .badge-user     { background: rgba(255,255,255,.08); color: var(--text-muted); }
+    .badge-ultimate { background: rgba(212,175,55,.25); color: #d4af37; }
+    .badge-avanzado { background: rgba(46,204,113,.2); color: #2ecc71; }
+    .badge-basico   { background: rgba(52,152,219,.2); color: #3498db; }
+    .badge-none     { background: rgba(255,255,255,.06); color: var(--text-muted); }
+
+    /* Inline controls */
+    .admin-select {
+      background: var(--bg-secondary, #1a1a2e);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 5px 8px;
+      color: var(--text-primary);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .limit-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .limit-input {
+      width: 70px;
+      background: var(--bg-secondary, #1a1a2e);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 5px 8px;
+      color: var(--text-primary);
+      font-size: 12px;
+      text-align: center;
+    }
+    .limit-input:focus, .admin-select:focus {
+      outline: none;
+      border-color: var(--accent-red);
+    }
+    .effective-limit {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .effective-limit.custom { color: #f39c12; }
+
+    /* Save button */
+    .btn-save {
+      padding: 4px 12px;
+      font-size: 12px;
+      border-radius: 6px;
+      background: var(--gradient-red);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity .15s;
+      white-space: nowrap;
+    }
+    .btn-save:hover { opacity: .85; }
+    .btn-save:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-save.saved {
+      background: linear-gradient(135deg,#27ae60,#2ecc71);
+    }
+
+    /* Loading / empty states */
+    .table-loading {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    .table-loading i { font-size: 28px; margin-bottom: 12px; display: block; opacity: .4; }
+
+    /* Toast */
+    .admin-toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: #27ae60;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 9999;
+      box-shadow: 0 4px 16px rgba(0,0,0,.4);
+      transform: translateY(0);
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+    }
+    .admin-toast.error { background: #e74c3c; }
+    .admin-toast.hidden { opacity: 0; transform: translateY(12px); }
+
+    /* Section card */
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .section-card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(192,57,43,.06);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-card-header h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      flex: 1;
+    }
+    .section-card-header .user-count {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: rgba(255,255,255,.06);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* Access denied */
+    .access-denied {
+      max-width: 480px;
+      margin: 80px auto;
+      text-align: center;
+      padding: 40px;
+    }
+    .access-denied .denied-icon { font-size: 56px; margin-bottom: 16px; }
+    .access-denied h2 { font-size: 22px; margin-bottom: 10px; }
+    .access-denied p { color: var(--text-muted); margin-bottom: 24px; }
+
+    @media (max-width: 900px) {
+      .admin-table th:nth-child(5),
+      .admin-table td:nth-child(5) { display: none; }
+    }
+    @media (max-width: 700px) {
+      .admin-table th:nth-child(4),
+      .admin-table td:nth-child(4) { display: none; }
+      .admin-stats { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="navbar-logo">C</div>
+    <div class="navbar-title">Cheff<span>M2</span></div>
+  </div>
+  <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+  <ul class="navbar-nav" id="mainNav">
+    <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+    <li><a href="herramientas.html"><i class="fas fa-tools"></i> Herramientas</a></li>
+    <li><a href="wiki.html"><i class="fas fa-book"></i> Wiki</a></li>
+    <li><a href="guias.html"><i class="fas fa-scroll"></i> Guías</a></li>
+    <li><a href="comercio.html"><i class="fas fa-store"></i> Comercio</a></li>
+    <li><a href="foro.html"><i class="fas fa-comments"></i> Foro</a></li>
+    <li><a href="sniping.html"><i class="fas fa-crosshairs"></i> Sniping</a></li>
+    <li><a href="https://www.twitch.tv/" target="_blank" class="navbar-twitch"><i class="fab fa-twitch"></i> Twitch</a></li>
+  </ul>
+  <div id="navbar-auth"></div>
+</nav>
+
+<div class="page-wrapper">
+
+  <!-- ACCESS DENIED (hidden by default, shown if not admin) -->
+  <div class="access-denied" id="accessDenied" style="display:none;">
+    <div class="denied-icon">🚫</div>
+    <h2>Acceso denegado</h2>
+    <p>Esta página es exclusiva para administradores.</p>
+    <a href="index.html" class="btn btn-primary">Volver al inicio</a>
+  </div>
+
+  <!-- ADMIN PANEL (hidden until auth confirmed) -->
+  <div id="adminPanel" style="display:none;">
+
+    <div class="page-header">
+      <div class="section-tag">CheffM2</div>
+      <h1 class="page-header-title">⚙️ <span style="color:var(--accent-gold)">Panel Admin</span></h1>
+      <p class="page-header-subtitle">Gestiona usuarios, roles y límites de las Sniping Tools</p>
+    </div>
+
+    <div class="admin-wrapper">
+
+      <!-- STATS -->
+      <div class="admin-stats" id="adminStats">
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-label">Total usuarios</div>
+          <div class="stat-value" id="statTotal">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-label">Premium</div>
+          <div class="stat-value" id="statPremium">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🛡️</div>
+          <div class="stat-label">Admins</div>
+          <div class="stat-value" id="statAdmins">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📝</div>
+          <div class="stat-label">Editores</div>
+          <div class="stat-value" id="statEditors">—</div>
+        </div>
+      </div>
+
+      <!-- USER TABLE -->
+      <div class="admin-toolbar">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Buscar por nombre o email…" oninput="filterTable()" />
+        </div>
+        <select class="filter-select" id="roleFilter" onchange="filterTable()">
+          <option value="">Todos los roles</option>
+          <option value="admin">Admin</option>
+          <option value="editor">Editor</option>
+          <option value="moderador">Moderador</option>
+          <option value="user">Usuario</option>
+        </select>
+        <select class="filter-select" id="tierFilter" onchange="filterTable()">
+          <option value="">Todos los tiers</option>
+          <option value="ultimate">Ultimate</option>
+          <option value="avanzado">Avanzado</option>
+          <option value="basico">Básico</option>
+          <option value="none">Sin premium</option>
+        </select>
+        <button class="btn btn-outline" style="font-size:12px;padding:7px 14px;" onclick="loadUsers()">
+          <i class="fas fa-sync-alt"></i> Recargar
+        </button>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-header">
+          <i class="fas fa-users" style="color:var(--accent-red)"></i>
+          <h2>Usuarios</h2>
+          <span class="user-count" id="userCount">0 usuarios</span>
+        </div>
+        <div class="admin-table-wrap">
+          <div class="table-loading" id="tableLoading">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            Cargando usuarios…
+          </div>
+          <table class="admin-table" id="usersTable" style="display:none;">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Tier Premium</th>
+                <th>Límite Alertas Sniping</th>
+                <th>Registrado</th>
+                <th>Guardar</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /admin-wrapper -->
+  </div><!-- /adminPanel -->
+
+</div><!-- /page-wrapper -->
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>Cheff<span>M2</span></h3>
+      <p>El portal definitivo de Metin2 creado por el streamer Cheff. Herramientas, wiki, guías y comunidad.</p>
+      <div class="footer-social">
+        <a href="https://www.twitch.tv/" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
+        <a href="https://www.youtube.com/" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://discord.gg/" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+        <a href="https://www.tiktok.com/" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://twitter.com/" target="_blank" title="Twitter/X"><i class="fab fa-x-twitter"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Herramientas</h4>
+      <ul>
+        <li><a href="herramientas.html">Calc. Biólogo</a></li>
+        <li><a href="herramientas.html">Calc. Caballo</a></li>
+        <li><a href="herramientas.html">Calc. Mascota</a></li>
+        <li><a href="herramientas.html">Calc. Mejoras</a></li>
+        <li><a href="herramientas.html">Guías de Eventos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Navegación</h4>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="wiki.html">Wiki</a></li>
+        <li><a href="guias.html">Guías</a></li>
+        <li><a href="foro.html">Foro</a></li>
+        <li><a href="comercio.html">Comercio</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Comunidad</h4>
+      <ul>
+        <li><a href="https://discord.gg/" target="_blank">Discord</a></li>
+        <li><a href="https://www.twitch.tv/" target="_blank">Twitch</a></li>
+        <li><a href="https://www.youtube.com/" target="_blank">YouTube</a></li>
+        <li><a href="https://www.tiktok.com/" target="_blank">TikTok</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CheffM2 · Portal no oficial de Metin2 · Todos los derechos reservados</p>
+    <p>Metin2 es propiedad de Gameforge. Este sitio no está afiliado oficialmente.</p>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="admin-toast hidden" id="adminToast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════════════ */
+const API_BASE = 'https://jordism.com/api';
+
+const TIER_LIMITS   = { none: 0, basico: 5, avanzado: 10, ultimate: 20 };
+const ROLE_ORDER    = ['user', 'moderador', 'editor', 'admin'];
+const TIER_ORDER    = ['none', 'basico', 'avanzado', 'ultimate'];
+
+let allUsers = [];   // cache from API
+
+/* ═══════════════════════════════════════════════
+   API HELPERS
+═══════════════════════════════════════════════ */
+async function apiFetch(path, opts = {}) {
+  const r = await fetch(API_BASE + path, {
+    credentials: 'include',
+    mode: 'cors',
+    headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) },
+    ...opts,
+  });
+  if (!r.ok) throw new Error(`API ${r.status}: ${await r.text()}`);
+  return r.json();
+}
+const apiGet   = (p)      => apiFetch(p);
+const apiPatch = (p, d)   => apiFetch(p, { method: 'PATCH', body: JSON.stringify(d) });
+
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+let toastTimer;
+function showToast(msg, isError = false) {
+  const el = document.getElementById('adminToast');
+  el.textContent = msg;
+  el.className = 'admin-toast' + (isError ? ' error' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.add('hidden'), 3000);
+}
+
+/* ═══════════════════════════════════════════════
+   AUTH CHECK
+═══════════════════════════════════════════════ */
+async function getCurrentUser() {
+  try {
+    const r = await fetch(API_BASE + '/me', { credentials: 'include', mode: 'cors' });
+    if (!r.ok) return null;
+    return r.json();
+  } catch { return null; }
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER HELPERS
+═══════════════════════════════════════════════ */
+function roleBadge(role) {
+  const map = {
+    admin:     'badge-admin',
+    editor:    'badge-editor',
+    moderador: 'badge-mod',
+    user:      'badge-user',
+  };
+  return `<span class="badge ${map[role] || 'badge-user'}">${role}</span>`;
+}
+
+function tierBadge(tier) {
+  const map = {
+    ultimate: 'badge-ultimate',
+    avanzado: 'badge-avanzado',
+    basico:   'badge-basico',
+    none:     'badge-none',
+  };
+  const labels = { ultimate: '⭐ Ultimate', avanzado: '🔹 Avanzado', basico: '✔ Básico', none: 'Sin premium' };
+  return `<span class="badge ${map[tier] || 'badge-none'}">${labels[tier] || tier}</span>`;
+}
+
+function effectiveLimitText(user) {
+  const hasCustom = user.snipe_alert_limit !== null && user.snipe_alert_limit !== undefined;
+  if (user.role === 'admin' || user.role === 'editor') {
+    return `<span class="effective-limit">∞ (ilimitado)</span>`;
+  }
+  if (hasCustom) {
+    return `<span class="effective-limit custom">⚡ Límite manual: ${user.snipe_alert_limit}</span>`;
+  }
+  const def = TIER_LIMITS[user.premium_tier] ?? 0;
+  return `<span class="effective-limit">Tier por defecto: ${def}</span>`;
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+/* ═══════════════════════════════════════════════
+   LOAD USERS
+═══════════════════════════════════════════════ */
+async function loadUsers() {
+  document.getElementById('tableLoading').style.display = 'block';
+  document.getElementById('usersTable').style.display  = 'none';
+  try {
+    allUsers = await apiGet('/users');
+    renderStats(allUsers);
+    renderTable(allUsers);
+  } catch (err) {
+    document.getElementById('tableLoading').innerHTML =
+      `<i class="fas fa-exclamation-triangle"></i>Error al cargar usuarios: ${err.message}`;
+    showToast('Error cargando usuarios', true);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   STATS
+═══════════════════════════════════════════════ */
+function renderStats(users) {
+  document.getElementById('statTotal').textContent   = users.length;
+  document.getElementById('statPremium').textContent = users.filter(u => u.premium_tier && u.premium_tier !== 'none').length;
+  document.getElementById('statAdmins').textContent  = users.filter(u => u.role === 'admin').length;
+  document.getElementById('statEditors').textContent = users.filter(u => u.role === 'editor').length;
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER TABLE
+═══════════════════════════════════════════════ */
+function renderTable(users) {
+  const tbody = document.getElementById('usersBody');
+  document.getElementById('userCount').textContent = `${users.length} usuario${users.length !== 1 ? 's' : ''}`;
+
+  if (!users.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">No se encontraron usuarios</td></tr>`;
+  } else {
+    tbody.innerHTML = users.map(u => buildRow(u)).join('');
+  }
+
+  document.getElementById('tableLoading').style.display = 'none';
+  document.getElementById('usersTable').style.display   = 'table';
+}
+
+function buildRow(u) {
+  const initials = (u.name || u.email || '?').charAt(0).toUpperCase();
+  const avatarHtml = u.avatar
+    ? `<img src="${u.avatar}" class="user-avatar" alt="" onerror="this.replaceWith(makePlaceholder('${initials}'))">`
+    : `<div class="user-avatar-placeholder">${initials}</div>`;
+
+  const customLimit = (u.snipe_alert_limit !== null && u.snipe_alert_limit !== undefined)
+    ? u.snipe_alert_limit
+    : '';
+
+  const roleOptions = ROLE_ORDER.map(r =>
+    `<option value="${r}" ${u.role === r ? 'selected' : ''}>${r}</option>`
+  ).join('');
+
+  return `
+  <tr data-id="${u.id}" data-name="${(u.name||'').toLowerCase()}" data-email="${(u.email||'').toLowerCase()}" data-role="${u.role||'user'}" data-tier="${u.premium_tier||'none'}">
+    <td>
+      <div class="user-cell">
+        ${avatarHtml}
+        <div>
+          <div class="user-name">${u.name || '—'}</div>
+          <div class="user-email">${u.email || '—'}</div>
+        </div>
+      </div>
+    </td>
+    <td>
+      <select class="admin-select role-select" data-uid="${u.id}" onchange="onRoleChange(this)">
+        ${roleOptions}
+      </select>
+    </td>
+    <td>${tierBadge(u.premium_tier || 'none')}</td>
+    <td>
+      <div class="limit-input-wrap">
+        <input type="number" class="limit-input snipe-limit-input" data-uid="${u.id}"
+               value="${customLimit}" min="0" placeholder="—"
+               title="Vacío = usar límite del tier"
+               oninput="onLimitChange(this)" />
+        <div id="effectiveLimit-${u.id}">${effectiveLimitText(u)}</div>
+      </div>
+    </td>
+    <td>${fmtDate(u.created_at)}</td>
+    <td>
+      <button class="btn-save" id="saveBtn-${u.id}" onclick="saveUser('${u.id}')">
+        Guardar
+      </button>
+    </td>
+  </tr>`;
+}
+
+function makePlaceholder(letter) {
+  const div = document.createElement('div');
+  div.className = 'user-avatar-placeholder';
+  div.textContent = letter;
+  return div;
+}
+
+/* ═══════════════════════════════════════════════
+   FILTER TABLE
+═══════════════════════════════════════════════ */
+function filterTable() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const roleF  = document.getElementById('roleFilter').value;
+  const tierF  = document.getElementById('tierFilter').value;
+
+  const rows = document.querySelectorAll('#usersBody tr[data-id]');
+  let visible = 0;
+
+  rows.forEach(row => {
+    const name  = row.dataset.name  || '';
+    const email = row.dataset.email || '';
+    const role  = row.dataset.role  || '';
+    const tier  = row.dataset.tier  || '';
+
+    const matchSearch = !search || name.includes(search) || email.includes(search);
+    const matchRole   = !roleF  || role  === roleF;
+    const matchTier   = !tierF  || tier  === tierF;
+
+    const show = matchSearch && matchRole && matchTier;
+    row.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+
+  document.getElementById('userCount').textContent = `${visible} usuario${visible !== 1 ? 's' : ''}`;
+}
+
+/* ═══════════════════════════════════════════════
+   CHANGE HANDLERS (mark row as dirty)
+═══════════════════════════════════════════════ */
+function onRoleChange(select) {
+  const uid   = select.dataset.uid;
+  const role  = select.value;
+  const user  = allUsers.find(u => String(u.id) === String(uid));
+  if (user) {
+    // Update effective limit display (admins/editors = unlimited)
+    const fakeUser = { ...user, role };
+    document.getElementById(`effectiveLimit-${uid}`).innerHTML = effectiveLimitText(fakeUser);
+  }
+  markDirty(uid);
+}
+
+function onLimitChange(input) {
+  const uid  = input.dataset.uid;
+  const user = allUsers.find(u => String(u.id) === String(uid));
+  if (user) {
+    const val   = input.value.trim();
+    const fakeUser = {
+      ...user,
+      role: document.querySelector(`.role-select[data-uid="${uid}"]`).value,
+      snipe_alert_limit: val === '' ? null : parseInt(val),
+    };
+    document.getElementById(`effectiveLimit-${uid}`).innerHTML = effectiveLimitText(fakeUser);
+  }
+  markDirty(uid);
+}
+
+function markDirty(uid) {
+  const btn = document.getElementById(`saveBtn-${uid}`);
+  if (btn) {
+    btn.classList.remove('saved');
+    btn.textContent = 'Guardar';
+    btn.disabled = false;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SAVE USER
+═══════════════════════════════════════════════ */
+async function saveUser(uid) {
+  const btn   = document.getElementById(`saveBtn-${uid}`);
+  const roleEl  = document.querySelector(`.role-select[data-uid="${uid}"]`);
+  const limitEl = document.querySelector(`.snipe-limit-input[data-uid="${uid}"]`);
+
+  if (!btn || !roleEl || !limitEl) return;
+
+  const newRole  = roleEl.value;
+  const rawLimit = limitEl.value.trim();
+  const newLimit = rawLimit === '' ? null : parseInt(rawLimit);
+
+  if (newLimit !== null && (isNaN(newLimit) || newLimit < 0)) {
+    showToast('Límite inválido (debe ser un número ≥ 0)', true);
+    return;
+  }
+
+  btn.disabled    = true;
+  btn.textContent = 'Guardando…';
+
+  const user = allUsers.find(u => String(u.id) === String(uid));
+  const errors = [];
+
+  try {
+    // Only patch role if changed
+    if (user && user.role !== newRole) {
+      await apiPatch(`/users/${uid}/role`, { role: newRole });
+      user.role = newRole;  // update cache
+    }
+  } catch (e) {
+    errors.push('rol: ' + e.message);
+  }
+
+  try {
+    // Always patch limit (server will decide if it changed)
+    await apiPatch(`/users/${uid}/snipe-limit`, { limit: newLimit });
+    if (user) user.snipe_alert_limit = newLimit; // update cache
+  } catch (e) {
+    errors.push('límite: ' + e.message);
+  }
+
+  if (errors.length) {
+    showToast('Error guardando: ' + errors.join(', '), true);
+    btn.textContent = 'Reintentar';
+    btn.disabled    = false;
+  } else {
+    btn.textContent = '✓ Guardado';
+    btn.classList.add('saved');
+    btn.disabled = false;
+    showToast(`Usuario ${user?.name || uid} actualizado`);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+async function init() {
+  const user = await getCurrentUser();
+
+  if (!user || user.role !== 'admin') {
+    document.getElementById('accessDenied').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('adminPanel').style.display = 'block';
+  await loadUsers();
+}
+
+document.getElementById('menuToggle').addEventListener('click', () =>
+  document.getElementById('mainNav').classList.toggle('open'));
+
+init();
+</script>
+<script src="js/auth.js"></script>
+</body>
+</html>
