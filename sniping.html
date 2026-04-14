@@ -1862,13 +1862,16 @@ async function requestNotifPermission() {
 }
 
 function notifyMatch(match) {
-  const item = match.item;
-  const title = `🎯 Item encontrado: ${item.name || 'Item'}`;
-  const body  = `Vendedor: ${item.seller || '?'}\nAlerta: "${match.alertName}"`;
+  const item     = match.item;
+  const name     = itemNames[String(item.vnum ?? item.id)] || item.name || 'Item';
+  const iconFile = itemIcons[String(item.vnum ?? item.id)];
+  const iconUrl  = iconFile ? `./data/${iconFile}` : './data/elements/fire.png';
+  const title    = `🎯 Item encontrado: ${name}`;
+  const body     = `Vendedor: ${item.seller || '?'}\nAlerta: "${match.alertName}"`;
 
   // Browser notification
   if ('Notification' in window && Notification.permission === 'granted') {
-    new Notification(title, { body, icon: './data/elements/fire.png' });
+    new Notification(title, { body, icon: iconUrl });
   }
 
   // In-page toast
