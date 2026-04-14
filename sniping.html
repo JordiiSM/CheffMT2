@@ -1224,7 +1224,7 @@ async function loadMatches() {
       // Rellenar seenIds con los matches ya guardados para evitar duplicados
       seenIds = new Set(matches.map(m => {
         const it = m.item || {};
-        return `${m.alertId}::${it.vnum ?? it.id}::${it.seller || ''}::${it.yangPrice ?? it.wonPrice ?? 0}`;
+        return `${m.alertId}::${it.id ?? it.vnum}`;
       }));
       return;
     } catch (e) {
@@ -1644,7 +1644,7 @@ async function scan() {
   for (const alert of activeAlerts) {
     for (const item of items) {
       // Clave única por alerta+item para no repetir notificaciones
-      const seenKey = `${alert.id}::${item.vnum ?? item.id}::${item.seller || ''}::${item.yangPrice ?? item.wonPrice ?? 0}`;
+      const seenKey = `${alert.id}::${item.id ?? item.vnum}`;
       if (seenIds.has(seenKey)) continue;
 
       if (itemMatchesAlert(item, alert)) {
@@ -1762,8 +1762,10 @@ function renderMatches(hasNew) {
     if (item.wonPrice)  priceHtml += `<div>💜 ${item.wonPrice.toLocaleString()} Won</div>`;
     if (!priceHtml)     priceHtml  = '<div style="color:var(--text-muted)">Precio desconocido</div>';
 
-    const plusMatch = /\+(\d+)/.exec(item.name || '');
-    const plusStr   = plusMatch ? ` +${plusMatch[1]}` : '';
+    const plusMatch  = /\+(\d+)/.exec(item.name || '');
+    const spanishName = itemNames[String(item.vnum)] || '';
+    // Solo añadir plusStr si el nombre en español no incluye ya el plus
+    const plusStr = (plusMatch && spanishName && !spanishName.includes('+')) ? ` +${plusMatch[1]}` : '';
 
     return `<div class="match-item ${isNew ? 'new-match' : ''}" style="cursor:pointer;" onclick="snipeOpenModal(${idx})" title="Ver detalles del item">
       <div class="match-icon">

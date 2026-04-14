@@ -198,20 +198,15 @@ async function runScan() {
 
     // 4. ¿Cuáles ya fueron registrados (últimas 2h para esta alerta)?
     const { rows: existing } = await db.query(
-      `SELECT (item->>'vnum')   AS vnum,
-              (item->>'seller') AS seller,
-              COALESCE(item->>'yangPrice', item->>'wonPrice', '0') AS price
+      `SELECT (item->>'id') AS listing_id
        FROM   snipe_matches
        WHERE  alert_id = $1 AND user_id = $2
          AND  found_at > NOW() - INTERVAL '2 hours'`,
       [alert.id, alert.user_id]
     );
-    const seenKeys = new Set(existing.map(r => `${r.vnum}::${r.seller || ''}::${r.price}`));
+    const seenKeys = new Set(existing.map(r => String(r.listing_id)));
 
-    const newItems = matching.filter(i => {
-      const key = `${i.vnum ?? i.id}::${i.seller || ''}::${i.yangPrice ?? i.wonPrice ?? 0}`;
-      return !seenKeys.has(key);
-    });
+    const newItems = matching.filter(i => !seenKeys.has(String(i.id ?? i.vnum)));
     if (!newItems.length) continue;
 
     // 5. Guardar nuevos matches en BD
